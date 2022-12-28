@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     @GetMapping("/test")
     public void test(){
-        System.out.println("test api called");
+        System.out.println("test api is called");
     }
 }
