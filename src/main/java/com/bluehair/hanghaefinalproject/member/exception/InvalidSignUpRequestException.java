@@ -1,6 +1,6 @@
 package com.bluehair.hanghaefinalproject.member.exception;
 
-import com.bluehair.hanghaefinalproject.common.exception.ErrorCode;
+import com.bluehair.hanghaefinalproject.common.response.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
