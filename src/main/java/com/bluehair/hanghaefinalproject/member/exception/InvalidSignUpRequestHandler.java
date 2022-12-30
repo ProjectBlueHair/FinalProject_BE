@@ -1,6 +1,6 @@
 package com.bluehair.hanghaefinalproject.member.exception;
 
-import com.bluehair.hanghaefinalproject.common.exception.ErrorResponse;
+import com.bluehair.hanghaefinalproject.common.response.error.ErrorResponse;
 import com.bluehair.hanghaefinalproject.member.controller.MemberController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

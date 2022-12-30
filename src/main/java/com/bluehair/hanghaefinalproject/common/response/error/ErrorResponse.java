@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.common.exception;
+package com.bluehair.hanghaefinalproject.common.response.error;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.bluehair.hanghaefinalproject.member.controller;
 
-import com.bluehair.hanghaefinalproject.common.success.Response;
-import com.bluehair.hanghaefinalproject.common.success.SucessCode;
+import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
+import com.bluehair.hanghaefinalproject.common.response.success.SucessCode;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +28,6 @@ public class MemberController {
     @GetMapping("/test")
     public ResponseEntity<?> test(){
         memberService.test();
-        return Response.toResponseEntity(SucessCode.SIGNUP_MEMBER, null);
+        return SuccessResponse.toResponseEntity(SucessCode.SIGNUP_MEMBER, null);
     }
 }

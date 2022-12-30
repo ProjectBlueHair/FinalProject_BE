@@ -1,6 +1,6 @@
 package com.bluehair.hanghaefinalproject.member.service;
 
-import com.bluehair.hanghaefinalproject.common.exception.ErrorCode;
+import com.bluehair.hanghaefinalproject.common.response.error.ErrorCode;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.exception.InvalidSignUpRequestException;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
