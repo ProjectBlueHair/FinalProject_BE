@@ -1,9 +1,16 @@
 package com.bluehair.hanghaefinalproject.member.controller;
 
+import com.bluehair.hanghaefinalproject.common.success.Response;
+import com.bluehair.hanghaefinalproject.common.success.SucessCode;
+import com.bluehair.hanghaefinalproject.member.service.MemberService;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberController {
+    private final MemberService memberService;
     @ApiOperation(value = "테스트", notes = "테스트용입니다.")
     @GetMapping("/test")
-    public void test(){
-        System.out.println("controller test api is called..");
+    public ResponseEntity<?> test(){
+        memberService.test();
+        return Response.toResponseEntity(SucessCode.SIGNUP_MEMBER, null);
     }
 }
