@@ -34,14 +34,14 @@ public class MemberController {
         memberService.test();
         return SuccessResponse.toResponseEntity(SIGNUP_MEMBER, null);
     }
-    @ApiOperation(value = "회원 가입", notes = "신규 회원 등록")
+    @ApiOperation(value = "회원 가입", notes = "신규 회원 등록", response = SuccessResponse.class)
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody RequestSignUpMemberDto requestSignUpMemberDto) {
         memberService.signUp(requestSignUpMemberDto.toSignUpMemberDto());
         return SuccessResponse.toResponseEntity(SIGNUP_MEMBER, null);
     }
 
-    @ApiOperation(value = "회원 가입", notes = "신규 회원 등록")
+    @ApiOperation(value = "로그인", notes = "회원 로그인", response = SuccessResponse.class)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody RequestLoginMemberDto requestLoginMemberDto) {
         TestDto data = memberService.login(requestLoginMemberDto.toLoginMemberDto());
