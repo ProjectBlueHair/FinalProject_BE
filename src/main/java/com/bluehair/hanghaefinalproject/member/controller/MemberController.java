@@ -28,7 +28,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    @ApiOperation(value = "테스요요요용", notes = "테스트요용용입니다.")
+    @ApiOperation(value = "테스형 di가 왜이래", notes = "테스트요용용입니다.")
     @GetMapping("/test")
     public ResponseEntity<?> test(){
         memberService.test();
