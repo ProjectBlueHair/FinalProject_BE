@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    INVALID_EMAIL(HttpStatus.OK, "유효하지 않은 이메일입니다.", 4041);
+    INVALID_EMAIL(HttpStatus.OK, "유효하지 않은 이메일입니다.", 4041),
+    DUPLICATED_EMAIL(HttpStatus.OK, "중복된 이메일입니다.", 4042),
+    MEMBER_NOT_EXIST(HttpStatus.OK, "존재하지 않는 회원입니다.", 4043);
 
     private final HttpStatus httpStatus;
     private final String message;
