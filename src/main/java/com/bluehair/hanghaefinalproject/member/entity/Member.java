@@ -13,15 +13,22 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String profileImg;
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false, unique = true)
     private String nickname;
     @Column (nullable = false)
     private String password;
+
     @Column (nullable = false)
     @Enumerated(value = EnumType.STRING)
     private MemberRole role = MemberRole.SILVER;
+
+    @Column
+    private Social social;
     @Column
     private String refreshToken;
 
