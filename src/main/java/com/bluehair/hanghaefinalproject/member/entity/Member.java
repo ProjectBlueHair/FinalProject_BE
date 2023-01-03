@@ -20,12 +20,19 @@ public class Member {
     @Column (nullable = false)
     private String password;
     @Column (nullable = false)
-    private Boolean admin = false;
+    @Enumerated(value = EnumType.STRING)
+    private MemberRole role = MemberRole.SILVER;
+    @Column
+    private String refreshToken;
 
     @Builder
     public Member(String email, String nickname, String password) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+    }
+
+    public void updateToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
