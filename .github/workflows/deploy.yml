@@ -33,7 +33,6 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-
     # Secret Properties
     - name: JwtSecret
       env:
