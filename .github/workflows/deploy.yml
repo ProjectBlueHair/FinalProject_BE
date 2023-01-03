@@ -32,6 +32,14 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
+        
+    # Secret Properties
+    - name: JwtSecret
+      env:
+        OCCUPY_SECRET: ${{ secrets.JWT_SECRET }}
+        OCCUPY_SECRET_DIR: src/main/resources
+        OCCUPY_SECRET_DIR_FILE_NAME: application-jwt.properties
+      run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME
 
     # (3) Gradle build (Test 제외)
     - name: Build with Gradle
