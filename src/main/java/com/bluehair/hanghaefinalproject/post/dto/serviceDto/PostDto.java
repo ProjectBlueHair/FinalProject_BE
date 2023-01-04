@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.post.dto;
+package com.bluehair.hanghaefinalproject.post.dto.serviceDto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,6 @@ public class PostDto {
     private String lyrics;
     private String musicFile;
     private String musicPart;
-
     @Builder
     public PostDto(String title, String contents, String lyrics,
                 String musicFile, String musicPart){

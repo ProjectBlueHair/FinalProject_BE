@@ -25,7 +25,11 @@ public enum ErrorCode {
     EXPIRED_REFRESHTOKEN(HttpStatus.OK, "만료된 Refresh Token입니다.", 4016),
 
     // Server Error
-    UNHANDLED_SERVER_ERROR(HttpStatus.OK, "처리되지 않은 서버 에러입니다.", 5000);
+    UNHANDLED_SERVER_ERROR(HttpStatus.OK, "처리되지 않은 서버 에러입니다.", 5000),
+
+    // Post
+
+    POST_NOT_FOUND(HttpStatus.OK, "존재하지 않는 게시글입니다.", 4041);
 
     private final HttpStatus httpStatus;
     private final String message;
