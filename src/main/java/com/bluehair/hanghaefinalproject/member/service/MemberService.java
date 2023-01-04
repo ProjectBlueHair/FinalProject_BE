@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.member.service;
 
 import com.bluehair.hanghaefinalproject.common.service.Validator;
+import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.LoginDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.SignUpDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.ValidateEmailDto;
@@ -9,6 +10,7 @@ import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.exception.InvalidLoginRequestException;
 import com.bluehair.hanghaefinalproject.member.exception.InvalidSignUpRequestException;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
+import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtException;
 import com.bluehair.hanghaefinalproject.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -127,5 +129,14 @@ public class MemberService {
         }
         jwtUtil.validateToken(accessToken, true);
         return null;
+    }
+
+    @Transactional
+    public ResponseMemberInfoDto memberInfo(CustomUserDetails userDetails){
+        return ResponseMemberInfoDto.builder()
+                .email(userDetails.getMember().getEmail())
+                .nickname(userDetails.getMember().getNickname())
+                .profileImg(userDetails.getMember().getProfileImg())
+                .build();
     }
 }
