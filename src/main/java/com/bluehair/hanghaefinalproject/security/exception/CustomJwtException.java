@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CustomJwtException extends RuntimeException {
+public class CustomJwtException extends SecurityException {
     private final ErrorCode errorCode;
 }
