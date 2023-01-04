@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class InvalidSignUpRequestException extends RuntimeException{
+public class InvalidSignUpRequestException extends IllegalArgumentException {
     private final ErrorCode errorCode;
 }
