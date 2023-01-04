@@ -25,10 +25,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException, CustomJwtException {
-        String uri = request.getRequestURI();
         String token = jwtUtil.resolveToken(request, "AccessToken");
 
-        if (token == null || uri.contains("member")){
+        if (token == null){
             filterChain.doFilter(request, response);
             return;
         }
