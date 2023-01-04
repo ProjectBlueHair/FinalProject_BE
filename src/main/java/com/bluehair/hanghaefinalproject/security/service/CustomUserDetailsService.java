@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.MEMBER_NOT_EXIST;
+import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.MEMBER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String Email) throws InvalidMemberException {
         Member member = memberRepository.findByEmail(Email)
-                .orElseThrow(()->new InvalidMemberException(MEMBER_NOT_EXIST));
+                .orElseThrow(()->new InvalidMemberException(MEMBER_NOT_FOUND));
         return new CustomUserDetails(member, member.getPassword());
     }
 }
