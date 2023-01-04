@@ -7,7 +7,7 @@ import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateEma
 import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateNicknameDto;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
-import io.swagger.annotations.ApiOperation;
+import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,12 +75,29 @@ public class MemberController {
         memberService.login(requestLoginDto.toLoginMemberDto(), response);
         return SuccessResponse.toResponseEntity(LOGIN_MEMBER, null);
     }
-
-    @ApiOperation(value = "토큰 재발행", notes = "토큰 재발행", response = SuccessResponse.class)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공"),
+            @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
+            @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
+            @ApiResponse(responseCode = "4015", description = "만료된 AccessToken")
+    })
+    @Operation(summary = "회원 정보 반환", description = "토큰 분해 및 정보 반환")
+    @GetMapping("/info")
+    public ResponseEntity<?> memberInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return SuccessResponse.toResponseEntity(MEMBER_INFO, memberService.memberInfo(userDetails));
+    }
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
+            @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
+            @ApiResponse(responseCode = "4015", description = "만료된 AccessToken"),
+            @ApiResponse(responseCode = "4012", description = "RefreshToken 존재하지 않음"),
+            @ApiResponse(responseCode = "4014", description = "유효하지 않은 RefreshToken"),
+            @ApiResponse(responseCode = "4016", description = "만료된 RefreshToken")
+    })
+    @Operation(summary = "토큰 재발행", description = "Access, Response Token 유효성 검사 및 토큰 재발행")
     @PostMapping("/reissuance")
     public ResponseEntity<?> reissuance(HttpServletRequest request, HttpServletResponse response){
         memberService.tokenReissuance(request, response);
         return SuccessResponse.toResponseEntity(TOKEN_REISSUANCE, null);
     }
-
 }
