@@ -11,7 +11,9 @@ public enum SucessCode {
     // Member
     SIGNUP_MEMBER(HttpStatus.OK, "회원 가입 성공", 2000),
     LOGIN_MEMBER(HttpStatus.OK, "로그인 성공", 2000),
-    TOKEN_REISSUANCE(HttpStatus.OK, "토큰 재발행 성공", 2001);
+    TOKEN_REISSUANCE(HttpStatus.OK, "토큰 재발행 성공", 2001),
+
+    CREATE_POST(HttpStatus.OK, "게시글 작성 성공", 2000);
 
     private final HttpStatus httpStatus;
     private final String message;
