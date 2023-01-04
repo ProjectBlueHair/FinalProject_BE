@@ -11,4 +11,14 @@ public class RequestPostDto {
     private String lyrics;
     private String musicFile;
     private String musicPart;
+
+    public PostDto toPostDto() {
+        return PostDto.builder()
+                .title(title)
+                .contents(contents)
+                .lyrics(lyrics)
+                .musicFile(musicFile)
+                .musicPart(musicPart)
+                .build();
+    }
 }
