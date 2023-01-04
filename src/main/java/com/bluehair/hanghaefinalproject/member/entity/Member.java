@@ -33,10 +33,11 @@ public class Member {
     private String refreshToken;
 
     @Builder
-    public Member(String email, String nickname, String password) {
+    public Member(String email, String nickname, String password, String profileImg) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.profileImg = profileImg;
     }
 
     public void updateToken(String refreshToken) {

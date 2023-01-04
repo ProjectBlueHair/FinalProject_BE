@@ -1,7 +1,10 @@
 package com.bluehair.hanghaefinalproject.member.service;
 
-import com.bluehair.hanghaefinalproject.member.dto.LoginMemberDto;
-import com.bluehair.hanghaefinalproject.member.dto.SignUpMemberDto;
+import com.bluehair.hanghaefinalproject.common.service.Validator;
+import com.bluehair.hanghaefinalproject.member.dto.serviceDto.LoginDto;
+import com.bluehair.hanghaefinalproject.member.dto.serviceDto.SignUpDto;
+import com.bluehair.hanghaefinalproject.member.dto.serviceDto.ValidateEmailDto;
+import com.bluehair.hanghaefinalproject.member.dto.serviceDto.ValidateNicknameDto;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.exception.InvalidSignUpRequestException;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
@@ -10,6 +13,7 @@ import com.bluehair.hanghaefinalproject.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,23 +28,52 @@ import static com.bluehair.hanghaefinalproject.member.mapper.MemberMapStruct.MEM
 @Slf4j
 public class MemberService {
     private final JwtUtil jwtUtil;
-
+    private final Validator validator;
+    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-    public void test(){
-        Member member = memberRepository.findByEmail("asdfasdfasdf")
-                .orElseThrow(()-> new InvalidSignUpRequestException(INVALID_EMAIL));
-    }
 
     @Transactional
-    public void signUp(SignUpMemberDto signUpMemberDto) {
-        memberRepository.findByEmail(signUpMemberDto.getEmail())
+    public void signUp(SignUpDto signUpDto) {
+        memberRepository.findByEmail(signUpDto.getEmail())
                 .ifPresent(m->{
                     throw new InvalidSignUpRequestException(DUPLICATED_EMAIL);
                 });
-        Member member = MEMBER_MAPPER.SignUpMemberDtoToMember(signUpMemberDto);
+        memberRepository.findByNickname(signUpDto.getNickname())
+                .ifPresent(m-> {
+                    throw new InvalidSignUpRequestException(DUPLICATED_NICKNAME);
+                });
+        if(!validator.isValidPassword(signUpDto.getPassword())){
+            throw new InvalidSignUpRequestException(INVALID_PASSWORD);
+        }
 
+        signUpDto.encryptPassword(passwordEncoder.encode(signUpDto.getPassword()));
+
+        if (signUpDto.getProfileImg() == null) {
+            signUpDto.setRandomProfileImg();
+        }
+
+        Member member = MEMBER_MAPPER.SignUpDtoToMember(signUpDto);
         memberRepository.save(member);
     }
+
+    @Transactional(readOnly = true)
+    public void validateEmail(ValidateEmailDto validateEmailDto) {
+        if(!validator.isValidEmail(validateEmailDto.getEmail())){
+            throw new InvalidSignUpRequestException(INVALID_EMAIL);
+        }
+        memberRepository.findByEmail(validateEmailDto.getEmail())
+                .ifPresent(m->{
+                    throw new InvalidSignUpRequestException(DUPLICATED_EMAIL);
+                });
+    }
+    @Transactional(readOnly = true)
+    public void validateNickname(ValidateNicknameDto validateNicknameDto){
+        memberRepository.findByNickname(validateNicknameDto.getNickname())
+                .ifPresent(m->{
+                    throw new InvalidSignUpRequestException(DUPLICATED_NICKNAME);
+                });
+    }
+
 
     private void setNewTokens(HttpServletResponse response, Member member) {
         response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail(), member.getRole()));
@@ -50,9 +83,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void login(LoginMemberDto loginMemberDto, HttpServletResponse response) {
-        Member member = memberRepository.findByEmail(loginMemberDto.getEmail())
-                .orElseThrow(()->new InvalidSignUpRequestException(MEMBER_NOT_EXIST));
+    public void login(LoginDto loginDto, HttpServletResponse response) {
+        Member member = memberRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(()->new InvalidSignUpRequestException(MEMBER_NOT_FOUND));
         setNewTokens(response, member);
     }
 
@@ -65,7 +98,7 @@ public class MemberService {
         jwtUtil.validateToken(refreshToken, false);
 
         Member member = memberRepository.findByEmail(claims.getSubject())
-                .orElseThrow(()->new InvalidSignUpRequestException(MEMBER_NOT_EXIST));
+                .orElseThrow(()->new InvalidSignUpRequestException(MEMBER_NOT_FOUND));
 
         if(!member.getRefreshToken().substring(7).equals(refreshToken)){
             throw new CustomJwtException(INVALID_REFRESHTOKEN);

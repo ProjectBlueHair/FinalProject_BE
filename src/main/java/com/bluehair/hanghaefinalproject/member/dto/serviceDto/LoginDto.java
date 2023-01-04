@@ -1,15 +1,15 @@
-package com.bluehair.hanghaefinalproject.member.dto;
+package com.bluehair.hanghaefinalproject.member.dto.serviceDto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class LoginMemberDto {
+public class LoginDto {
     private String email;
     private String password;
 
     @Builder
-    public LoginMemberDto(String email, String password) {
+    public LoginDto(String email, String password) {
         this.email = email;
         this.password = password;
     }

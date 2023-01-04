@@ -13,6 +13,7 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
+                .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.bluehair.hanghaefinalproject")) // api 스펙이 작성되어 있는 패키지 (controller)
