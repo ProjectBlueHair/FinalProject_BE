@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MAPPER;
 
@@ -17,7 +18,7 @@ import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MA
 public class PostService {
 
     private final PostRepository postRepository;
-
+    @Transactional
     public void createPost(RequestPostDto requestPostDto, String nickname) {
 
         Post post = POST_MAPPER.RequestPostDtoToPost(requestPostDto, nickname);
