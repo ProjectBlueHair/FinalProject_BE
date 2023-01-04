@@ -28,7 +28,8 @@ public class PostController {
     @ApiOperation(value = "작성", notes = "게시글 작성", response = SuccessResponse.class)
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetails userDetails){
-        postService.createPost(requestPostDto, userDetails.getUsername());
+
+        postService.createPost(requestPostDto.toPostDto(), userDetails.getUsername());
 
         return SuccessResponse.toResponseEntity(CREATE_POST,null);
     }
