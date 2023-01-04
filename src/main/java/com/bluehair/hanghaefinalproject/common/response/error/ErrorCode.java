@@ -11,6 +11,7 @@ public enum ErrorCode {
     // Member
     INVALID_EMAIL(HttpStatus.OK, "유효하지 않은 이메일입니다.", 4001),
     INVALID_PASSWORD(HttpStatus.OK, "유효하지 않은 비밀번호입니다.", 4002),
+    PASSWORD_INCORRECT(HttpStatus.OK, "계정 정보가 일치하지 않습니다.", 4003),
     DUPLICATED_EMAIL(HttpStatus.OK, "중복된 이메일입니다.", 4091),
     DUPLICATED_NICKNAME(HttpStatus.OK, "중복된 닉네임입니다.", 4092),
     MEMBER_NOT_FOUND(HttpStatus.OK, "존재하지 않는 회원입니다.", 4041),

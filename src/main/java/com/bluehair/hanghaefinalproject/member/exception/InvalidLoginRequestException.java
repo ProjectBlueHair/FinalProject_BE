@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.security.exception;
+package com.bluehair.hanghaefinalproject.member.exception;
 
 import com.bluehair.hanghaefinalproject.common.response.error.ErrorCode;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CustomJwtException extends SecurityException {
+public class InvalidLoginRequestException extends SecurityException{
     private final ErrorCode errorCode;
 }

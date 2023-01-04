@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.member.dto.serviceDto.SignUpDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.ValidateEmailDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.ValidateNicknameDto;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.member.exception.InvalidLoginRequestException;
 import com.bluehair.hanghaefinalproject.member.exception.InvalidSignUpRequestException;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtException;
@@ -42,6 +43,9 @@ public class MemberService {
                 .ifPresent(m-> {
                     throw new InvalidSignUpRequestException(DUPLICATED_NICKNAME);
                 });
+        if(!validator.isValidEmail(signUpDto.getEmail())){
+            throw new InvalidSignUpRequestException(INVALID_EMAIL);
+        }
         if(!validator.isValidPassword(signUpDto.getPassword())){
             throw new InvalidSignUpRequestException(INVALID_PASSWORD);
         }
@@ -85,7 +89,12 @@ public class MemberService {
     @Transactional
     public void login(LoginDto loginDto, HttpServletResponse response) {
         Member member = memberRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(()->new InvalidSignUpRequestException(MEMBER_NOT_FOUND));
+                .orElseThrow(()->new InvalidLoginRequestException(MEMBER_NOT_FOUND));
+
+        if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())){
+            throw new InvalidLoginRequestException(PASSWORD_INCORRECT);
+        }
+
         setNewTokens(response, member);
     }
 
