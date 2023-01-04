@@ -64,8 +64,11 @@ public class MemberController {
         memberService.signUp(requestSignUpDto.toSignUpDto());
         return SuccessResponse.toResponseEntity(SIGNUP_MEMBER, null);
     }
-
-    @ApiOperation(value = "로그인", notes = "회원 로그인", response = SuccessResponse.class)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "로그인 성공"),
+            @ApiResponse(responseCode = "4003", description = "계정 정보 불일치")
+    })
+    @Operation(summary = "일반 회원 로그인", description = "계정 비밀번호 일치 여부 확인")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response) {
         memberService.login(requestLoginDto.toLoginMemberDto(), response);
