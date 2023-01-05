@@ -1,8 +1,12 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.entity;
 
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.RequestCollaboRequestDto;
 import com.bluehair.hanghaefinalproject.common.entity.Timestamped;
+import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,4 +43,15 @@ public class CollaboRequest extends Timestamped {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "collaboRequest")
     private List<Music> musicList = new ArrayList<>();
+
+    @Builder
+    public CollaboRequest(String title, String contents, String nickname, Boolean activated, Boolean approval, Post post) {
+        this.title = title;
+        this.contents = contents;
+        this.nickname = nickname;
+        this.activated = activated;
+        this.approval = approval;
+        this.post = post;
+    }
 }
+
