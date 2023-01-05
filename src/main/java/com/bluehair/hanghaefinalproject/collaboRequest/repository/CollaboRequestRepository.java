@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface CollaboRequestRepository extends JpaRepository<CollaboRequest, Long> {
 
-    Optional<CollaboRequest> findAllByPostId(Long postId);
 }

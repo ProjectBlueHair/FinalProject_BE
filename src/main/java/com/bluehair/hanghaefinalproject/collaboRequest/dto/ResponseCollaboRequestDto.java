@@ -2,13 +2,12 @@ package com.bluehair.hanghaefinalproject.collaboRequest.dto;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
-import com.bluehair.hanghaefinalproject.music.entity.Music;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

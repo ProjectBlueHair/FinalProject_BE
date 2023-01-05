@@ -1,7 +1,6 @@
 package com.bluehair.hanghaefinalproject.music.repository;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
-import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import org.springframework.data.jpa.repository.JpaRepository;
 

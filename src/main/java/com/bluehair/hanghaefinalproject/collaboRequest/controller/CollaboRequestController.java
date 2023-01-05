@@ -7,7 +7,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.Operation;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +31,7 @@ public class CollaboRequestController {
     @ApiOperation(value = "조회", notes = "콜라보리퀘스트 상세 조회", response = SuccessResponse.class)
     @GetMapping("/api/collabo/{collaborequestid}")
     public ResponseEntity<?> getCollaboRequest(@PathVariable Long collaborequestid){
-        
+
 
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST,collaboRequestService.getCollaboRequest(collaborequestid));
     }
