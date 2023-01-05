@@ -1,6 +1,14 @@
 package com.bluehair.hanghaefinalproject.post.service;
 
+
+import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
+import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
+import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
+import com.bluehair.hanghaefinalproject.music.entity.Music;
+import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.InfoPostDto;
+import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.PostDto;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.exception.NotFoundPostRequestException;
@@ -9,8 +17,14 @@ import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
 import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MAPPER;
@@ -21,6 +35,9 @@ import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MA
 public class PostService {
 
     private final PostRepository postRepository;
+    private final CollaboRequestRepository collaboRequestRepository;
+    private final MusicRepository musicRepository;
+    private final MemberRepository memberRepository;
     @Transactional
     public void createPost(PostDto postDto, String nickname) {
 
@@ -38,4 +55,31 @@ public class PostService {
 
         return new InfoPostDto(post);
     }
+
+
+    public List<MainPostDto> mainPost(Pageable pageable) {
+
+        List<MainPostDto> mainPostDtoList = new ArrayList<>();
+
+        List<Post> postList = postRepository.findAllByOrderByModifiedAtDesc(pageable);
+
+        for (Post post : postList){
+
+            List<CollaboRequest> collaborateRequestList = collaboRequestRepository.findAllByPostId(post.getId());
+            List<String> musicList = new ArrayList<>();
+            List<String> profileList = new ArrayList<>();
+            for(CollaboRequest collaboRequest : collaborateRequestList){
+                Music music = musicRepository.findByCollaboRequest_Id(collaboRequest.getId());
+                Optional<Member> member = memberRepository.findByNickname(collaboRequest.getNickname());
+                musicList.add(music.getMusicFile());
+                profileList.add(member.get().getProfileImg());
+            }
+
+
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicList,profileList));
+        }
+
+        return mainPostDtoList;
+    }
+
 }
