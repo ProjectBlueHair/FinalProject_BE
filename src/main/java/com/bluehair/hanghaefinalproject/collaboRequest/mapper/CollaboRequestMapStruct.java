@@ -22,7 +22,7 @@ public interface CollaboRequestMapStruct {
                 .nickname(collaboRequestDto.getNickname())
                 .post(post)
                 .build();
-    };
+    }
 
 }
 

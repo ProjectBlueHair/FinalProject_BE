@@ -1,14 +1,7 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.dto;
 
-import com.bluehair.hanghaefinalproject.music.entity.Music;
-import com.bluehair.hanghaefinalproject.post.entity.Post;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Getter
 public class  CollaboRequestDto {
