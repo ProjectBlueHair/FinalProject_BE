@@ -23,6 +23,7 @@ public enum ErrorCode {
     INVALID_REFRESHTOKEN(HttpStatus.OK, "유효하지 않은 Refresh Token입니다.", 4014),
     EXPIRED_ACCESSTOKEN(HttpStatus.OK, "만료된 Access Token입니다.", 4015),
     EXPIRED_REFRESHTOKEN(HttpStatus.OK, "만료된 Refresh Token입니다.", 4016),
+    MEMBER_NOT_AUTHORIZED(HttpStatus.OK, "접근 권한이 없는 사용자입니다.", 4031),
 
     // Server Error
     UNHANDLED_SERVER_ERROR(HttpStatus.OK, "처리되지 않은 서버 에러입니다.", 5000),
