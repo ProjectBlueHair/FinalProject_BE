@@ -1,5 +1,7 @@
 package com.bluehair.hanghaefinalproject.config;
 
+import com.bluehair.hanghaefinalproject.security.exception.CustomAccessDeniedHandler;
+import com.bluehair.hanghaefinalproject.security.exception.CustomAuthenticationEntryPoint;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtExceptionHandlerFilter;
 import com.bluehair.hanghaefinalproject.security.jwt.JwtAuthFilter;
 import com.bluehair.hanghaefinalproject.security.jwt.JwtUtil;
@@ -14,8 +16,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.DisableEncodeUrlFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -37,9 +42,20 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toH2Console());
     }
     @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().
-                cors().configurationSource(corsConfigurationSource());
+        http.csrf().disable().cors().configurationSource(corsConfigurationSource());
+
+        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+                .authenticationEntryPoint(authenticationEntryPoint());
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -52,7 +68,7 @@ public class WebSecurityConfig {
                 .anyRequest().authenticated();
 
         http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new CustomJwtExceptionHandlerFilter(), JwtAuthFilter.class);
+        http.addFilterBefore(new CustomJwtExceptionHandlerFilter(), DisableEncodeUrlFilter.class);
 
         return http.build();
     }
