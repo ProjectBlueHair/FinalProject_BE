@@ -22,7 +22,9 @@ public enum SucessCode {
     MAIN_POST(HttpStatus.OK, "게시글 전체 조회 성공",2000),
 
     //CollaboRequest
-    COLLABO_REQUEST(HttpStatus.OK, "콜라보 리퀘스트 성공", 2000);
+    COLLABO_REQUEST_SUCCESS(HttpStatus.OK, "콜라보 리퀘스트 성공", 2000),
+    COLLABO_REQUEST(HttpStatus.OK, "콜라보 리퀘스트 상세 조회 성공", 2000),
+    COLLABO_LIST(HttpStatus.OK, "게시글 콜라보 리퀘스트 목록 조회 성공", 2000);
 
     private final HttpStatus httpStatus;
     private final String message;

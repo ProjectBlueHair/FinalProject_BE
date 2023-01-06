@@ -11,7 +11,6 @@ public class  CollaboRequestDto {
     private Boolean activated;
     private Boolean approval;
 
-
     @Builder
     public CollaboRequestDto(CollaboRequestDetailsDto collaboRequestDetailsDto, String nickname) {
         this.title = collaboRequestDetailsDto.getTitle();

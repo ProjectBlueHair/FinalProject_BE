@@ -20,7 +20,7 @@ public class ResponseCollaboRequestDto {
    private LocalDateTime createdAt;
    private LocalDateTime modifiedAt;
    private Boolean activated;
-   private List<ResponseMusicDto> musicDtoList;
+   private List<ResponseMusicDto> musicList;
 
     @Builder
     public ResponseCollaboRequestDto(CollaboRequest collaboRequest, List<ResponseMusicDto> musicDtoList) {
@@ -30,6 +30,6 @@ public class ResponseCollaboRequestDto {
         this.createdAt = collaboRequest.getCreatedAt();
         this.modifiedAt = collaboRequest.getModifiedAt();
         this.activated = collaboRequest.getActivated();
-        this.musicDtoList = musicDtoList;
+        this.musicList = musicDtoList;
     }
 }
