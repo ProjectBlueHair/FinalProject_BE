@@ -36,6 +36,8 @@ public class Post extends Timestamped {
 
     @Column(nullable = false)
     private String nickname;
+    @Column(nullable = false)
+    private String postImage;
     @Column
     private String musicFile;
     @Column
@@ -58,13 +60,14 @@ public class Post extends Timestamped {
 
     @Builder
     public Post (String title, String contents, String nickname, String lyrics,
-                 String musicFile, String musicPart){
+                 String postImage, String musicFile, String musicPart){
         this.title = title;
         this.contents = contents;
         this.nickname = nickname;
         this.lyrics = lyrics;
         this.musicFile = musicFile;
         this.musicPart = musicPart;
+        this.postImage = postImage;
     }
 
 }
