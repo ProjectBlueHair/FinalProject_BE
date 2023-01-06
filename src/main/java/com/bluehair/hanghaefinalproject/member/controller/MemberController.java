@@ -103,7 +103,7 @@ public class MemberController {
     })
     @Operation(summary = "토큰 재발행", description = "Access, Response Token 유효성 검사 및 토큰 재발행")
     @PostMapping("/reissuance")
-    public ResponseEntity<?> reissuance(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<SuccessResponse<Object>> reissuance(HttpServletRequest request, HttpServletResponse response){
         memberService.tokenReissuance(request, response);
         return SuccessResponse.toResponseEntity(TOKEN_REISSUANCE, null);
     }
