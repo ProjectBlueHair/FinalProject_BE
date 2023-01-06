@@ -1,10 +1,8 @@
 package com.bluehair.hanghaefinalproject.post.dto.requestDto;
 
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.PostDto;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-@Schema
 @Getter
 public class RequestPostDto {
     private String title;
