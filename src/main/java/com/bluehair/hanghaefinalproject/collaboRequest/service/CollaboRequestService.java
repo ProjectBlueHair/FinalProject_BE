@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.collaboRequest.service;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDetailsDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboRequestListDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 
@@ -65,5 +66,6 @@ public class CollaboRequestService {
         ResponseCollaboRequestDto responseCollaboRequestDto = new ResponseCollaboRequestDto(collaboRequest, musicDtoList);
         return responseCollaboRequestDto;
     }
+
 
 }
