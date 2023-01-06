@@ -13,9 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.COLLABO_REQUEST_SUCCESS;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.COLLABO_REQUEST;
-
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
 
 
 @RequiredArgsConstructor
@@ -37,6 +35,11 @@ public class CollaboRequestController {
     public ResponseEntity<?> getCollaboRequest(@PathVariable Long collaborequestid){
 
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST,collaboRequestService.getCollaboRequest(collaborequestid));
+    }
+
+    @GetMapping("/api/post/{postid}/collabo")
+    public ResponseEntity<?> getCollaboRequestList(@PathVariable Long postid){
+        return SuccessResponse.toResponseEntity(COLLABO_LIST, collaboRequestService.getCollaboRequestList(postid));
     }
 
 }

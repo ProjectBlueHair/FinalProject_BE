@@ -9,4 +9,6 @@ import java.util.List;
 public interface MusicRepository extends JpaRepository<Music, Long> {
     Music findByCollaboRequest_Id(Long id);
     List<Music> findAllByCollaboRequest(CollaboRequest collaboRequest);
+
+    List<Music> findAllByCollaboRequestId(long collaboid);
 }
