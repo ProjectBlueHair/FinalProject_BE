@@ -5,11 +5,14 @@ import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestLoginDto;
 import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestSignUpDto;
 import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateEmailDto;
 import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateNicknameDto;
+import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +33,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "사용 가능한 이메일"),
             @ApiResponse(responseCode = "4091", description = "이메일 중복"),
@@ -41,7 +45,7 @@ public class MemberController {
         memberService.validateEmail(requestValidateEmailDto.toValidateEmailDto());
         return SuccessResponse.toResponseEntity(VALID_EMAIL, null);
     }
-
+    @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "사용 가능한 닉네임"),
             @ApiResponse(responseCode = "4092", description = "닉네임 중복"),
@@ -52,7 +56,7 @@ public class MemberController {
         memberService.validateNickname(requestValidateNicknameDto.toValidateNicknameDto());
         return SuccessResponse.toResponseEntity(VALID_NICKNAME, null);
     }
-
+    @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "회원 가입 성공"),
             @ApiResponse(responseCode = "4002", description = "유효하지 않은 비밀번호"),
@@ -65,6 +69,7 @@ public class MemberController {
         memberService.signUp(requestSignUpDto.toSignUpDto());
         return SuccessResponse.toResponseEntity(SIGNUP_MEMBER, null);
     }
+    @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "로그인 성공"),
             @ApiResponse(responseCode = "4003", description = "계정 정보 불일치")
@@ -75,17 +80,19 @@ public class MemberController {
         memberService.login(requestLoginDto.toLoginMemberDto(), response);
         return SuccessResponse.toResponseEntity(LOGIN_MEMBER, null);
     }
+    @Tag(name = "Member")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공"),
+            @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공", content = @Content(schema = @Schema(implementation = SuccessResponse.class))),
             @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
             @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
             @ApiResponse(responseCode = "4015", description = "만료된 AccessToken")
     })
     @Operation(summary = "회원 정보 반환", description = "토큰 분해 및 정보 반환")
     @GetMapping("/info")
-    public ResponseEntity<?> memberInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<SuccessResponse<ResponseMemberInfoDto>> memberInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return SuccessResponse.toResponseEntity(MEMBER_INFO, memberService.memberInfo(userDetails));
     }
+    @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
             @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
