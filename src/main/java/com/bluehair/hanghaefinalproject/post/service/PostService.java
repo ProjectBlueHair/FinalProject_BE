@@ -41,7 +41,14 @@ public class PostService {
     @Transactional
     public void createPost(PostDto postDto, String nickname) {
 
+        if (postDto.getPostImage() == null) {
+            postDto.setRandomPostImage();
+        }
+
         Post post = POST_MAPPER.PostDtoToPost(postDto, nickname);
+
+
+
         postRepository.save(post);
 
     }
