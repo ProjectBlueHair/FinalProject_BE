@@ -13,7 +13,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.COLLABO_REQUEST_SUCCESS;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.COLLABO_REQUEST;
+
+
 
 @RequiredArgsConstructor
 @RestController

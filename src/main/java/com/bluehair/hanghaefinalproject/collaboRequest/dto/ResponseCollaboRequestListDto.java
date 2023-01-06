@@ -1,6 +1,5 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.dto;
 
-import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
