@@ -19,6 +19,7 @@ public enum SucessCode {
     // Post
     INFO_POST(HttpStatus.OK, "상세 게시글 조회 성공", 2000),
     CREATE_POST(HttpStatus.OK, "게시글 작성 성공", 2000),
+    MAIN_POST(HttpStatus.OK, "게시글 전체 조회 성공",2000),
 
     //CollaboRequest
     COLLABO_REQUEST(HttpStatus.OK, "콜라보 리퀘스트 성공", 2000);
