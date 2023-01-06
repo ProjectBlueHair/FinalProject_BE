@@ -9,6 +9,7 @@ import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.InfoPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainPostDto;
+import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainProfileDto;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.PostDto;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.exception.NotFoundPostRequestException;
@@ -47,8 +48,6 @@ public class PostService {
 
         Post post = POST_MAPPER.PostDtoToPost(postDto, nickname);
 
-
-
         postRepository.save(post);
 
     }
@@ -73,17 +72,18 @@ public class PostService {
         for (Post post : postList){
 
             List<CollaboRequest> collaborateRequestList = collaboRequestRepository.findAllByPostId(post.getId());
+            List<MainProfileDto> mainProfileDtos = new ArrayList<>();
             List<String> musicList = new ArrayList<>();
-            List<String> profileList = new ArrayList<>();
+
             for(CollaboRequest collaboRequest : collaborateRequestList){
                 Music music = musicRepository.findByCollaboRequest_Id(collaboRequest.getId());
                 Optional<Member> member = memberRepository.findByNickname(collaboRequest.getNickname());
                 musicList.add(music.getMusicFile());
-                profileList.add(member.get().getProfileImg());
+                MainProfileDto mainProfileDto = new MainProfileDto(music.getMusicPart(), member.get().getProfileImg());
+                mainProfileDtos.add(mainProfileDto);
             }
 
-
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicList,profileList));
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicList,mainProfileDtos));
         }
 
         return mainPostDtoList;

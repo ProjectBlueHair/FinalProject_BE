@@ -1,9 +1,10 @@
 package com.bluehair.hanghaefinalproject.post.dto.serviceDto;
 
 import com.bluehair.hanghaefinalproject.post.entity.Post;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
-
+@Schema(description = "상세 조회 응답 Dto")
 @Getter
 public class InfoPostDto {
 
