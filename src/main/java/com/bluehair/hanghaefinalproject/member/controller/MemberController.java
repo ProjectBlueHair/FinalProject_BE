@@ -41,7 +41,7 @@ public class MemberController {
     })
     @Operation(summary = "이메일 검증", description = "이메일 중복 확인, 이메일 형식 확인")
     @PostMapping("/validate/email")
-    public ResponseEntity<?> validateEmail(@RequestBody RequestValidateEmailDto requestValidateEmailDto) {
+    public ResponseEntity<SuccessResponse<Object>> validateEmail(@RequestBody RequestValidateEmailDto requestValidateEmailDto) {
         memberService.validateEmail(requestValidateEmailDto.toValidateEmailDto());
         return SuccessResponse.toResponseEntity(VALID_EMAIL, null);
     }
@@ -52,7 +52,7 @@ public class MemberController {
     })
     @Operation(summary = "닉네임 검증", description = "닉네임 중복 확인")
     @PostMapping("validate/nickname")
-    public ResponseEntity<?> validateNickname(@RequestBody RequestValidateNicknameDto requestValidateNicknameDto) {
+    public ResponseEntity<SuccessResponse<Object>> validateNickname(@RequestBody RequestValidateNicknameDto requestValidateNicknameDto) {
         memberService.validateNickname(requestValidateNicknameDto.toValidateNicknameDto());
         return SuccessResponse.toResponseEntity(VALID_NICKNAME, null);
     }
@@ -65,7 +65,7 @@ public class MemberController {
     })
     @Operation(summary = "회원 가입", description = "이메일 및 닉네임 중복 확인, Password Encrypt, DB 저장")
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody RequestSignUpDto requestSignUpDto) {
+    public ResponseEntity<SuccessResponse<Object>> signUp(@RequestBody RequestSignUpDto requestSignUpDto) {
         memberService.signUp(requestSignUpDto.toSignUpDto());
         return SuccessResponse.toResponseEntity(SIGNUP_MEMBER, null);
     }
@@ -76,7 +76,7 @@ public class MemberController {
     })
     @Operation(summary = "일반 회원 로그인", description = "계정 비밀번호 일치 여부 확인")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response) {
+    public ResponseEntity<SuccessResponse<Object>> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response) {
         memberService.login(requestLoginDto.toLoginMemberDto(), response);
         return SuccessResponse.toResponseEntity(LOGIN_MEMBER, null);
     }
@@ -103,7 +103,7 @@ public class MemberController {
     })
     @Operation(summary = "토큰 재발행", description = "Access, Response Token 유효성 검사 및 토큰 재발행")
     @PostMapping("/reissuance")
-    public ResponseEntity<?> reissuance(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<SuccessResponse<Object>> reissuance(HttpServletRequest request, HttpServletResponse response){
         memberService.tokenReissuance(request, response);
         return SuccessResponse.toResponseEntity(TOKEN_REISSUANCE, null);
     }
