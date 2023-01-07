@@ -13,6 +13,8 @@ public enum SucessCode {
     VALID_NICKNAME(HttpStatus.OK, "사용 가능한 닉네임", 2000),
     SIGNUP_MEMBER(HttpStatus.OK, "회원 가입 성공", 2000),
     LOGIN_MEMBER(HttpStatus.OK, "로그인 성공", 2000),
+    FOLLOW_MEMBER(HttpStatus.OK, "팔로우 성공", 2000),
+    UNFOLLOW_MEMBER(HttpStatus.OK, "언팔로우 성공", 2000),
     MEMBER_INFO(HttpStatus.OK, "사용자 정보 반환 성공", 2000),
     TOKEN_REISSUANCE(HttpStatus.OK, "토큰 재발행 성공", 2001),
 

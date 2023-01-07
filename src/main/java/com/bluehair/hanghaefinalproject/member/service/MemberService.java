@@ -2,13 +2,13 @@ package com.bluehair.hanghaefinalproject.member.service;
 
 import com.bluehair.hanghaefinalproject.common.service.Validator;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
-import com.bluehair.hanghaefinalproject.member.dto.serviceDto.LoginDto;
-import com.bluehair.hanghaefinalproject.member.dto.serviceDto.SignUpDto;
-import com.bluehair.hanghaefinalproject.member.dto.serviceDto.ValidateEmailDto;
-import com.bluehair.hanghaefinalproject.member.dto.serviceDto.ValidateNicknameDto;
+import com.bluehair.hanghaefinalproject.member.dto.serviceDto.*;
+import com.bluehair.hanghaefinalproject.member.entity.Follow;
+import com.bluehair.hanghaefinalproject.member.entity.FollowCompositeKey;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.exception.InvalidLoginRequestException;
 import com.bluehair.hanghaefinalproject.member.exception.InvalidSignUpRequestException;
+import com.bluehair.hanghaefinalproject.member.repository.FollowRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtException;
@@ -34,6 +34,7 @@ public class MemberService {
     private final Validator validator;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final FollowRepository followRepository;
 
     @Transactional
     public void signUp(SignUpDto signUpDto) {
@@ -138,5 +139,42 @@ public class MemberService {
                 .nickname(userDetails.getMember().getNickname())
                 .profileImg(userDetails.getMember().getProfileImg())
                 .build();
+    }
+
+    @Transactional
+    public void doFollow(CustomUserDetails userDetails, FollowDto followDto) {
+        Member myFollowingMember = memberRepository.findByNickname(followDto.getMyFollowingMemberNickname())
+                .orElseThrow(()-> new InvalidLoginRequestException(MEMBER_NOT_FOUND));
+
+        FollowCompositeKey followCompositeKey
+                = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
+
+        if (followRepository.existsById(followCompositeKey)){
+            throw new InvalidLoginRequestException(ALREADY_FOLLWED);
+        }
+
+        Follow follow = new Follow(followCompositeKey, userDetails.getMember(), myFollowingMember);
+        followRepository.save(follow);
+
+        memberRepository.updateFollowingCount(userDetails.getMember().getFollowingCount()+1, userDetails.getMember().getId());
+        memberRepository.updateFollowerCount(myFollowingMember.getFollowerCount()+1, myFollowingMember.getId());
+    }
+
+    @Transactional
+    public void doUnfollow(CustomUserDetails userDetails, FollowDto followDto) {
+        Member myFollowingMember = memberRepository.findByNickname(followDto.getMyFollowingMemberNickname())
+                .orElseThrow(()-> new InvalidLoginRequestException(MEMBER_NOT_FOUND));
+
+        FollowCompositeKey followCompositeKey
+                = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
+
+        if (!followRepository.existsById(followCompositeKey)){
+            throw new InvalidLoginRequestException(ALREADY_UNFOLLWED);
+        }
+
+        followRepository.deleteById(followCompositeKey);
+
+        memberRepository.updateFollowingCount(userDetails.getMember().getFollowingCount()-1, userDetails.getMember().getId());
+        memberRepository.updateFollowerCount(myFollowingMember.getFollowerCount()-1, myFollowingMember.getId());
     }
 }

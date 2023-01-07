@@ -28,6 +28,12 @@ public class Member {
     private MemberRole role = MemberRole.SILVER;
 
     @Column
+    private Long followerCount = 0L;
+
+    @Column
+    private Long followingCount = 0L;
+
+    @Column
     private Social social;
     @Column
     private String refreshToken;
