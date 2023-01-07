@@ -6,14 +6,12 @@ import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
+import com.bluehair.hanghaefinalproject.collaboRequest.exception.NotAuthorizedtoApproveException;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 
 import static com.bluehair.hanghaefinalproject.collaboRequest.mapper.CollaboRequestMapStruct.COLLABOREQUEST_MAPPER;
+import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*;
 import static com.bluehair.hanghaefinalproject.music.mapper.MusicMapStruct.MUSIC_MAPPER;
-
-import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
-import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.COLLABO_NOT_FOUND;
-import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.MEMBER_NOT_FOUND;
 
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
@@ -97,5 +95,20 @@ public class CollaboRequestService {
             collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList));
         }
         return collaboRequestListForPostDto;
+    }
+
+    public void approveCollaboRequest(Long collaborequestid, Member member) {
+        CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
+                .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
+        );
+        Post post = postRepository.findById(collaboRequest.getPost().getId())
+                .orElseThrow(() -> new InvalidCollaboRequestException(POST_NOT_FOUND));
+        if (!post.getNickname().equals(member.getNickname())){
+            throw new NotAuthorizedtoApproveException(MEMBER_NOT_AUTHORIZED);
+        }
+
+        Boolean approval = true;
+        collaboRequest.approve(approval);
+        collaboRequestRepository.save(collaboRequest);
     }
 }
