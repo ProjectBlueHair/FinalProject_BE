@@ -66,4 +66,16 @@ public class CollaboRequestController {
         return SuccessResponse.toResponseEntity(COLLABO_LIST, collaboRequestService.getCollaboRequestList(postid));
     }
 
+    @Tag(name = "CollaboRequest")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="2000", description = "콜라보리퀘스트 승인"),
+            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트")
+    })
+    @Operation(summary = "콜라보리퀘스트 승인")
+    @PostMapping("/api/collabo/{collaborequestid}")
+    public ResponseEntity<SuccessResponse<Object>> approveCollaboRequest(@PathVariable Long collaborequestid, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        collaboRequestService.approveCollaboRequest(collaborequestid, customUserDetails.getMember());
+        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_APPROVAL, null);
+    }
+
 }

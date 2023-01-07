@@ -50,5 +50,9 @@ public class CollaboRequest extends Timestamped {
         this.approval = approval;
         this.post = post;
     }
+
+    public void approve(Boolean approval) {
+        this.approval = approval;
+    }
 }
 
