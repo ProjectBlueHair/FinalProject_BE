@@ -15,6 +15,8 @@ public enum ErrorCode {
     DUPLICATED_EMAIL(HttpStatus.OK, "중복된 이메일입니다.", 4091),
     DUPLICATED_NICKNAME(HttpStatus.OK, "중복된 닉네임입니다.", 4092),
     MEMBER_NOT_FOUND(HttpStatus.OK, "존재하지 않는 회원입니다.", 4041),
+    ALREADY_FOLLWED(HttpStatus.OK, "이미 팔로우한 회원입니다.", 4042),
+    ALREADY_UNFOLLWED(HttpStatus.OK, "이미 언팔로우한 회원입니다.", 4042),
 
     // JWT
     ACCESSTOKEN_NOT_EXIST(HttpStatus.OK, "Access Token이 존재하지 않습니다.", 4011),
