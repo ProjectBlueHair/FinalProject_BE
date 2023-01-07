@@ -31,8 +31,10 @@ public enum ErrorCode {
     UNHANDLED_SERVER_ERROR(HttpStatus.OK, "처리되지 않은 서버 에러입니다.", 5000),
 
     // Post
+    POST_NOT_FOUND(HttpStatus.OK, "존재하지 않는 게시글입니다.", 4041),
+    // Comment
+    COMMENT_NOT_FOUND(HttpStatus.OK, "존재하지 않는 댓글입니다.", 4041),
 
-    POST_NOT_FOUND(HttpStatus.OK, "존재하지 않는 게시글입니다.", 4043),
     COLLABO_NOT_FOUND(HttpStatus.OK, "콜라보리퀘스트가 존재하지 않습니다.", 4044);
 
     private final HttpStatus httpStatus;

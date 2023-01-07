@@ -23,7 +23,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MAIN_POST;
 
 
-@Tag(name = "Post", description = "회원 관련 API")
+@Tag(name = "Post", description = "게시글 관련 API")
 @RestController
 @RequestMapping("/api/post")
 @RequiredArgsConstructor

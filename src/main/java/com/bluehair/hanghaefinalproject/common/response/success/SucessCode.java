@@ -23,6 +23,9 @@ public enum SucessCode {
     CREATE_POST(HttpStatus.OK, "게시글 작성 성공", 2000),
     MAIN_POST(HttpStatus.OK, "게시글 전체 조회 성공",2000),
 
+    //Comment
+    CREATE_COMMENT(HttpStatus.OK,"댓글 작성 성공",2000),
+
     //CollaboRequest
     COLLABO_REQUEST_SUCCESS(HttpStatus.OK, "콜라보 리퀘스트 성공", 2000),
     COLLABO_REQUEST(HttpStatus.OK, "콜라보 리퀘스트 상세 조회 성공", 2000),
