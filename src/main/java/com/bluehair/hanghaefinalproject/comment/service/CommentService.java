@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.comment.service;
 
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentDto;
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
+import com.bluehair.hanghaefinalproject.comment.exception.NotFoundCommentRequestException;
 import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
@@ -33,7 +34,7 @@ public class CommentService {
         );
         if (parentId != null){
             commentRepository.findById(parentId).orElseThrow(
-                    () -> new NotFoundPostRequestException(COMMENT_NOT_FOUND)
+                    () -> new NotFoundCommentRequestException(COMMENT_NOT_FOUND)
             );
         }
 
