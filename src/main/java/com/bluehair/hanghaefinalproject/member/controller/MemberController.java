@@ -1,10 +1,7 @@
 package com.bluehair.hanghaefinalproject.member.controller;
 
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestLoginDto;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestSignUpDto;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateEmailDto;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateNicknameDto;
+import com.bluehair.hanghaefinalproject.member.dto.requestDto.*;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
@@ -82,12 +79,12 @@ public class MemberController {
     }
     @Tag(name = "Member")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공", content = @Content(schema = @Schema(implementation = SuccessResponse.class))),
+            @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공"),
             @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
             @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
             @ApiResponse(responseCode = "4015", description = "만료된 AccessToken")
     })
-    @Operation(summary = "회원 정보 반환", description = "토큰 분해 및 정보 반환")
+    @Operation(summary = "현재 접속 중인 회원 정보 반환", description = "토큰 분해 및 정보 반환")
     @GetMapping("/info")
     public ResponseEntity<SuccessResponse<ResponseMemberInfoDto>> memberInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return SuccessResponse.toResponseEntity(MEMBER_INFO, memberService.memberInfo(userDetails));
@@ -106,5 +103,26 @@ public class MemberController {
     public ResponseEntity<SuccessResponse<Object>> reissuance(HttpServletRequest request, HttpServletResponse response){
         memberService.tokenReissuance(request, response);
         return SuccessResponse.toResponseEntity(TOKEN_REISSUANCE, null);
+    }
+    @Tag(name = "Member")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "팔로우 성공"),
+            @ApiResponse(responseCode = "2000", description = "언팔로우 성공"),
+            @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
+            @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
+            @ApiResponse(responseCode = "4015", description = "만료된 AccessToken"),
+            @ApiResponse(responseCode = "4042", description = "이미 팔로우한 회원"),
+            @ApiResponse(responseCode = "4042", description = "이미 언팔로우한 회원")
+    })
+    @Operation(summary = "팔로우 기능", description = "Follow 시 isFollowed=false, Unfollow 시 isFollowed=true")
+    @PutMapping("/follow")
+    public ResponseEntity<SuccessResponse<Object>> follow(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                          @RequestBody RequestFollowDto requestFollowDto) {
+        if(requestFollowDto.getIsFollowed()){
+            memberService.doUnfollow(customUserDetails, requestFollowDto.toFollowDto());
+            return SuccessResponse.toResponseEntity(UNFOLLOW_MEMBER, null);
+        }
+        memberService.doFollow(customUserDetails, requestFollowDto.toFollowDto());
+        return SuccessResponse.toResponseEntity(FOLLOW_MEMBER, null);
     }
 }
