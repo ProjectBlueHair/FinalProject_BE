@@ -7,7 +7,6 @@ import com.bluehair.hanghaefinalproject.collaboRequest.service.CollaboRequestSer
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
-import io.swagger.annotations.ApiOperation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,6 +28,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 public class CollaboRequestController {
 
     private final CollaboRequestService collaboRequestService;
+
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 작성 성공"),
@@ -41,6 +41,7 @@ public class CollaboRequestController {
 
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, null);
     }
+
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 상세 조회 성공"),
@@ -53,6 +54,7 @@ public class CollaboRequestController {
 
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST,collaboRequestService.getCollaboRequest(collaborequestid));
     }
+
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 목록 조회 성공"),
