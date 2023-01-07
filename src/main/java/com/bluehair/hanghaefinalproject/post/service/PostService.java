@@ -52,12 +52,16 @@ public class PostService {
 
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public InfoPostDto infoPost(Long postid) {
 
         Post post = postRepository.findById(postid).orElseThrow(
                 () -> new NotFoundPostRequestException(POST_NOT_FOUND)
         );
+
+        post.viewCount();
+
+        postRepository.save(post);
 
         return new InfoPostDto(post);
     }

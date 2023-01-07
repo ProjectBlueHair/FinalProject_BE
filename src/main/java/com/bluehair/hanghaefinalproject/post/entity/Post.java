@@ -70,4 +70,7 @@ public class Post extends Timestamped {
         this.postImage = postImage;
     }
 
+    public void viewCount() {
+        this.viewCount++;
+    }
 }
