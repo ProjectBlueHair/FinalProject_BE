@@ -1,10 +1,7 @@
 package com.bluehair.hanghaefinalproject.member.controller;
 
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestLoginDto;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestSignUpDto;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateEmailDto;
-import com.bluehair.hanghaefinalproject.member.dto.requestDto.RequestValidateNicknameDto;
+import com.bluehair.hanghaefinalproject.member.dto.requestDto.*;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
@@ -41,7 +38,7 @@ public class MemberController {
     })
     @Operation(summary = "이메일 검증", description = "이메일 중복 확인, 이메일 형식 확인")
     @PostMapping("/validate/email")
-    public ResponseEntity<?> validateEmail(@RequestBody RequestValidateEmailDto requestValidateEmailDto) {
+    public ResponseEntity<SuccessResponse<Object>> validateEmail(@RequestBody RequestValidateEmailDto requestValidateEmailDto) {
         memberService.validateEmail(requestValidateEmailDto.toValidateEmailDto());
         return SuccessResponse.toResponseEntity(VALID_EMAIL, null);
     }
@@ -52,7 +49,7 @@ public class MemberController {
     })
     @Operation(summary = "닉네임 검증", description = "닉네임 중복 확인")
     @PostMapping("validate/nickname")
-    public ResponseEntity<?> validateNickname(@RequestBody RequestValidateNicknameDto requestValidateNicknameDto) {
+    public ResponseEntity<SuccessResponse<Object>> validateNickname(@RequestBody RequestValidateNicknameDto requestValidateNicknameDto) {
         memberService.validateNickname(requestValidateNicknameDto.toValidateNicknameDto());
         return SuccessResponse.toResponseEntity(VALID_NICKNAME, null);
     }
@@ -65,7 +62,7 @@ public class MemberController {
     })
     @Operation(summary = "회원 가입", description = "이메일 및 닉네임 중복 확인, Password Encrypt, DB 저장")
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody RequestSignUpDto requestSignUpDto) {
+    public ResponseEntity<SuccessResponse<Object>> signUp(@RequestBody RequestSignUpDto requestSignUpDto) {
         memberService.signUp(requestSignUpDto.toSignUpDto());
         return SuccessResponse.toResponseEntity(SIGNUP_MEMBER, null);
     }
@@ -76,18 +73,18 @@ public class MemberController {
     })
     @Operation(summary = "일반 회원 로그인", description = "계정 비밀번호 일치 여부 확인")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response) {
+    public ResponseEntity<SuccessResponse<Object>> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response) {
         memberService.login(requestLoginDto.toLoginMemberDto(), response);
         return SuccessResponse.toResponseEntity(LOGIN_MEMBER, null);
     }
     @Tag(name = "Member")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공", content = @Content(schema = @Schema(implementation = SuccessResponse.class))),
+            @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공"),
             @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
             @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
             @ApiResponse(responseCode = "4015", description = "만료된 AccessToken")
     })
-    @Operation(summary = "회원 정보 반환", description = "토큰 분해 및 정보 반환")
+    @Operation(summary = "현재 접속 중인 회원 정보 반환", description = "토큰 분해 및 정보 반환")
     @GetMapping("/info")
     public ResponseEntity<SuccessResponse<ResponseMemberInfoDto>> memberInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return SuccessResponse.toResponseEntity(MEMBER_INFO, memberService.memberInfo(userDetails));
@@ -103,8 +100,29 @@ public class MemberController {
     })
     @Operation(summary = "토큰 재발행", description = "Access, Response Token 유효성 검사 및 토큰 재발행")
     @PostMapping("/reissuance")
-    public ResponseEntity<?> reissuance(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<SuccessResponse<Object>> reissuance(HttpServletRequest request, HttpServletResponse response){
         memberService.tokenReissuance(request, response);
         return SuccessResponse.toResponseEntity(TOKEN_REISSUANCE, null);
+    }
+    @Tag(name = "Member")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "팔로우 성공"),
+            @ApiResponse(responseCode = "2000", description = "언팔로우 성공"),
+            @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
+            @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
+            @ApiResponse(responseCode = "4015", description = "만료된 AccessToken"),
+            @ApiResponse(responseCode = "4042", description = "이미 팔로우한 회원"),
+            @ApiResponse(responseCode = "4042", description = "이미 언팔로우한 회원")
+    })
+    @Operation(summary = "팔로우 기능", description = "Follow 시 isFollowed=false, Unfollow 시 isFollowed=true")
+    @PutMapping("/follow")
+    public ResponseEntity<SuccessResponse<Object>> follow(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                          @RequestBody RequestFollowDto requestFollowDto) {
+        if(requestFollowDto.getIsFollowed()){
+            memberService.doUnfollow(customUserDetails, requestFollowDto.toFollowDto());
+            return SuccessResponse.toResponseEntity(UNFOLLOW_MEMBER, null);
+        }
+        memberService.doFollow(customUserDetails, requestFollowDto.toFollowDto());
+        return SuccessResponse.toResponseEntity(FOLLOW_MEMBER, null);
     }
 }

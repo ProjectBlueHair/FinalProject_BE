@@ -2,10 +2,13 @@ package com.bluehair.hanghaefinalproject.collaboRequest.mapper;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDetailsDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CollaboRequestMapStruct {
@@ -23,6 +26,21 @@ public interface CollaboRequestMapStruct {
                 .post(post)
                 .build();
     }
+
+    default CollaboRequestListForPostDto CollaboRequestListtoCollaboRequestListDto(CollaboRequest collaboRequest,
+                                                                           String profileImg,
+                                                                           List<String> musicPartsList){
+        return CollaboRequestListForPostDto.builder()
+                .collaboId(collaboRequest.getId())
+                .title(collaboRequest.getTitle())
+                .nickname(collaboRequest.getNickname())
+                .profileImg(profileImg)
+                .createdAt(collaboRequest.getCreatedAt())
+                .modifiedAt(collaboRequest.getModifiedAt()).musicPartsList(musicPartsList)
+                .build();
+    }
+
+
 
 }
 

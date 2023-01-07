@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -15,6 +16,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
                 .ignoredParameterTypes(AuthenticationPrincipal.class)
+                .ignoredParameterTypes(Pageable.class)
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo())
                 .select()
