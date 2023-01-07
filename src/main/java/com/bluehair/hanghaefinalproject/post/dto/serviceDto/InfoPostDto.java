@@ -7,7 +7,6 @@ import lombok.Getter;
 @Schema(description = "상세 조회 응답 Dto")
 @Getter
 public class InfoPostDto {
-
     private String title;
     private String contents;
     private String lyrics;
