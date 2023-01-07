@@ -32,8 +32,8 @@ public enum ErrorCode {
 
     // Post
 
-    POST_NOT_FOUND(HttpStatus.OK, "존재하지 않는 게시글입니다.", 4041),
-    COLLABO_NOT_FOUND(HttpStatus.OK, "콜라보리퀘스트가 존재하지 않습니다.", 4042);
+    POST_NOT_FOUND(HttpStatus.OK, "존재하지 않는 게시글입니다.", 4043),
+    COLLABO_NOT_FOUND(HttpStatus.OK, "콜라보리퀘스트가 존재하지 않습니다.", 4044);
 
     private final HttpStatus httpStatus;
     private final String message;
