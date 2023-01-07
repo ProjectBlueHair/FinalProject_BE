@@ -17,6 +17,7 @@ import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.M
 
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
+import com.bluehair.hanghaefinalproject.music.dto.MusicDto;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.music.dto.SaveMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
@@ -55,12 +56,12 @@ public class CollaboRequestService {
 
         collaboRequestRepository
                 .save(collaboRequest);
-
-        Music music = MUSIC_MAPPER.SaveMusicDtotoMusic(saveMusicDto, collaboRequest);
-
-        musicRepository
-                .save(music);
-
+        List<MusicDto> musicList = saveMusicDto.getMusicDtoList();
+        for (MusicDto musicDto : musicList) {
+            Music music = MUSIC_MAPPER.MusicDtotoMusic(musicDto, collaboRequest);
+            musicRepository
+                    .save(music);
+        }
     }
 
     @Transactional
