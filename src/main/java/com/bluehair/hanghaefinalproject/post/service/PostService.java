@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.post.service;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
+import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
@@ -15,6 +16,8 @@ import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.exception.NotFoundPostRequestException;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
+import com.bluehair.hanghaefinalproject.tag.entity.Tag;
+import com.bluehair.hanghaefinalproject.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +32,7 @@ import java.util.Optional;
 
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
 import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MAPPER;
+import static com.bluehair.hanghaefinalproject.tag.mapper.TagMapStruct.TAG_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +43,9 @@ public class PostService {
     private final CollaboRequestRepository collaboRequestRepository;
     private final MusicRepository musicRepository;
     private final MemberRepository memberRepository;
+    private final TagRepository tagRepository;
+
+    private final TagExctractor tagExctractor;
     @Transactional
     public void createPost(PostDto postDto, String nickname) {
 
@@ -47,9 +54,15 @@ public class PostService {
         }
 
         Post post = POST_MAPPER.PostDtoToPost(postDto, nickname);
-
         postRepository.save(post);
 
+        // Query 최적화 필요(save < saveall < jpql)
+        List<String> hashtagList = tagExctractor.extractHashTags(postDto.getContents());
+        List<Tag> tagList = new ArrayList<>();
+        for (String s : hashtagList) {
+            tagList.add(TAG_MAPPER.stringToTag(s, post));
+        }
+        tagRepository.saveTagList(tagList);
     }
 
     @Transactional
