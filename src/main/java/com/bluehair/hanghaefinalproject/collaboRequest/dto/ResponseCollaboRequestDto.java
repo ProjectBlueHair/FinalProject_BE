@@ -26,6 +26,8 @@ public class ResponseCollaboRequestDto {
    private LocalDateTime modifiedAt;
     @Schema(description = "삭제 여부", example = "false")
    private Boolean activated;
+    @Schema(description = "승인 여부", example = "false")
+    private Boolean approval;
     @Schema(description = "음악파일 리스트", example = "musicList")
    private List<ResponseMusicDto> musicList;
 
@@ -37,6 +39,7 @@ public class ResponseCollaboRequestDto {
         this.createdAt = collaboRequest.getCreatedAt();
         this.modifiedAt = collaboRequest.getModifiedAt();
         this.activated = collaboRequest.getActivated();
+        this.approval = collaboRequest.getApproval();
         this.musicList = musicDtoList;
     }
 }
