@@ -48,7 +48,7 @@ public class PostController {
     @Operation(summary = "게시글 조회", description = "특정 게시글 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "상세 게시글 조회 성공"),
-            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다.")
+            @ApiResponse(responseCode = "4043", description = "존재하지 않는 게시글입니다.")
     })
     @GetMapping("/{postid}")
     public ResponseEntity<SuccessResponse<Object>> infoPost(@PathVariable Long postid){

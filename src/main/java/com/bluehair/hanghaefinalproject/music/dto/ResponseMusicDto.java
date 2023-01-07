@@ -10,6 +10,6 @@ public class ResponseMusicDto {
 
     public ResponseMusicDto(Music music) {
         this.musicFile = music.getMusicFile();
-        this.musicPart = music.getMusicFile();
+        this.musicPart = music.getMusicPart();
     }
 }
