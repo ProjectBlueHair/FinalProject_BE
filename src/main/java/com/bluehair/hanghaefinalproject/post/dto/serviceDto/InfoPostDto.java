@@ -11,6 +11,7 @@ public class InfoPostDto {
     private String title;
     private String contents;
     private String lyrics;
+    private String postIamge;
     private String musicFile;
     private String musicPart;
     private Long likeCount;
@@ -21,6 +22,7 @@ public class InfoPostDto {
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.lyrics = post.getLyrics();
+        this.postIamge = post.getPostImage();
         this.musicFile = post.getMusicFile();
         this.musicPart = post.getMusicPart();
         this.likeCount = post.getLikeCount();
