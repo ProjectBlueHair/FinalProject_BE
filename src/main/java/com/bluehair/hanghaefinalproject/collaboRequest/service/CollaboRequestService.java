@@ -81,18 +81,20 @@ public class CollaboRequestService {
         List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPost(post);
 
         for (CollaboRequest collaboRequest : collaboRequestList) {
-            List<String> musicPartsList = new ArrayList<>();
-            List<Music> musiclist = musicRepository.findAllByCollaboRequestId(collaboRequest.getId());
+            if (collaboRequest.getApproval()) {
+                List<String> musicPartsList = new ArrayList<>();
+                List<Music> musiclist = musicRepository.findAllByCollaboRequestId(collaboRequest.getId());
 
-            for (Music music : musiclist) {
-                musicPartsList.add(music.getMusicPart());
+                for (Music music : musiclist) {
+                    musicPartsList.add(music.getMusicPart());
+                }
+
+                Member member = memberRepository.findByNickname(collaboRequest.getNickname())
+                        .orElseThrow(() -> new InvalidCollaboRequestException(MEMBER_NOT_FOUND));
+                String profileImg = member.getProfileImg();
+
+                collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList));
             }
-
-            Member member = memberRepository.findByNickname(collaboRequest.getNickname())
-                    .orElseThrow(() -> new InvalidCollaboRequestException(MEMBER_NOT_FOUND));
-            String profileImg = member.getProfileImg();
-
-            collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList));
         }
         return collaboRequestListForPostDto;
     }
