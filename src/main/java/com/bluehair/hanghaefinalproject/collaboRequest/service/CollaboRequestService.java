@@ -54,14 +54,8 @@ public class CollaboRequestService {
         CollaboRequestDto collaboRequestDto = COLLABOREQUEST_MAPPER.CollaboRequestDetailsDtotoCollaboRequestDto(collaboRequestDetailsDto, nickname);
         CollaboRequest collaboRequest = COLLABOREQUEST_MAPPER.CollaboRequestDtotoCollaboRequest(collaboRequestDto, post);
 
-        collaboRequestRepository
-                .save(collaboRequest);
-        List<MusicDto> musicList = saveMusicDto.getMusicDtoList();
-        for (MusicDto musicDto : musicList) {
-            Music music = MUSIC_MAPPER.MusicDtotoMusic(musicDto, collaboRequest);
-            musicRepository
-                    .save(music);
-        }
+        collaboRequestRepository.save(collaboRequest);
+        saveMusic(saveMusicDto, collaboRequest);
     }
 
     @Transactional
@@ -123,17 +117,48 @@ public class CollaboRequestService {
                 .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
                 );
 
-        String nickname = collaboRequest.getNickname();
-        if(!nickname.equals(member.getNickname())){
-            throw new InvalidMemberException(NOT_AUTHORIZED);
-        }
-
-        if(collaboRequest.getApproval()){
-            throw new NotAllowedtoDeleteException(COLLABO_ALREADY_APPROVED);
-        }
+        checkCollaboMember(member, collaboRequest);
 
         musicRepository.deleteAllByCollaboRequest(collaboRequest);
         collaboRequestRepository.delete(collaboRequest);
 
+    }
+
+    @Transactional
+    public void updateCollaboRequest(Long collaborequestid,
+                                     CollaboRequestDetailsDto collaboRequestDetailsDto,
+                                     SaveMusicDto saveMusicDto,
+                                     Member member) {
+        CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
+                .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
+                );
+
+        checkCollaboMember(member, collaboRequest);
+
+        CollaboRequestDto collaboRequestDto = COLLABOREQUEST_MAPPER.CollaboRequestDetailsDtotoUpdate(collaboRequestDetailsDto);
+        collaboRequest.update(collaboRequestDto);
+        collaboRequestRepository.save(collaboRequest);
+
+        musicRepository.deleteAllByCollaboRequest(collaboRequest);
+        saveMusic(saveMusicDto, collaboRequest);
+    }
+
+    private static void checkCollaboMember(Member member, CollaboRequest collaboRequest) {
+        String nickname = collaboRequest.getNickname();
+        if(!nickname.equals(member.getNickname())){
+            throw new InvalidMemberException(NOT_AUTHORIZED);
+        }
+        if(collaboRequest.getApproval()){
+            throw new NotAllowedtoDeleteException(COLLABO_ALREADY_APPROVED);
+        }
+    }
+
+    private void saveMusic(SaveMusicDto saveMusicDto, CollaboRequest collaboRequest) {
+        List<MusicDto> musicList = saveMusicDto.getMusicDtoList();
+        for (MusicDto musicDto : musicList) {
+            Music music = MUSIC_MAPPER.MusicDtotoMusic(musicDto, collaboRequest);
+            musicRepository
+                    .save(music);
+        }
     }
 }

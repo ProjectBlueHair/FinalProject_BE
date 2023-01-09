@@ -1,5 +1,6 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.entity;
 
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
 import com.bluehair.hanghaefinalproject.common.entity.Timestamped;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
@@ -53,6 +54,11 @@ public class CollaboRequest extends Timestamped {
 
     public void approve(Boolean approval) {
         this.approval = approval;
+    }
+
+    public void update(CollaboRequestDto requestDto){
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
     }
 }
 

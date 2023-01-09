@@ -36,8 +36,12 @@ public class CollaboRequestController {
     @Operation(summary = "콜라보 리퀘스트 작성", description = "특정 Post에 대한 콜라보 리퀘스트 작성")
     @PostMapping("/api/post/{postid}/collabo")
     public ResponseEntity<SuccessResponse<Object>> collaboRequest(@PathVariable Long postid, @RequestBody RequestCollaboRequestDto requestCollaboRequestDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        collaboRequestService.collaboRequest(postid, requestCollaboRequestDto.tocollaboRequestDetailsDto(), requestCollaboRequestDto.tosaveMusicDto(), customUserDetails.getMember());
-
+        collaboRequestService.collaboRequest(
+                postid,
+                requestCollaboRequestDto.tocollaboRequestDetailsDto(),
+                requestCollaboRequestDto.tosaveMusicDto(),
+                customUserDetails.getMember()
+        );
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, null);
     }
 
@@ -93,4 +97,21 @@ public class CollaboRequestController {
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_DELETE, null);
     }
 
+    @Tag(name = "CollaboRequest")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 삭제 성공"),
+            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "4032", description = "권한이 없는 사용자"),
+            @ApiResponse(responseCode = "4033", description = "이미 승인 된 콜라보리퀘스트"),
+    })
+    @Operation(summary = "미승인 콜라보리퀘스트 수정")
+    @PutMapping("/api/collabo/{collaborequestid}")
+    public ResponseEntity<SuccessResponse<Object>> updateCollaboRequest(@PathVariable Long collaborequestid, @RequestBody RequestCollaboRequestDto requestCollaboRequestDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        collaboRequestService.updateCollaboRequest(
+                collaborequestid,
+                requestCollaboRequestDto.tocollaboRequestDetailsDto(),
+                requestCollaboRequestDto.tosaveMusicDto(),
+                customUserDetails.getMember());
+        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_UPDATE, null);
+    }
 }
