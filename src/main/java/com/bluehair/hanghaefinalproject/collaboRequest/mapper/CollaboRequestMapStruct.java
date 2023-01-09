@@ -15,6 +15,7 @@ public interface CollaboRequestMapStruct {
     CollaboRequestMapStruct COLLABOREQUEST_MAPPER = Mappers.getMapper(CollaboRequestMapStruct.class);
 
     CollaboRequestDto CollaboRequestDetailsDtotoCollaboRequestDto(CollaboRequestDetailsDto collaboRequestDetailsDto, String nickname);
+    CollaboRequestDto CollaboRequestDetailsDtotoUpdate(CollaboRequestDetailsDto collaboRequestDetailsDto);
 
     default CollaboRequest CollaboRequestDtotoCollaboRequest(CollaboRequestDto collaboRequestDto, Post post){
         return CollaboRequest.builder()

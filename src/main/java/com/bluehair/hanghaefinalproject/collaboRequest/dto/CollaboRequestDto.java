@@ -18,7 +18,10 @@ public class  CollaboRequestDto {
         this.nickname = nickname;
         this.activated = true;
         this.approval = false;
+    }
 
-
+    public CollaboRequestDto(CollaboRequestDetailsDto collaboRequestDetailsDto){
+        this.title = collaboRequestDetailsDto.getTitle();
+        this.contents = collaboRequestDetailsDto.getContents();
     }
 }
