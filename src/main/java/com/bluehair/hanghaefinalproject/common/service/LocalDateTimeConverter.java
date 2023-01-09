@@ -1,13 +1,11 @@
 package com.bluehair.hanghaefinalproject.common.service;
 
-import org.springframework.stereotype.Component;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-@Component
+
 public class LocalDateTimeConverter {
-    public String timeToString(LocalDateTime time) {
+    public static String timeToString(LocalDateTime time) {
         String convertedTime = "";
         Duration duration = Duration.between(time, LocalDateTime.now());
         long differ = duration.getSeconds();
