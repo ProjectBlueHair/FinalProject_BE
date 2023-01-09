@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
+import com.bluehair.hanghaefinalproject.collaboRequest.exception.NotAllowedtoDeleteException;
 import com.bluehair.hanghaefinalproject.collaboRequest.exception.NotAuthorizedtoApproveException;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 
@@ -108,7 +109,7 @@ public class CollaboRequestService {
         Post post = postRepository.findById(collaboRequest.getPost().getId())
                 .orElseThrow(() -> new InvalidCollaboRequestException(POST_NOT_FOUND));
         if (!post.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedtoApproveException(MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedtoApproveException(NOT_AUTHORIZED);
         }
 
         Boolean approval = true;
@@ -121,14 +122,18 @@ public class CollaboRequestService {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
                 .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
                 );
+
         String nickname = collaboRequest.getNickname();
         if(!nickname.equals(member.getNickname())){
-            throw new InvalidMemberException(MEMBER_NOT_AUTHORIZED);
+            throw new InvalidMemberException(NOT_AUTHORIZED);
         }
+
+        if(collaboRequest.getApproval()){
+            throw new NotAllowedtoDeleteException(COLLABO_ALREADY_APPROVED);
+        }
+
         musicRepository.deleteAllByCollaboRequest(collaboRequest);
-        System.out.println("음악삭제 성공");
         collaboRequestRepository.delete(collaboRequest);
-        System.out.println("콜라보삭제 성공");
 
     }
 }

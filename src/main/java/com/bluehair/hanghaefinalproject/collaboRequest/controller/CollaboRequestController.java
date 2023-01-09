@@ -83,7 +83,8 @@ public class CollaboRequestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 삭제 성공"),
             @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트"),
-            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자")
+            @ApiResponse(responseCode = "4032", description = "권한이 없는 사용자"),
+            @ApiResponse(responseCode = "4033", description = "이미 승인 된 콜라보리퀘스트"),
     })
     @Operation(summary = "미승인 콜라보리퀘스트 삭제")
     @DeleteMapping("/api/collabo/{collaborequestid}")
