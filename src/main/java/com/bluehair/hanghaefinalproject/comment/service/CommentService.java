@@ -57,8 +57,7 @@ public class CommentService {
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
                 () -> new InvalidMemberException(MEMBER_NOT_FOUND)
         );
-        System.out.println(member.getNickname());
-        System.out.println(comment.getNickname());
+
         if (!comment.getNickname().equals(member.getNickname())){
              throw new NotAuthorizedMemberException(NOT_AUTHORIZED);
         }
