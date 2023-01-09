@@ -1,5 +1,6 @@
 package com.bluehair.hanghaefinalproject.comment.entity;
 
+import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentDto;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,5 +39,8 @@ public class Comment {
         this.profileImg = profileImg;
         this.contents = contents;
         this.post = post;
+    }
+    public void update(CommentDto commentDto){
+        this.contents = commentDto.getContents();
     }
 }
