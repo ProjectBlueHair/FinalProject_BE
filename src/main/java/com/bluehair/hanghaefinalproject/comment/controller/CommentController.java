@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_COMMENT;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_COMMENT;
 
 @Tag(name = "Post", description = "댓글 관련 API")
 @RestController
@@ -35,12 +36,27 @@ public class CommentController {
             @ApiResponse(responseCode = "4041", description = "존재하지 않는 댓글입니다.")
     })
     @PostMapping(value = {"/{postId}/{parentId}", "/{postId}"})
-    public ResponseEntity<SuccessResponse<Object>> createPost(@PathVariable Long postId,@PathVariable(required = false) Long parentId,
+    public ResponseEntity<SuccessResponse<Object>> createComment(@PathVariable Long postId,@PathVariable(required = false) Long parentId,
                                                               @RequestBody RequestCommentDto requestCommentDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
         commentService.createComment(postId,parentId,requestCommentDto.toCommentDto(), userDetails.getMember().getNickname());
 
         return SuccessResponse.toResponseEntity(CREATE_COMMENT,null);
+    }
+    @Tag(name = "Comment")
+    @Operation(summary = "댓글 수정", description = "댓글 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "댓글 수정 성공"),
+            @ApiResponse(responseCode = "4032", description = "권한이 없는 사용자입니다."),
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 댓글입니다.")
+    })
+    @PutMapping("/{commentId}")
+    public ResponseEntity<SuccessResponse<Object>> updateComment(@PathVariable Long commentId, @RequestBody RequestCommentDto requestCommentDto,
+                                                                 @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        commentService.updateComment(commentId,requestCommentDto.toCommentDto(), userDetails.getMember().getNickname());
+
+        return SuccessResponse.toResponseEntity(UPDATE_COMMENT, null);
     }
 
 
