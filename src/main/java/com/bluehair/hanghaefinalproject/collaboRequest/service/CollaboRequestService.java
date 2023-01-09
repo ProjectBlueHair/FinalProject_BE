@@ -23,6 +23,7 @@ import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.collaboRequest.exception.InvalidCollaboRequestException;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
+import com.bluehair.hanghaefinalproject.security.exception.InvalidMemberException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,7 @@ public class CollaboRequestService {
         return new ResponseCollaboRequestDto(collaboRequest, musicDtoList);
     }
 
-
+    @Transactional
     public List<CollaboRequestListForPostDto> getCollaboRequestList(Long postid) {
         Post post = postRepository.findById(postid)
                 .orElseThrow(() -> new InvalidCollaboRequestException(POST_NOT_FOUND));
@@ -99,10 +100,11 @@ public class CollaboRequestService {
         return collaboRequestListForPostDto;
     }
 
+    @Transactional
     public void approveCollaboRequest(Long collaborequestid, Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
                 .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
-        );
+                );
         Post post = postRepository.findById(collaboRequest.getPost().getId())
                 .orElseThrow(() -> new InvalidCollaboRequestException(POST_NOT_FOUND));
         if (!post.getNickname().equals(member.getNickname())){
@@ -112,5 +114,21 @@ public class CollaboRequestService {
         Boolean approval = true;
         collaboRequest.approve(approval);
         collaboRequestRepository.save(collaboRequest);
+    }
+
+    @Transactional
+    public void deleteCollaboRequest(Long collaborequestid, Member member) {
+        CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
+                .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
+                );
+        String nickname = collaboRequest.getNickname();
+        if(!nickname.equals(member.getNickname())){
+            throw new InvalidMemberException(MEMBER_NOT_AUTHORIZED);
+        }
+        musicRepository.deleteAllByCollaboRequest(collaboRequest);
+        System.out.println("음악삭제 성공");
+        collaboRequestRepository.delete(collaboRequest);
+        System.out.println("콜라보삭제 성공");
+
     }
 }
