@@ -31,7 +31,8 @@ public enum SucessCode {
     COLLABO_REQUEST(HttpStatus.OK, "콜라보 리퀘스트 상세 조회 성공", 2000),
     COLLABO_LIST(HttpStatus.OK, "게시글 콜라보 리퀘스트 목록 조회 성공", 2000),
 
-    COLLABO_REQUEST_APPROVAL(HttpStatus.OK, "콜라보 리퀘스트 승인 성공", 2000);
+    COLLABO_REQUEST_APPROVAL(HttpStatus.OK, "콜라보 리퀘스트 승인 성공", 2000),
+    COLLABO_REQUEST_DELETE(HttpStatus.OK, "콜라보 리퀘스트 삭제 성공", 2000);
 
     private final HttpStatus httpStatus;
     private final String message;

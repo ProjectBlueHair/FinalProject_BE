@@ -35,7 +35,10 @@ public enum ErrorCode {
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.OK, "존재하지 않는 댓글입니다.", 4041),
 
-    COLLABO_NOT_FOUND(HttpStatus.OK, "콜라보리퀘스트가 존재하지 않습니다.", 4044);
+    COLLABO_NOT_FOUND(HttpStatus.OK, "콜라보리퀘스트가 존재하지 않습니다.", 4044),
+
+    NOT_AUTHORIZED(HttpStatus.OK, "권한이 없는 사용자입니다.", 4032),
+    COLLABO_ALREADY_APPROVED(HttpStatus.OK, "승인된 콜라보 리퀘스트는 삭제할 수 없습니다.", 4033);
 
     private final HttpStatus httpStatus;
     private final String message;

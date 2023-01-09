@@ -69,13 +69,28 @@ public class CollaboRequestController {
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode ="2000", description = "콜라보리퀘스트 승인"),
-            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트")
+            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자")
     })
     @Operation(summary = "콜라보리퀘스트 승인")
     @PostMapping("/api/collabo/{collaborequestid}")
     public ResponseEntity<SuccessResponse<Object>> approveCollaboRequest(@PathVariable Long collaborequestid, @AuthenticationPrincipal CustomUserDetails customUserDetails){
         collaboRequestService.approveCollaboRequest(collaborequestid, customUserDetails.getMember());
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_APPROVAL, null);
+    }
+
+    @Tag(name = "CollaboRequest")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 삭제 성공"),
+            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "4032", description = "권한이 없는 사용자"),
+            @ApiResponse(responseCode = "4033", description = "이미 승인 된 콜라보리퀘스트"),
+    })
+    @Operation(summary = "미승인 콜라보리퀘스트 삭제")
+    @DeleteMapping("/api/collabo/{collaborequestid}")
+    public ResponseEntity<SuccessResponse<Object>> deleteCollaboRequest(@PathVariable Long collaborequestid, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        collaboRequestService.deleteCollaboRequest(collaborequestid, customUserDetails.getMember());
+        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_DELETE, null);
     }
 
 }
