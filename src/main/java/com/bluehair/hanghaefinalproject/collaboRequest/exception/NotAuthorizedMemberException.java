@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class InvalidMemberException extends RuntimeException {
+public class NotAuthorizedMemberException extends RuntimeException {
     private final ErrorCode errorCode;
 }

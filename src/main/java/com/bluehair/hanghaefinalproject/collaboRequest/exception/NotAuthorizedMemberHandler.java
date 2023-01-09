@@ -10,9 +10,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = CollaboRequestController.class)
-public class InvalidMemberHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = {InvalidMemberException.class})
-    public ResponseEntity<ErrorResponse> handleInvalidMember(InvalidMemberException e) {
+public class NotAuthorizedMemberHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(value = {NotAuthorizedMemberException.class})
+    public ResponseEntity<ErrorResponse> handleInvalidMember(NotAuthorizedMemberException e) {
         log.error("InvalidMemberException throws : {}", e.getErrorCode());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
