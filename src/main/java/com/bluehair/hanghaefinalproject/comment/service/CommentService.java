@@ -1,8 +1,9 @@
 package com.bluehair.hanghaefinalproject.comment.service;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.exception.NotAuthorizedMemberException;
+
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentDto;
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
+import com.bluehair.hanghaefinalproject.comment.exception.CommentNotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.comment.exception.NotFoundCommentRequestException;
 import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
@@ -59,7 +60,7 @@ public class CommentService {
         );
 
         if (!comment.getNickname().equals(member.getNickname())){
-             throw new NotAuthorizedMemberException(NOT_AUTHORIZED);
+             throw new CommentNotAuthorizedMemberException(NOT_AUTHORIZED);
         }
 
         comment.update(commentDto);
