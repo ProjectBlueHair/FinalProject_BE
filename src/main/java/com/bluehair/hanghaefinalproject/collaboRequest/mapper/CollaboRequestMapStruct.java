@@ -5,6 +5,7 @@ import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

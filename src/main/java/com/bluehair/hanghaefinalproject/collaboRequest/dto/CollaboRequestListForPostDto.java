@@ -1,5 +1,6 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.dto;
 
+import com.bluehair.hanghaefinalproject.common.service.LocalDateTimeConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,9 +19,9 @@ public class CollaboRequestListForPostDto {
     @Schema(description = "프로필 이미지", example = "Profile Img from S3")
     private String profileImg;
     @Schema(description = "작성시간", example = "작성시간")
-    private LocalDateTime createdAt;
+    private String createdAt;
     @Schema(description = "작성시간", example = "수정시간")
-    private LocalDateTime modifiedAt;
+    private String modifiedAt;
     @Schema(description = "콜라보리퀘스트 음악파일 목록", example = "musicPartsList")
     private List<String> musicPartsList;
 
@@ -31,8 +32,8 @@ public class CollaboRequestListForPostDto {
         this.title = title;
         this.nickname = nickname;
         this.profileImg = profileImg;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+        this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
+        this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
         this.musicPartsList = musicPartsList;
 
     }
