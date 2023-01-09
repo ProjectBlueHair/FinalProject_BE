@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NotAuthorizedMemberException extends RuntimeException {
+public class CommentNotAuthorizedMemberException extends RuntimeException {
     private final ErrorCode errorCode;
 }
 

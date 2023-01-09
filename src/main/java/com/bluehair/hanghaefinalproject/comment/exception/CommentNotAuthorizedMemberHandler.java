@@ -1,6 +1,5 @@
 package com.bluehair.hanghaefinalproject.comment.exception;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.exception.NotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.comment.controller.CommentController;
 import com.bluehair.hanghaefinalproject.common.response.error.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +10,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = CommentController.class)
-public class NotAuthorizedMemberHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = {NotAuthorizedMemberException.class})
-    public ResponseEntity<ErrorResponse> handleInvalidMember(NotAuthorizedMemberException e) {
+public class CommentNotAuthorizedMemberHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(value = {CommentNotAuthorizedMemberException.class})
+    public ResponseEntity<ErrorResponse> handleInvalidMember(CommentNotAuthorizedMemberException e) {
         log.error("InvalidMemberException throws : {}", e.getErrorCode());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
