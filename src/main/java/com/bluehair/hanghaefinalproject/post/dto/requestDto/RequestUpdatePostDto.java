@@ -1,24 +1,21 @@
 package com.bluehair.hanghaefinalproject.post.dto.requestDto;
 
-import com.bluehair.hanghaefinalproject.post.dto.serviceDto.PostDto;
+import com.bluehair.hanghaefinalproject.post.dto.serviceDto.PostUpdateDto;
 import lombok.Getter;
 
 @Getter
-public class RequestPostDto {
+public class RequestUpdatePostDto {
+
     private String title;
     private String contents;
-    private String postImg;
     private String lyrics;
-    private String musicFile;
-    private String musicPart;
+    private String postImg;
 
-    public PostDto toPostDto() {
-        return PostDto.builder()
+    public PostUpdateDto toPostUpdateDto() {
+        return PostUpdateDto.builder()
                 .title(title)
                 .contents(contents)
                 .lyrics(lyrics)
-                .musicFile(musicFile)
-                .musicPart(musicPart)
                 .postImg(postImg)
                 .build();
     }

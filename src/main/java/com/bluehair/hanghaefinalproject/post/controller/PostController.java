@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.post.controller;
 
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestPostDto;
+import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestUpdatePostDto;
 import com.bluehair.hanghaefinalproject.post.service.PostService;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_POST;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.INFO_POST;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MAIN_POST;
 
@@ -42,6 +44,21 @@ public class PostController {
         postService.createPost(requestPostDto.toPostDto(), userDetails.getMember().getNickname());
 
         return SuccessResponse.toResponseEntity(CREATE_POST,null);
+    }
+    @Tag(name = "Post")
+    @Operation(summary = "게시글 수정", description = "게시글 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "게시글 수정 성공"),
+            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자입니다."),
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다.")
+    })
+    @PutMapping("/{postId}")
+    public ResponseEntity<SuccessResponse<Object>> updatePost(@PathVariable Long postId,@RequestBody RequestUpdatePostDto requestPostDto,
+                                                              @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        postService.updatePost(postId, requestPostDto.toPostUpdateDto(), userDetails.getMember().getNickname());
+
+        return SuccessResponse.toResponseEntity(UPDATE_POST,null);
     }
 
     @Tag(name = "Post")

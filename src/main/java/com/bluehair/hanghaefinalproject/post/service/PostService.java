@@ -5,16 +5,14 @@ import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
 import com.bluehair.hanghaefinalproject.common.exception.Layer;
+import com.bluehair.hanghaefinalproject.common.exception.NotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
-import com.bluehair.hanghaefinalproject.post.dto.serviceDto.InfoPostDto;
-import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainPostDto;
-import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainProfileDto;
-import com.bluehair.hanghaefinalproject.post.dto.serviceDto.PostDto;
+import com.bluehair.hanghaefinalproject.post.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
@@ -31,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
+import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*;
 import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MAPPER;
 import static com.bluehair.hanghaefinalproject.tag.mapper.TagMapStruct.TAG_MAPPER;
 
@@ -50,8 +48,8 @@ public class PostService {
     @Transactional
     public void createPost(PostDto postDto, String nickname) {
 
-        if (postDto.getPostImage() == null) {
-            postDto.setRandomPostImage();
+        if (postDto.getPostImg() == null) {
+            postDto.setRandomPostImg();
         }
 
         Post post = POST_MAPPER.PostDtoToPost(postDto, nickname);
@@ -91,10 +89,11 @@ public class PostService {
         for (Post post : postList){
 
             List<CollaboRequest> collaborateRequestList = collaboRequestRepository.findAllByPostId(post.getId());
+
             List<MainProfileDto> mainProfile = new ArrayList<>();
+
             List<String> musicPart = new ArrayList<>();
             List<String> musicFileList = new ArrayList<>();
-
 
             for(CollaboRequest collaboRequest : collaborateRequestList){
                 List<Music> musiclist = musicRepository.findAllByCollaboRequestId(collaboRequest.getId());
@@ -114,4 +113,20 @@ public class PostService {
         return mainPostDtoList;
     }
 
+    public void updatePost(Long postId, PostUpdateDto postUpdateDto, String nickname) {
+
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new NotFoundException(Domain.POST, Layer.SERVICE,POST_NOT_FOUND)
+        );
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND)
+        );
+        if (!post.getNickname().equals(member.getNickname())){
+            throw new NotAuthorizedMemberException(Domain.POST,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
+        }
+
+        post.update(postUpdateDto.getTitle(), postUpdateDto.getContents(),postUpdateDto.getLyrics(), postUpdateDto.getPostImg());
+
+        postRepository.save(post);
+    }
 }
