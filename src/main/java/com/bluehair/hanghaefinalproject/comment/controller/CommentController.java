@@ -33,7 +33,7 @@ public class CommentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "댓글 작성 성공"),
             @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다."),
-            @ApiResponse(responseCode = "4041", description = "존재하지 않는 댓글입니다.")
+            @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
     })
     @PostMapping(value = {"/{postId}/{parentId}", "/{postId}"})
     public ResponseEntity<SuccessResponse<Object>> createComment(@PathVariable Long postId,@PathVariable(required = false) Long parentId,
@@ -47,8 +47,8 @@ public class CommentController {
     @Operation(summary = "댓글 수정", description = "댓글 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "댓글 수정 성공"),
-            @ApiResponse(responseCode = "4032", description = "권한이 없는 사용자입니다."),
-            @ApiResponse(responseCode = "4041", description = "존재하지 않는 댓글입니다.")
+            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자입니다."),
+            @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
     })
     @PutMapping("/{commentId}")
     public ResponseEntity<SuccessResponse<Object>> updateComment(@PathVariable Long commentId, @RequestBody RequestCommentDto requestCommentDto,
