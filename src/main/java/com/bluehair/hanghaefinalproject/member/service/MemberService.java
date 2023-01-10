@@ -1,13 +1,12 @@
 package com.bluehair.hanghaefinalproject.member.service;
 
+import com.bluehair.hanghaefinalproject.common.exception.*;
 import com.bluehair.hanghaefinalproject.common.service.Validator;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.member.entity.Follow;
 import com.bluehair.hanghaefinalproject.member.entity.FollowCompositeKey;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
-import com.bluehair.hanghaefinalproject.member.exception.InvalidLoginRequestException;
-import com.bluehair.hanghaefinalproject.member.exception.InvalidSignUpRequestException;
 import com.bluehair.hanghaefinalproject.member.repository.FollowRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
@@ -25,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*;
 import static com.bluehair.hanghaefinalproject.member.mapper.MemberMapStruct.MEMBER_MAPPER;
+import static com.bluehair.hanghaefinalproject.common.exception.Domain.MEMBER;
+import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
 
 @Service
 @RequiredArgsConstructor
@@ -40,17 +41,18 @@ public class MemberService {
     public void signUp(SignUpDto signUpDto) {
         memberRepository.findByEmail(signUpDto.getEmail())
                 .ifPresent(m->{
-                    throw new InvalidSignUpRequestException(DUPLICATED_EMAIL);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_EMAIL);
                 });
         memberRepository.findByNickname(signUpDto.getNickname())
                 .ifPresent(m-> {
-                    throw new InvalidSignUpRequestException(DUPLICATED_NICKNAME);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME);
                 });
+
         if(!validator.isValidEmail(signUpDto.getEmail())){
-            throw new InvalidSignUpRequestException(INVALID_EMAIL);
+            throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL);
         }
         if(!validator.isValidPassword(signUpDto.getPassword())){
-            throw new InvalidSignUpRequestException(INVALID_PASSWORD);
+            throw new FormatException(MEMBER, SERVICE, INVALID_PASSWORD);
         }
 
         signUpDto.encryptPassword(passwordEncoder.encode(signUpDto.getPassword()));
@@ -66,18 +68,18 @@ public class MemberService {
     @Transactional(readOnly = true)
     public void validateEmail(ValidateEmailDto validateEmailDto) {
         if(!validator.isValidEmail(validateEmailDto.getEmail())){
-            throw new InvalidSignUpRequestException(INVALID_EMAIL);
+            throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL);
         }
         memberRepository.findByEmail(validateEmailDto.getEmail())
                 .ifPresent(m->{
-                    throw new InvalidSignUpRequestException(DUPLICATED_EMAIL);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_EMAIL);
                 });
     }
     @Transactional(readOnly = true)
     public void validateNickname(ValidateNicknameDto validateNicknameDto){
         memberRepository.findByNickname(validateNicknameDto.getNickname())
                 .ifPresent(m->{
-                    throw new InvalidSignUpRequestException(DUPLICATED_NICKNAME);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME);
                 });
     }
 
@@ -92,10 +94,10 @@ public class MemberService {
     @Transactional
     public void login(LoginDto loginDto, HttpServletResponse response) {
         Member member = memberRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(()->new InvalidLoginRequestException(MEMBER_NOT_FOUND));
+                .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
 
         if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())){
-            throw new InvalidLoginRequestException(PASSWORD_INCORRECT);
+            throw new NotAuthorizedMemberException(MEMBER, SERVICE, PASSWORD_INCORRECT);
         }
 
         setNewTokens(response, member);
@@ -110,7 +112,7 @@ public class MemberService {
         jwtUtil.validateToken(refreshToken, false);
 
         Member member = memberRepository.findByEmail(claims.getSubject())
-                .orElseThrow(()->new InvalidSignUpRequestException(MEMBER_NOT_FOUND));
+                .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
 
         if(!member.getRefreshToken().substring(7).equals(refreshToken)){
             throw new CustomJwtException(INVALID_REFRESHTOKEN);
@@ -144,13 +146,13 @@ public class MemberService {
     @Transactional
     public void doFollow(CustomUserDetails userDetails, FollowDto followDto) {
         Member myFollowingMember = memberRepository.findByNickname(followDto.getMyFollowingMemberNickname())
-                .orElseThrow(()-> new InvalidLoginRequestException(MEMBER_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
 
         FollowCompositeKey followCompositeKey
                 = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
 
         if (followRepository.existsById(followCompositeKey)){
-            throw new InvalidLoginRequestException(ALREADY_FOLLWED);
+            throw new InvalidRequestException(MEMBER, SERVICE, ALREADY_FOLLWED);
         }
 
         Follow follow = new Follow(followCompositeKey, userDetails.getMember(), myFollowingMember);
@@ -163,13 +165,13 @@ public class MemberService {
     @Transactional
     public void doUnfollow(CustomUserDetails userDetails, FollowDto followDto) {
         Member myFollowingMember = memberRepository.findByNickname(followDto.getMyFollowingMemberNickname())
-                .orElseThrow(()-> new InvalidLoginRequestException(MEMBER_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
 
         FollowCompositeKey followCompositeKey
                 = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
 
         if (!followRepository.existsById(followCompositeKey)){
-            throw new InvalidLoginRequestException(ALREADY_UNFOLLWED);
+            throw new InvalidRequestException(MEMBER, SERVICE, ALREADY_UNFOLLWED);
         }
 
         followRepository.deleteById(followCompositeKey);
