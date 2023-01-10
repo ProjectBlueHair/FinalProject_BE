@@ -15,5 +15,5 @@ public interface PostMapStruct {
     PostMapStruct POST_MAPPER = Mappers.getMapper(PostMapStruct.class);
     Post PostDtoToPost(PostDto postDto, String nickname);
     MainPostDto PostToMainPostDto(Long id, String title, Long likeCount, Long viewCount, List<String> musicFileList
-                                ,List<MainProfileDto> mainProfileDtos);
+                                ,List<MainProfileDto> mainProfileList);
 }

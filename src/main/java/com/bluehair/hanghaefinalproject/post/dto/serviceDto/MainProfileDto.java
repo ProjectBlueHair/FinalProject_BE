@@ -1,14 +1,17 @@
 package com.bluehair.hanghaefinalproject.post.dto.serviceDto;
 
 import lombok.Getter;
+
+import java.util.List;
+
 @Getter
 public class MainProfileDto {
-    private String musicPart;
+    private List<String> musicPartList;
     private String profileImg;
 
 
-    public MainProfileDto (String musicPart, String profileImg){
-        this.musicPart = musicPart;
+    public MainProfileDto (List<String> musicPartList, String profileImg){
+        this.musicPartList = musicPartList;
         this.profileImg = profileImg;
     }
 
