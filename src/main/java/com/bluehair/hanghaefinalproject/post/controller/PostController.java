@@ -53,7 +53,7 @@ public class PostController {
             @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다.")
     })
     @PutMapping("/{postId}")
-    public ResponseEntity<SuccessResponse<Object>> createPost(@PathVariable Long postId,@RequestBody RequestUpdatePostDto requestPostDto,
+    public ResponseEntity<SuccessResponse<Object>> updatePost(@PathVariable Long postId,@RequestBody RequestUpdatePostDto requestPostDto,
                                                               @AuthenticationPrincipal CustomUserDetails userDetails){
 
         postService.updatePost(postId, requestPostDto.toPostUpdateDto(), userDetails.getMember().getNickname());
