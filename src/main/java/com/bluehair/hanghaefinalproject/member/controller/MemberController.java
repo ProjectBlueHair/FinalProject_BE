@@ -8,8 +8,6 @@ import com.bluehair.hanghaefinalproject.member.service.MemberService;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,8 +31,8 @@ public class MemberController {
     @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "사용 가능한 이메일"),
-            @ApiResponse(responseCode = "4091", description = "이메일 중복"),
-            @ApiResponse(responseCode = "4001", description = "유효하지 않은 이메일")
+            @ApiResponse(responseCode = "4090", description = "이메일 중복"),
+            @ApiResponse(responseCode = "4000", description = "유효하지 않은 이메일")
     })
     @Operation(summary = "이메일 검증", description = "이메일 중복 확인, 이메일 형식 확인")
     @PostMapping("/validate/email")
@@ -45,7 +43,7 @@ public class MemberController {
     @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "사용 가능한 닉네임"),
-            @ApiResponse(responseCode = "4092", description = "닉네임 중복"),
+            @ApiResponse(responseCode = "4090", description = "닉네임 중복"),
     })
     @Operation(summary = "닉네임 검증", description = "닉네임 중복 확인")
     @PostMapping("validate/nickname")
@@ -56,9 +54,9 @@ public class MemberController {
     @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "회원 가입 성공"),
-            @ApiResponse(responseCode = "4002", description = "유효하지 않은 비밀번호"),
-            @ApiResponse(responseCode = "4091", description = "이메일 중복"),
-            @ApiResponse(responseCode = "4092", description = "닉네임 중복")
+            @ApiResponse(responseCode = "4000", description = "유효하지 않은 비밀번호"),
+            @ApiResponse(responseCode = "4090-1", description = "이메일 중복"),
+            @ApiResponse(responseCode = "4090-2", description = "닉네임 중복")
     })
     @Operation(summary = "회원 가입", description = "이메일 및 닉네임 중복 확인, Password Encrypt, DB 저장")
     @PostMapping("/signup")
@@ -69,7 +67,7 @@ public class MemberController {
     @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "로그인 성공"),
-            @ApiResponse(responseCode = "4003", description = "계정 정보 불일치")
+            @ApiResponse(responseCode = "4000", description = "계정 정보 불일치")
     })
     @Operation(summary = "일반 회원 로그인", description = "계정 비밀번호 일치 여부 확인")
     @PostMapping("/login")
@@ -106,13 +104,13 @@ public class MemberController {
     }
     @Tag(name = "Member")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "2000", description = "팔로우 성공"),
-            @ApiResponse(responseCode = "2000", description = "언팔로우 성공"),
+            @ApiResponse(responseCode = "2000-1", description = "팔로우 성공"),
+            @ApiResponse(responseCode = "2000-2", description = "언팔로우 성공"),
             @ApiResponse(responseCode = "4011", description = "AccessToken 존재하지 않음"),
             @ApiResponse(responseCode = "4013", description = "유효하지 않은 AccessToken"),
             @ApiResponse(responseCode = "4015", description = "만료된 AccessToken"),
-            @ApiResponse(responseCode = "4042", description = "이미 팔로우한 회원"),
-            @ApiResponse(responseCode = "4042", description = "이미 언팔로우한 회원")
+            @ApiResponse(responseCode = "4040-1", description = "이미 팔로우한 회원"),
+            @ApiResponse(responseCode = "4040-2", description = "이미 언팔로우한 회원")
     })
     @Operation(summary = "팔로우 기능", description = "Follow 시 isFollowed=false, Unfollow 시 isFollowed=true")
     @PutMapping("/follow")

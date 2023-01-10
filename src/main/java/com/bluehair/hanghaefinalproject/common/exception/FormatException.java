@@ -4,7 +4,6 @@ import com.bluehair.hanghaefinalproject.common.response.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.IllegalFormatException;
 
 @Getter
 @AllArgsConstructor
