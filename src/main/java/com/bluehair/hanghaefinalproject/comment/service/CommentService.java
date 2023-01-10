@@ -68,4 +68,18 @@ public class CommentService {
         commentRepository.save(comment);
 
     }
+
+    public void deleteComment(Long commentId, String nickname) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
+        );
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND)
+        );
+        if (!comment.getNickname().equals(member.getNickname())){
+            throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
+        }
+
+        commentRepository.deleteById(commentId);
+    }
 }

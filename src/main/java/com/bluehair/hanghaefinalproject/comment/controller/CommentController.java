@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_COMMENT;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_COMMENT;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.DELETE_COMMENT;
 
 @Tag(name = "Post", description = "댓글 관련 API")
 @RestController
@@ -57,6 +58,21 @@ public class CommentController {
         commentService.updateComment(commentId,requestCommentDto.toCommentDto(), userDetails.getMember().getNickname());
 
         return SuccessResponse.toResponseEntity(UPDATE_COMMENT, null);
+    }
+
+    @Tag(name = "Comment")
+    @Operation(summary = "댓글 수정", description = "댓글 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "댓글 삭제 성공"),
+            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자입니다."),
+            @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
+    })
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<SuccessResponse<Object>> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        commentService.deleteComment(commentId,userDetails.getMember().getNickname());
+
+        return SuccessResponse.toResponseEntity(DELETE_COMMENT, null);
     }
 
 
