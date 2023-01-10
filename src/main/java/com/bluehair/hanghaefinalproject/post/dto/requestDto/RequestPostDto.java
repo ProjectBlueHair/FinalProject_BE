@@ -7,7 +7,7 @@ import lombok.Getter;
 public class RequestPostDto {
     private String title;
     private String contents;
-    private String postImage;
+    private String postImg;
     private String lyrics;
     private String musicFile;
     private String musicPart;
@@ -19,7 +19,7 @@ public class RequestPostDto {
                 .lyrics(lyrics)
                 .musicFile(musicFile)
                 .musicPart(musicPart)
-                .postImage(postImage)
+                .postImg(postImg)
                 .build();
     }
 }
