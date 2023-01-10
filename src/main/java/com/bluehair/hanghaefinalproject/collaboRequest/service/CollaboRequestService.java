@@ -6,14 +6,15 @@ import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
-import com.bluehair.hanghaefinalproject.collaboRequest.exception.NotAllowedtoDeleteException;
-import com.bluehair.hanghaefinalproject.collaboRequest.exception.NotAuthorizedtoApproveException;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 
 import static com.bluehair.hanghaefinalproject.collaboRequest.mapper.CollaboRequestMapStruct.COLLABOREQUEST_MAPPER;
+import static com.bluehair.hanghaefinalproject.common.exception.Domain.COLLABO_REQUEST;
+import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*;
 import static com.bluehair.hanghaefinalproject.music.mapper.MusicMapStruct.MUSIC_MAPPER;
 
+import com.bluehair.hanghaefinalproject.common.exception.*;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.music.dto.MusicDto;
@@ -22,9 +23,8 @@ import com.bluehair.hanghaefinalproject.music.dto.SaveMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
-import com.bluehair.hanghaefinalproject.collaboRequest.exception.InvalidCollaboRequestException;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
-import com.bluehair.hanghaefinalproject.security.exception.InvalidMemberException;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,7 @@ public class CollaboRequestService {
     @Transactional
     public void collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, SaveMusicDto saveMusicDto, Member member) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new InvalidCollaboRequestException(POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
 
         String nickname = member.getNickname();
 
@@ -61,7 +61,7 @@ public class CollaboRequestService {
     @Transactional
     public ResponseCollaboRequestDto getCollaboRequest(Long collaborequestid) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
         List<Music> musicList = musicRepository.findAllByCollaboRequest(collaboRequest);
         List<ResponseMusicDto> musicDtoList = MUSIC_MAPPER.MusictoResponseMusicDto(musicList);
 
@@ -71,7 +71,7 @@ public class CollaboRequestService {
     @Transactional
     public List<CollaboRequestListForPostDto> getCollaboRequestList(Long postid) {
         Post post = postRepository.findById(postid)
-                .orElseThrow(() -> new InvalidCollaboRequestException(POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
 
         List<CollaboRequestListForPostDto> collaboRequestListForPostDto = new ArrayList<>();
         List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPost(post);
@@ -86,7 +86,7 @@ public class CollaboRequestService {
                 }
 
                 Member member = memberRepository.findByNickname(collaboRequest.getNickname())
-                        .orElseThrow(() -> new InvalidCollaboRequestException(MEMBER_NOT_FOUND));
+                        .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
                 String profileImg = member.getProfileImg();
 
                 collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList));
@@ -98,12 +98,11 @@ public class CollaboRequestService {
     @Transactional
     public void approveCollaboRequest(Long collaborequestid, Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
-                );
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
         Post post = postRepository.findById(collaboRequest.getPost().getId())
-                .orElseThrow(() -> new InvalidCollaboRequestException(POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
         if (!post.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedtoApproveException(NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED);
         }
 
         Boolean approval = true;
@@ -114,8 +113,7 @@ public class CollaboRequestService {
     @Transactional
     public void deleteCollaboRequest(Long collaborequestid, Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
-                );
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
 
         checkCollaboMember(member, collaboRequest);
 
@@ -130,8 +128,7 @@ public class CollaboRequestService {
                                      SaveMusicDto saveMusicDto,
                                      Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new InvalidCollaboRequestException(COLLABO_NOT_FOUND)
-                );
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
 
         checkCollaboMember(member, collaboRequest);
 
@@ -146,10 +143,10 @@ public class CollaboRequestService {
     private static void checkCollaboMember(Member member, CollaboRequest collaboRequest) {
         String nickname = collaboRequest.getNickname();
         if(!nickname.equals(member.getNickname())){
-            throw new InvalidMemberException(NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED);
         }
         if(collaboRequest.getApproval()){
-            throw new NotAllowedtoDeleteException(COLLABO_ALREADY_APPROVED);
+            throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED);
         }
     }
 
