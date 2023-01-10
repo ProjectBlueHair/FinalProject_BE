@@ -99,7 +99,7 @@ public class CollaboRequestController {
 
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 삭제 성공"),
+            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 수정 성공"),
             @ApiResponse(responseCode = "4042", description = "존재하지 않는 콜라보리퀘스트"),
             @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자"),
             @ApiResponse(responseCode = "4002", description = "이미 승인된 콜라보리퀘스트")
