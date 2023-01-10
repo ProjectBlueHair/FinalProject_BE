@@ -61,7 +61,7 @@ public class CommentController {
     }
 
     @Tag(name = "Comment")
-    @Operation(summary = "댓글 수정", description = "댓글 수정")
+    @Operation(summary = "댓글 삭제", description = "댓글 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "댓글 삭제 성공"),
             @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자입니다."),
