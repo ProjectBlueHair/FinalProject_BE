@@ -3,6 +3,9 @@ package com.bluehair.hanghaefinalproject.post.service;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
+import com.bluehair.hanghaefinalproject.common.exception.Domain;
+import com.bluehair.hanghaefinalproject.common.exception.Layer;
+import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
@@ -13,7 +16,6 @@ import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainProfileDto;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.PostDto;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
-import com.bluehair.hanghaefinalproject.post.exception.NotFoundPostRequestException;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
 import com.bluehair.hanghaefinalproject.tag.entity.Tag;
@@ -26,9 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
 import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MAPPER;
@@ -54,6 +55,7 @@ public class PostService {
         }
 
         Post post = POST_MAPPER.PostDtoToPost(postDto, nickname);
+
         postRepository.save(post);
 
         // Query 최적화 필요(save < saveall < jpql)
@@ -69,7 +71,7 @@ public class PostService {
     public InfoPostDto infoPost(Long postid) {
 
         Post post = postRepository.findById(postid).orElseThrow(
-                () -> new NotFoundPostRequestException(POST_NOT_FOUND)
+                () -> new NotFoundException(Domain.POST, Layer.SERVICE,POST_NOT_FOUND)
         );
 
         post.viewCount();
@@ -89,18 +91,24 @@ public class PostService {
         for (Post post : postList){
 
             List<CollaboRequest> collaborateRequestList = collaboRequestRepository.findAllByPostId(post.getId());
-            List<MainProfileDto> mainProfileDtos = new ArrayList<>();
-            List<String> musicList = new ArrayList<>();
+            List<MainProfileDto> mainProfile = new ArrayList<>();
+            List<String> musicPart = new ArrayList<>();
+            List<String> musicFileList = new ArrayList<>();
+
 
             for(CollaboRequest collaboRequest : collaborateRequestList){
-                Music music = musicRepository.findByCollaboRequest_Id(collaboRequest.getId());
+                List<Music> musiclist = musicRepository.findAllByCollaboRequestId(collaboRequest.getId());
+                for (Music music : musiclist){
+                    musicFileList.add(music.getMusicFile());
+                    musicPart.add(music.getMusicPart());
+                }
                 Optional<Member> member = memberRepository.findByNickname(collaboRequest.getNickname());
-                musicList.add(music.getMusicFile());
-                MainProfileDto mainProfileDto = new MainProfileDto(music.getMusicPart(), member.get().getProfileImg());
-                mainProfileDtos.add(mainProfileDto);
+                MainProfileDto mainProfileDto = new MainProfileDto(musicPart, member.get().getProfileImg());
+                mainProfile.add(mainProfileDto);
             }
+            List<MainProfileDto> mainProfileList = mainProfile.stream().distinct().collect(Collectors.toList());
 
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicList,mainProfileDtos));
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicFileList,mainProfileList));
         }
 
         return mainPostDtoList;
