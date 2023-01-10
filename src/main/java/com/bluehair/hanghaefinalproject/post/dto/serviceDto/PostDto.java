@@ -12,20 +12,20 @@ public class PostDto {
     private String lyrics;
     private String musicFile;
     private String musicPart;
-    private String postImage;
+    private String postImg;
 
     @Builder
     public PostDto(String title, String contents, String lyrics,
-                String postImage,String musicFile, String musicPart){
+                String postImg,String musicFile, String musicPart){
         this.title = title;
         this.contents = contents;
         this.lyrics = lyrics;
         this.musicFile = musicFile;
         this.musicPart = musicPart;
-        this.postImage = postImage;
+        this.postImg = postImg;
     }
 
-    public void setRandomPostImage() {
+    public void setRandomPostImg() {
         String[] RandomPostImage = new String[10];
         RandomPostImage[0] = "https://images.unsplash.com/photo-1525351326368-efbb5cb6814d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1780&q=80";
         RandomPostImage[1] = "https://images.unsplash.com/photo-1511268559489-34b624fbfcf5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80";
@@ -39,7 +39,7 @@ public class PostDto {
         RandomPostImage[9] = "https://images.unsplash.com/photo-1467664631004-58beab1ece0d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80";
 
         Random random = new Random();
-        this.postImage= RandomPostImage[random.nextInt(10)];
+        this.postImg= RandomPostImage[random.nextInt(10)];
     }
 
 }
