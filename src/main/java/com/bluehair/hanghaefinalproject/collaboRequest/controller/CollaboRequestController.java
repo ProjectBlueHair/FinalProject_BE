@@ -31,9 +31,9 @@ public class CollaboRequestController {
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 작성 성공"),
-            @ApiResponse(responseCode = "4043", description = "존재하지 않는 게시글")
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글")
     })
-    @Operation(summary = "콜라보 리퀘스트 작성", description = "특정 Post에 대한 콜라보 리퀘스트 작성")
+    @Operation(summary = "콜라보 리퀘스트 작성", description = "해당 Post에 대한 콜라보 리퀘스트 작성")
     @PostMapping("/api/post/{postid}/collabo")
     public ResponseEntity<SuccessResponse<Object>> collaboRequest(@PathVariable Long postid, @RequestBody RequestCollaboRequestDto requestCollaboRequestDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
         collaboRequestService.collaboRequest(
@@ -48,8 +48,8 @@ public class CollaboRequestController {
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 상세 조회 성공"),
-            @ApiResponse(responseCode = "4043", description = "존재하지 않는 게시글"),
-            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트")
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글"),
+            @ApiResponse(responseCode = "4042", description = "존재하지 않는 콜라보리퀘스트")
     })
     @Operation(summary = "콜라보리퀘스트 상세 조회")
     @GetMapping("/api/collabo/{collaborequestid}")
@@ -61,8 +61,8 @@ public class CollaboRequestController {
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 목록 조회 성공"),
-            @ApiResponse(responseCode = "4043", description = "존재하지 않는 게시글"),
-            @ApiResponse(responseCode = "4041", description = "존재하지 않는 회원")
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글"),
+            @ApiResponse(responseCode = "4040", description = "존재하지 않는 회원")
     })
     @Operation(summary = "해당 게시글 관련 콜라보 전체 조회")
     @GetMapping("/api/post/{postid}/collabo")
@@ -72,8 +72,8 @@ public class CollaboRequestController {
 
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
-            @ApiResponse(responseCode ="2000", description = "콜라보리퀘스트 승인"),
-            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 승인"),
+            @ApiResponse(responseCode = "4042", description = "존재하지 않는 콜라보리퀘스트"),
             @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자")
     })
     @Operation(summary = "콜라보리퀘스트 승인")
@@ -86,9 +86,9 @@ public class CollaboRequestController {
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 삭제 성공"),
-            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트"),
-            @ApiResponse(responseCode = "4032", description = "권한이 없는 사용자"),
-            @ApiResponse(responseCode = "4033", description = "이미 승인 된 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "4042", description = "존재하지 않는 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자"),
+            @ApiResponse(responseCode = "4002", description = "이미 승인된 콜라보리퀘스트")
     })
     @Operation(summary = "미승인 콜라보리퀘스트 삭제")
     @DeleteMapping("/api/collabo/{collaborequestid}")
@@ -99,10 +99,10 @@ public class CollaboRequestController {
 
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 삭제 성공"),
-            @ApiResponse(responseCode = "4044", description = "존재하지 않는 콜라보리퀘스트"),
-            @ApiResponse(responseCode = "4032", description = "권한이 없는 사용자"),
-            @ApiResponse(responseCode = "4033", description = "이미 승인 된 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 수정 성공"),
+            @ApiResponse(responseCode = "4042", description = "존재하지 않는 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자"),
+            @ApiResponse(responseCode = "4002", description = "이미 승인된 콜라보리퀘스트")
     })
     @Operation(summary = "미승인 콜라보리퀘스트 수정")
     @PutMapping("/api/collabo/{collaborequestid}")
