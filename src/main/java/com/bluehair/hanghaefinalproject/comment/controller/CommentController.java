@@ -20,10 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_COMMENT;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_COMMENT;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.DELETE_COMMENT;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.GET_COMMENT;
 
 @Tag(name = "Post", description = "댓글 관련 API")
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -36,7 +37,7 @@ public class CommentController {
             @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다."),
             @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
     })
-    @PostMapping(value = {"/{postId}/{parentId}", "/{postId}"})
+    @PostMapping(value = {"/comment/{postId}/{parentId}", "/comment/{postId}"})
     public ResponseEntity<SuccessResponse<Object>> createComment(@PathVariable Long postId,@PathVariable(required = false) Long parentId,
                                                               @RequestBody RequestCommentDto requestCommentDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
@@ -51,7 +52,7 @@ public class CommentController {
             @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자입니다."),
             @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
     })
-    @PutMapping("/{commentId}")
+    @PutMapping("/comment/{commentId}")
     public ResponseEntity<SuccessResponse<Object>> updateComment(@PathVariable Long commentId, @RequestBody RequestCommentDto requestCommentDto,
                                                                  @AuthenticationPrincipal CustomUserDetails userDetails){
 
@@ -67,7 +68,7 @@ public class CommentController {
             @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자입니다."),
             @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
     })
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<SuccessResponse<Object>> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails){
 
         commentService.deleteComment(commentId,userDetails.getMember().getNickname());
@@ -75,5 +76,16 @@ public class CommentController {
         return SuccessResponse.toResponseEntity(DELETE_COMMENT, null);
     }
 
+    @Tag(name = "Comment")
+    @Operation(summary = "댓글 조회", description = "댓글 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "댓글 조회 성공"),
+    })
+
+    @GetMapping("/post/{postId}/comment")
+    public ResponseEntity<SuccessResponse<Object>> getCommentList(@PathVariable Long postId){
+
+        return SuccessResponse.toResponseEntity(GET_COMMENT, commentService.getComment(postId));
+    }
 
 }

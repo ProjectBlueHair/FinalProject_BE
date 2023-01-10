@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.comment.entity;
 
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentDto;
+import com.bluehair.hanghaefinalproject.common.entity.Timestamped;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Comment {
+public class Comment extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
