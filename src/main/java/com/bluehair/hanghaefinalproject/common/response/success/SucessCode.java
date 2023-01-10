@@ -27,7 +27,7 @@ public enum SucessCode {
     CREATE_COMMENT(HttpStatus.OK,"댓글 작성 성공",2000),
     UPDATE_COMMENT(HttpStatus.OK, "댓글 수정 성공", 2000),
     DELETE_COMMENT(HttpStatus.OK, "댓글 삭제 성공", 2000),
-
+    GET_COMMENT(HttpStatus.OK, "댓글 조회 성공", 2000),
     //CollaboRequest
     COLLABO_REQUEST_SUCCESS(HttpStatus.OK, "콜라보 리퀘스트 성공", 2000),
     COLLABO_REQUEST(HttpStatus.OK, "콜라보 리퀘스트 상세 조회 성공", 2000),
