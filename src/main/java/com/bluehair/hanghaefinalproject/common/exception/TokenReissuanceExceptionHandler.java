@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.member.exception;
+package com.bluehair.hanghaefinalproject.common.exception;
 
 import com.bluehair.hanghaefinalproject.common.response.error.ErrorResponse;
 import com.bluehair.hanghaefinalproject.member.controller.MemberController;
