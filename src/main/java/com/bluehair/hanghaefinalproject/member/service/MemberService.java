@@ -129,9 +129,9 @@ public class MemberService {
             if(e.getErrorCode().getCustomHttpStatusCode() == 4015) {
                 return jwtUtil.getUserInfoFromHttpServletRequest(request, true);
             }
+            jwtUtil.validateToken(accessToken, true);
         }
-        jwtUtil.validateToken(accessToken, true);
-        return null;
+        return jwtUtil.getUserInfoFromHttpServletRequest(request, true);
     }
 
     @Transactional
