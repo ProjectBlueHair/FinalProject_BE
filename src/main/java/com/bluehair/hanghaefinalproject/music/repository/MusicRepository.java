@@ -15,6 +15,8 @@ public interface MusicRepository extends JpaRepository<Music, Long> {
     List<Music> findAllByCollaboRequest(CollaboRequest collaboRequest);
 
     List<Music> findAllByCollaboRequestId(long collaboid);
+
+    List<Music> findAllByCollaboRequest_Nickname(String nickname);
     @Transactional
     @Modifying
     @Query("DELETE from Music c where c.collaboRequest = :collaboRequest")
