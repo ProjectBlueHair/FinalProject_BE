@@ -92,22 +92,32 @@ public class PostService {
 
             List<MainProfileDto> mainProfile = new ArrayList<>();
 
-            List<String> musicPart = new ArrayList<>();
-            List<String> musicFileList = new ArrayList<>();
+            String musicFile = post.getMusicFile();
 
+            // 콜라보 리퀘스트 수 만큼 반복
             for(CollaboRequest collaboRequest : collaborateRequestList){
-                List<Music> musiclist = musicRepository.findAllByCollaboRequestId(collaboRequest.getId());
+
+                List<String> musicPart = new ArrayList<>();
+                // 콜라보 작성자로 음원 목록 조회
+                List<Music> musiclist = musicRepository.findAllByCollaboRequest_Nickname(collaboRequest.getNickname());
+                // 음원 수 만큼 반복
                 for (Music music : musiclist){
-                    musicFileList.add(music.getMusicFile());
                     musicPart.add(music.getMusicPart());
                 }
+                // musicPart 중복 제거
+                Set<String> set = new HashSet<>(musicPart);
+                // List로 다시 변환
+                List<String> musicPartList = new ArrayList<>(set);
+
                 Optional<Member> member = memberRepository.findByNickname(collaboRequest.getNickname());
-                MainProfileDto mainProfileDto = new MainProfileDto(musicPart, member.get().getProfileImg());
+                MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, member.get().getProfileImg(),collaboRequest.getNickname());
                 mainProfile.add(mainProfileDto);
             }
-            List<MainProfileDto> mainProfileList = mainProfile.stream().distinct().collect(Collectors.toList());
+            // 닉네임을 기준으로 중복 제거
+            Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
+            List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
 
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicFileList,mainProfileList));
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicFile,mainProfileList));
         }
 
         return mainPostDtoList;
