@@ -12,16 +12,16 @@ public class MainPostDto {
     private String title;
     private Long viewCount;
     private Long likeCount;
-    private List<String> musicFileList;
+    private String musicFile;
     private List<MainProfileDto> mainProfileList;
 
     @Builder
-    public MainPostDto(Long id, String  title, Long likeCount, Long viewCount, List<String> musicFileList, List<MainProfileDto> mainProfileList){
+    public MainPostDto(Long id, String  title, Long likeCount, Long viewCount, String musicFile, List<MainProfileDto> mainProfileList){
         this.id = id;
         this.title = title;
         this.likeCount = likeCount;
         this.viewCount = viewCount;
-        this.musicFileList = musicFileList;
+        this.musicFile = musicFile;
         this.mainProfileList = mainProfileList;
     }
 
