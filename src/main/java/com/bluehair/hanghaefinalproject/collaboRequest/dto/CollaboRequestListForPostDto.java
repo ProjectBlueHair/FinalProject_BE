@@ -22,12 +22,16 @@ public class CollaboRequestListForPostDto {
     private String createdAt;
     @Schema(description = "작성시간", example = "수정시간")
     private String modifiedAt;
-    @Schema(description = "콜라보리퀘스트 음악파일 목록", example = "musicPartsList")
+    @Schema(description = "콜라보리퀘스트 음악파트 목록", example = "musicPartsList")
     private List<String> musicPartsList;
+    @Schema(description = "콜라보리퀘스트 음악파일 목록", example = "musicPartsList")
+    private List<String> musicFileList;
 
     @Builder
     public CollaboRequestListForPostDto(Long collaboId, String title, String nickname,
-                                        String profileImg, LocalDateTime createdAt, LocalDateTime modifiedAt, List<String> musicPartsList) {
+                                        String profileImg, LocalDateTime createdAt,
+                                        LocalDateTime modifiedAt, List<String> musicPartsList,
+                                        List<String> musicFileList) {
         this.collaboId = collaboId;
         this.title = title;
         this.nickname = nickname;
@@ -35,6 +39,7 @@ public class CollaboRequestListForPostDto {
         this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
         this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
         this.musicPartsList = musicPartsList;
+        this.musicFileList = musicFileList;
 
     }
 }
