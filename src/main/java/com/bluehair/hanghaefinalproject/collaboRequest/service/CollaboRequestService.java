@@ -80,17 +80,19 @@ public class CollaboRequestService {
         for (CollaboRequest collaboRequest : collaboRequestList) {
             if (collaboRequest.getApproval()) {
                 List<String> musicPartsList = new ArrayList<>();
+                List<String> musicFileList = new ArrayList<>();
                 List<Music> musiclist = musicRepository.findAllByCollaboRequestId(collaboRequest.getId());
 
                 for (Music music : musiclist) {
                     musicPartsList.add(music.getMusicPart());
+                    musicFileList.add(music.getMusicFile());
                 }
 
                 Member member = memberRepository.findByNickname(collaboRequest.getNickname())
                         .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
                 String profileImg = member.getProfileImg();
 
-                collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList));
+                collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList, musicFileList));
             }
         }
         return collaboRequestListForPostDto;
