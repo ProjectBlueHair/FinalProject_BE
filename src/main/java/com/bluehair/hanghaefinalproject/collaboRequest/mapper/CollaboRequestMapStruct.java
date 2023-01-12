@@ -31,14 +31,17 @@ public interface CollaboRequestMapStruct {
 
     default CollaboRequestListForPostDto CollaboRequestListtoCollaboRequestListDto(CollaboRequest collaboRequest,
                                                                            String profileImg,
-                                                                           List<String> musicPartsList){
+                                                                           List<String> musicPartsList,
+                                                                           List<String> musicFileList){
         return CollaboRequestListForPostDto.builder()
                 .collaboId(collaboRequest.getId())
                 .title(collaboRequest.getTitle())
                 .nickname(collaboRequest.getNickname())
                 .profileImg(profileImg)
                 .createdAt(collaboRequest.getCreatedAt())
-                .modifiedAt(collaboRequest.getModifiedAt()).musicPartsList(musicPartsList)
+                .modifiedAt(collaboRequest.getModifiedAt())
+                .musicPartsList(musicPartsList)
+                .musicFileList(musicFileList)
                 .build();
     }
 
