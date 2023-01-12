@@ -9,4 +9,6 @@ import java.util.List;
 public interface TagRepository {
     Tag save(Tag tag);
     void saveTagList(List<Tag> tagList);
+
+    List<Tag> findAllByPostId(Long id);
 }

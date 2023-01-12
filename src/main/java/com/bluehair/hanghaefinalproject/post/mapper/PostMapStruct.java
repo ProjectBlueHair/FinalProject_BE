@@ -14,6 +14,6 @@ import java.util.List;
 public interface PostMapStruct {
     PostMapStruct POST_MAPPER = Mappers.getMapper(PostMapStruct.class);
     Post PostDtoToPost(PostDto postDto, String nickname);
-    MainPostDto PostToMainPostDto(Long id, String title, Long likeCount, Long viewCount, String musicFile
-                                ,List<MainProfileDto> mainProfileList);
+    MainPostDto PostToMainPostDto(Long id, String title,String postImg ,Long likeCount, Long viewCount, String musicFile
+                                ,List<String> tagList,List<MainProfileDto> mainProfileList);
 }
