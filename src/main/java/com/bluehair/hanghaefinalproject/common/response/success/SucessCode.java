@@ -21,22 +21,27 @@ public enum SucessCode {
     // Post
     INFO_POST(HttpStatus.OK, "상세 게시글 조회 성공", 2000),
     CREATE_POST(HttpStatus.OK, "게시글 작성 성공", 2000),
+    UPDATE_POST(HttpStatus.OK, "게시글 수정 성공", 2000),
     MAIN_POST(HttpStatus.OK, "게시글 전체 조회 성공",2000),
 
     //Comment
     CREATE_COMMENT(HttpStatus.OK,"댓글 작성 성공",2000),
     UPDATE_COMMENT(HttpStatus.OK, "댓글 수정 성공", 2000),
     DELETE_COMMENT(HttpStatus.OK, "댓글 삭제 성공", 2000),
+    GET_COMMENT(HttpStatus.OK, "댓글 조회 성공", 2000),
 
     //CollaboRequest
     COLLABO_REQUEST_SUCCESS(HttpStatus.OK, "콜라보 리퀘스트 성공", 2000),
     COLLABO_REQUEST(HttpStatus.OK, "콜라보 리퀘스트 상세 조회 성공", 2000),
     COLLABO_LIST(HttpStatus.OK, "게시글 콜라보 리퀘스트 목록 조회 성공", 2000),
-
     COLLABO_REQUEST_APPROVAL(HttpStatus.OK, "콜라보 리퀘스트 승인 성공", 2000),
     COLLABO_REQUEST_DELETE(HttpStatus.OK, "콜라보 리퀘스트 삭제 성공", 2000),
+    COLLABO_REQUEST_UPDATE(HttpStatus.OK, "콜라보 리퀘스트 수정 성공", 2000),
 
-    COLLABO_REQUEST_UPDATE(HttpStatus.OK, "콜라보 리퀘스트 수정 성공", 2000);
+    //SSE
+    SSE_SUBSCRIBE(HttpStatus.OK, "SSE 연결 성공", 2000),
+    NOTIFICATION_LIST(HttpStatus.OK, "알림 전체 조회 성공", 2000),
+    NOTIFICATION_READ(HttpStatus.OK, "알림 확인 성공", 2000 );
 
     private final HttpStatus httpStatus;
     private final String message;

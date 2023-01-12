@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.comment.service;
 
 
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentDto;
+import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentListDto;
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
@@ -81,5 +83,12 @@ public class CommentService {
         }
 
         commentRepository.deleteById(commentId);
+    }
+
+    public List<CommentListDto> getComment(Long postId) {
+
+        List<CommentListDto> commentList = commentRepository.findByPostId(postId);
+
+        return commentList;
     }
 }

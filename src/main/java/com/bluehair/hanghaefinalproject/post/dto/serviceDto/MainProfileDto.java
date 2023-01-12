@@ -9,10 +9,12 @@ public class MainProfileDto {
     private List<String> musicPartList;
     private String profileImg;
 
+    private String nickname;
 
-    public MainProfileDto (List<String> musicPartList, String profileImg){
+    public MainProfileDto (List<String> musicPartList, String profileImg, String nickname){
         this.musicPartList = musicPartList;
         this.profileImg = profileImg;
+        this.nickname = nickname;
     }
 
 }

@@ -23,6 +23,8 @@ import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
+import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
+import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ public class CollaboRequestService {
     private final MusicRepository musicRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public CollaboRequest collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
@@ -106,6 +109,14 @@ public class CollaboRequestService {
         Boolean approval = true;
         collaboRequest.approve(approval);
         collaboRequestRepository.save(collaboRequest);
+
+        //요청한 사람한테 승인 완료 알림 - 게시글 상세 조회로 이동
+        Long postId = post.getId();
+        Member collaboMember = memberRepository.findByNickname(collaboRequest.getNickname())
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
+        String url = "/api/post/"+postId;
+        String content = post.getTitle()+"에 대한 콜라보 요청이 승인되었습니다.";
+        notificationService.send(collaboMember, NotificationType.COLLABO_APPROVED, content, url);
     }
 
     @Transactional
