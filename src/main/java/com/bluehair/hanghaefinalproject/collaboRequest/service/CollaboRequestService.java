@@ -17,9 +17,7 @@ import static com.bluehair.hanghaefinalproject.music.mapper.MusicMapStruct.MUSIC
 import com.bluehair.hanghaefinalproject.common.exception.*;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
-import com.bluehair.hanghaefinalproject.music.dto.MusicDto;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
-import com.bluehair.hanghaefinalproject.music.dto.SaveMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
@@ -45,7 +43,7 @@ public class CollaboRequestService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, SaveMusicDto saveMusicDto, Member member) {
+    public CollaboRequest collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
 
@@ -55,7 +53,7 @@ public class CollaboRequestService {
         CollaboRequest collaboRequest = COLLABOREQUEST_MAPPER.CollaboRequestDtotoCollaboRequest(collaboRequestDto, post);
 
         collaboRequestRepository.save(collaboRequest);
-        saveMusic(saveMusicDto, collaboRequest);
+        return collaboRequest;
     }
 
     @Transactional
@@ -117,15 +115,12 @@ public class CollaboRequestService {
 
         checkCollaboMember(member, collaboRequest);
 
-        musicRepository.deleteAllByCollaboRequest(collaboRequest);
         collaboRequestRepository.delete(collaboRequest);
-
     }
 
     @Transactional
     public void updateCollaboRequest(Long collaborequestid,
                                      CollaboRequestDetailsDto collaboRequestDetailsDto,
-                                     SaveMusicDto saveMusicDto,
                                      Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
@@ -135,9 +130,6 @@ public class CollaboRequestService {
         CollaboRequestDto collaboRequestDto = COLLABOREQUEST_MAPPER.CollaboRequestDetailsDtotoUpdate(collaboRequestDetailsDto);
         collaboRequest.update(collaboRequestDto);
         collaboRequestRepository.save(collaboRequest);
-
-        musicRepository.deleteAllByCollaboRequest(collaboRequest);
-        saveMusic(saveMusicDto, collaboRequest);
     }
 
     private static void checkCollaboMember(Member member, CollaboRequest collaboRequest) {
@@ -147,15 +139,6 @@ public class CollaboRequestService {
         }
         if(collaboRequest.getApproval()){
             throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED);
-        }
-    }
-
-    private void saveMusic(SaveMusicDto saveMusicDto, CollaboRequest collaboRequest) {
-        List<MusicDto> musicList = saveMusicDto.getMusicDtoList();
-        for (MusicDto musicDto : musicList) {
-            Music music = MUSIC_MAPPER.MusicDtotoMusic(musicDto, collaboRequest);
-            musicRepository
-                    .save(music);
         }
     }
 }
