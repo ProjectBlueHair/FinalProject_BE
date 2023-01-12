@@ -37,12 +37,12 @@ public class Notification extends Timestamped {
     private Member receiver;
 
     @Builder
-    public Notification(Member receiver, NotificationType notificationType, String content, String url, Boolean isRead) {
+    public Notification(Member receiver, NotificationType notificationType, String content, String url) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = new NotificationContent(content);
         this.url = new RelatedUrl(url);
-        this.isRead = isRead;
+        this.isRead = false;
     }
 
     public String getContent() {

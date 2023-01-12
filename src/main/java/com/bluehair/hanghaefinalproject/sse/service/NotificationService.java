@@ -55,7 +55,7 @@ public class NotificationService {
     }
 
     public void send(Member receiver, NotificationType notificationType, String content, String url) {
-        Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content, url));
+        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, url));
         String memberId = String.valueOf(receiver.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByMemberId(memberId);
@@ -65,16 +65,6 @@ public class NotificationService {
                     sendToClient(emitter, key, SSE_MAPPER.NotificationtoResponseNotificationDto(notification));
                 }
         );
-    }
-
-    private Notification createNotification(Member receiver, NotificationType notificationType, String content, String url) {
-        return Notification.builder()
-                .receiver(receiver)
-                .notificationType(notificationType)
-                .content(content)
-                .url(url)
-                .isRead(false)
-                .build();
     }
 
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
