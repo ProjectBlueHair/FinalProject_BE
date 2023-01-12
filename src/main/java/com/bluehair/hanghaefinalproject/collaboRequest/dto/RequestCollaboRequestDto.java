@@ -1,7 +1,5 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.dto;
 
-import com.bluehair.hanghaefinalproject.music.dto.MusicDto;
-import com.bluehair.hanghaefinalproject.music.dto.SaveMusicDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -15,18 +13,12 @@ public class RequestCollaboRequestDto {
     @Schema(description = "콜라보 리퀘스트 내용", required = true, example = "콜라보하고 싶습니다.")
     public String contents;
     @Schema(description = "콜라보 리퀘스트 음악 리스트", required = true)
-    public List<MusicDto> musicList;
+    public List<String> musicPartList;
 
     public CollaboRequestDetailsDto tocollaboRequestDetailsDto(){
         return CollaboRequestDetailsDto.builder()
                 .title(title)
                 .contents(contents)
-                .build();
-    }
-
-    public SaveMusicDto tosaveMusicDto(){
-        return SaveMusicDto.builder()
-                .musicDtoList(musicList)
                 .build();
     }
 }

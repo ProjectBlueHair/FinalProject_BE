@@ -35,7 +35,7 @@ public enum ErrorCode {
 
     COLLABO_NOT_FOUND(HttpStatus.OK, "콜라보리퀘스트가 존재하지 않습니다.", 4042),
     COLLABO_ALREADY_APPROVED(HttpStatus.OK, "승인된 콜라보 리퀘스트는 수정 또는 삭제할 수 없습니다.", 4002),
-
+    INVALID_SOUNDSAMPLE(HttpStatus.OK, "유효하지 않은 음원입니다.", 4003),
     NOTIFICATION_NOT_FOUND(HttpStatus.OK, "알림이 존재하지 않습니다", 4049),
 
     // Server Error
