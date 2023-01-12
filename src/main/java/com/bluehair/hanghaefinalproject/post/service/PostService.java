@@ -43,7 +43,6 @@ public class PostService {
     private final MusicRepository musicRepository;
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
-
     private final TagExctractor tagExctractor;
     @Transactional
     public void createPost(PostDto postDto, String nickname) {
@@ -92,6 +91,16 @@ public class PostService {
 
             List<MainProfileDto> mainProfile = new ArrayList<>();
 
+            List<Tag> tagGet = tagRepository.findAllByPostId(post.getId());
+
+            List<String> tagList = new ArrayList<>();
+
+
+
+            for (Tag tag : tagGet){
+                tagList.add(tag.getContents());
+            }
+
             String musicFile = post.getMusicFile();
 
             // 콜라보 리퀘스트 수 만큼 반복
@@ -117,7 +126,7 @@ public class PostService {
             Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
             List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
 
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(), post.getLikeCount(), post.getViewCount(),musicFile,mainProfileList));
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList));
         }
 
         return mainPostDtoList;
