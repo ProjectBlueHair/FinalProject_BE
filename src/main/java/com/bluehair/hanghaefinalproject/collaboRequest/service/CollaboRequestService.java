@@ -57,8 +57,6 @@ public class CollaboRequestService {
 
         collaboRequestRepository.save(collaboRequest);
 
-        saveMusic(saveMusicDto, collaboRequest);
-
         //post 작성자에게 콜라보 요청 알림 - 콜라보 상세 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
