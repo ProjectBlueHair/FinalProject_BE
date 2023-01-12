@@ -17,14 +17,14 @@ import static com.bluehair.hanghaefinalproject.music.mapper.MusicMapStruct.MUSIC
 import com.bluehair.hanghaefinalproject.common.exception.*;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
-import com.bluehair.hanghaefinalproject.music.dto.MusicDto;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
-import com.bluehair.hanghaefinalproject.music.dto.SaveMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
+import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
+import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,9 +43,10 @@ public class CollaboRequestService {
     private final MusicRepository musicRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final NotificationService notificationService;
 
     @Transactional
-    public void collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, SaveMusicDto saveMusicDto, Member member) {
+    public CollaboRequest collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
 
@@ -55,7 +56,7 @@ public class CollaboRequestService {
         CollaboRequest collaboRequest = COLLABOREQUEST_MAPPER.CollaboRequestDtotoCollaboRequest(collaboRequestDto, post);
 
         collaboRequestRepository.save(collaboRequest);
-        saveMusic(saveMusicDto, collaboRequest);
+        return collaboRequest;
     }
 
     @Transactional
@@ -108,6 +109,14 @@ public class CollaboRequestService {
         Boolean approval = true;
         collaboRequest.approve(approval);
         collaboRequestRepository.save(collaboRequest);
+
+        //요청한 사람한테 승인 완료 알림 - 게시글 상세 조회로 이동
+        Long postId = post.getId();
+        Member collaboMember = memberRepository.findByNickname(collaboRequest.getNickname())
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
+        String url = "/api/post/"+postId;
+        String content = post.getTitle()+"에 대한 콜라보 요청이 승인되었습니다.";
+        notificationService.send(collaboMember, NotificationType.COLLABO_APPROVED, content, url);
     }
 
     @Transactional
@@ -117,15 +126,12 @@ public class CollaboRequestService {
 
         checkCollaboMember(member, collaboRequest);
 
-        musicRepository.deleteAllByCollaboRequest(collaboRequest);
         collaboRequestRepository.delete(collaboRequest);
-
     }
 
     @Transactional
     public void updateCollaboRequest(Long collaborequestid,
                                      CollaboRequestDetailsDto collaboRequestDetailsDto,
-                                     SaveMusicDto saveMusicDto,
                                      Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
@@ -135,9 +141,6 @@ public class CollaboRequestService {
         CollaboRequestDto collaboRequestDto = COLLABOREQUEST_MAPPER.CollaboRequestDetailsDtotoUpdate(collaboRequestDetailsDto);
         collaboRequest.update(collaboRequestDto);
         collaboRequestRepository.save(collaboRequest);
-
-        musicRepository.deleteAllByCollaboRequest(collaboRequest);
-        saveMusic(saveMusicDto, collaboRequest);
     }
 
     private static void checkCollaboMember(Member member, CollaboRequest collaboRequest) {
@@ -147,15 +150,6 @@ public class CollaboRequestService {
         }
         if(collaboRequest.getApproval()){
             throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED);
-        }
-    }
-
-    private void saveMusic(SaveMusicDto saveMusicDto, CollaboRequest collaboRequest) {
-        List<MusicDto> musicList = saveMusicDto.getMusicDtoList();
-        for (MusicDto musicDto : musicList) {
-            Music music = MUSIC_MAPPER.MusicDtotoMusic(musicDto, collaboRequest);
-            musicRepository
-                    .save(music);
         }
     }
 }

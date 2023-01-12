@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboReques
 import com.bluehair.hanghaefinalproject.collaboRequest.service.CollaboRequestService;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 
+import com.bluehair.hanghaefinalproject.music.service.MusicService;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.List;
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
@@ -27,6 +31,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 public class CollaboRequestController {
 
     private final CollaboRequestService collaboRequestService;
+    private final MusicService musicService;
 
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
@@ -35,13 +40,18 @@ public class CollaboRequestController {
     })
     @Operation(summary = "콜라보 리퀘스트 작성", description = "해당 Post에 대한 콜라보 리퀘스트 작성")
     @PostMapping("/api/post/{postid}/collabo")
-    public ResponseEntity<SuccessResponse<Object>> collaboRequest(@PathVariable Long postid, @RequestBody RequestCollaboRequestDto requestCollaboRequestDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        collaboRequestService.collaboRequest(
+    public ResponseEntity<SuccessResponse<Object>> collaboRequest(@PathVariable Long postid,
+                                                                  @RequestPart(value = "jsonData") RequestCollaboRequestDto requestCollaboRequestDto,
+                                                                  @RequestPart(value = "musicFile", required = false) List<MultipartFile> musicFileList,
+                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) throws UnsupportedAudioFileException, IOException {
+        musicService.saveMusic(musicFileList,
                 postid,
-                requestCollaboRequestDto.tocollaboRequestDetailsDto(),
-                requestCollaboRequestDto.tosaveMusicDto(),
-                customUserDetails.getMember()
-        );
+                requestCollaboRequestDto.getMusicPartList(),
+                collaboRequestService.collaboRequest(postid,
+                        requestCollaboRequestDto.tocollaboRequestDetailsDto(),
+                        customUserDetails.getMember()
+        ));
+
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, null);
     }
 
@@ -78,8 +88,9 @@ public class CollaboRequestController {
     })
     @Operation(summary = "콜라보리퀘스트 승인")
     @PostMapping("/api/collabo/{collaborequestid}")
-    public ResponseEntity<SuccessResponse<Object>> approveCollaboRequest(@PathVariable Long collaborequestid, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<SuccessResponse<Object>> approveCollaboRequest(@PathVariable Long collaborequestid, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws UnsupportedAudioFileException, IOException {
         collaboRequestService.approveCollaboRequest(collaborequestid, customUserDetails.getMember());
+        musicService.mixMusic(collaborequestid);
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_APPROVAL, null);
     }
 
@@ -93,6 +104,7 @@ public class CollaboRequestController {
     @Operation(summary = "미승인 콜라보리퀘스트 삭제")
     @DeleteMapping("/api/collabo/{collaborequestid}")
     public ResponseEntity<SuccessResponse<Object>> deleteCollaboRequest(@PathVariable Long collaborequestid, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        musicService.deleteMusicList(collaborequestid);
         collaboRequestService.deleteCollaboRequest(collaborequestid, customUserDetails.getMember());
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_DELETE, null);
     }
@@ -106,12 +118,16 @@ public class CollaboRequestController {
     })
     @Operation(summary = "미승인 콜라보리퀘스트 수정")
     @PutMapping("/api/collabo/{collaborequestid}")
-    public ResponseEntity<SuccessResponse<Object>> updateCollaboRequest(@PathVariable Long collaborequestid, @RequestBody RequestCollaboRequestDto requestCollaboRequestDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<SuccessResponse<Object>> updateCollaboRequest(@PathVariable Long collaborequestid,
+                                                                        @RequestPart(value = "jsonData") RequestCollaboRequestDto requestCollaboRequestDto,
+                                                                        @RequestPart(value = "musicFile", required = false) List<MultipartFile> musicFileList,
+                                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) throws UnsupportedAudioFileException, IOException {
         collaboRequestService.updateCollaboRequest(
                 collaborequestid,
                 requestCollaboRequestDto.tocollaboRequestDetailsDto(),
-                requestCollaboRequestDto.tosaveMusicDto(),
                 customUserDetails.getMember());
+        musicService.deleteMusicList(collaborequestid);
+        musicService.updateMusic(collaborequestid, musicFileList, requestCollaboRequestDto.getMusicPartList());
         return SuccessResponse.toResponseEntity(COLLABO_REQUEST_UPDATE, null);
     }
 }
