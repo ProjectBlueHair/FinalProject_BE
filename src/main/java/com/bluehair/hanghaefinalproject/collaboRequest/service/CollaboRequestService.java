@@ -59,6 +59,13 @@ public class CollaboRequestService {
 
         collaboRequestRepository.save(collaboRequest);
         saveMusic(saveMusicDto, collaboRequest);
+
+        //post 작성자에게 콜라보 요청 알림 - 콜라보 상세 조회로 이동
+        Member postMember = memberRepository.findByNickname(post.getNickname())
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
+        String url = "/api/collabo/"+collaboRequest.getId();
+        String content = post.getTitle()+"에 대한 콜라보 요청이 있습니다.";
+        notificationService.send(postMember, NotificationType.COLLABO_REQUEST, content, url);
     }
 
     @Transactional
@@ -95,6 +102,7 @@ public class CollaboRequestService {
                 collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList));
             }
         }
+
         return collaboRequestListForPostDto;
     }
 
