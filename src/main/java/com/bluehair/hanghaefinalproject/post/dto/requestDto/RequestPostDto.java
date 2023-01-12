@@ -9,16 +9,12 @@ public class RequestPostDto {
     private String contents;
     private String postImg;
     private String lyrics;
-    private String musicFile;
-    private String musicPart;
 
     public PostDto toPostDto() {
         return PostDto.builder()
                 .title(title)
                 .contents(contents)
                 .lyrics(lyrics)
-                .musicFile(musicFile)
-                .musicPart(musicPart)
                 .postImg(postImg)
                 .build();
     }
