@@ -56,7 +56,7 @@ public class PostService {
         postRepository.save(post);
 
         // Query 최적화 필요(save < saveall < jpql)
-        List<String> hashtagList = tagExctractor.extractHashTags(postDto.getTag());
+        List<String> hashtagList = tagExctractor.extractHashTags(postDto.getContents());
         List<Tag> tagList = new ArrayList<>();
         for (String s : hashtagList) {
             tagList.add(TAG_MAPPER.stringToTag(s, post));

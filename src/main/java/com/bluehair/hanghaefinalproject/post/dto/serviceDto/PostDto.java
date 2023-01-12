@@ -11,16 +11,14 @@ public class PostDto {
     private String contents;
     private String lyrics;
     private String postImg;
-    private String tag;
 
     @Builder
     public PostDto(String title, String contents, String lyrics,
-                String postImg,String tag){
+                String postImg){
         this.title = title;
         this.contents = contents;
         this.lyrics = lyrics;
         this.postImg = postImg;
-        this.tag = tag;
     }
 
     public void setRandomPostImg() {

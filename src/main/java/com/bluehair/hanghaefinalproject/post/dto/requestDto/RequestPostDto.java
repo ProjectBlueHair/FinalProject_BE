@@ -9,7 +9,6 @@ public class RequestPostDto {
     private String contents;
     private String postImg;
     private String lyrics;
-    private String tag;
 
     public PostDto toPostDto() {
         return PostDto.builder()
@@ -17,7 +16,6 @@ public class RequestPostDto {
                 .contents(contents)
                 .lyrics(lyrics)
                 .postImg(postImg)
-                .tag(tag)
                 .build();
     }
 }
