@@ -73,4 +73,8 @@ public class Post extends Timestamped {
     public void viewCount() {
         this.viewCount++;
     }
+
+    public void updateMusicFile(String musicFile){
+        this.musicFile = musicFile;
+    }
 }
