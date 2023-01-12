@@ -14,6 +14,8 @@ import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
+import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
+import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.bluehair.hanghaefinalproject.common.exception.Domain.COMMENT;
+import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.COMMENT_NOT_FOUND;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.MEMBER_NOT_FOUND;
@@ -32,6 +36,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final NotificationService notificationService;
 
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
 
@@ -49,6 +54,12 @@ public class CommentService {
         Comment comment = new Comment(parentId, nickname, member.get().getProfileImg(),commentDto.getContents(), post);
 
         commentRepository.save(comment);
+        //post 작성자에게 댓글 알림 - 댓글 조회로 이동
+        Member postMember = memberRepository.findByNickname(post.getNickname())
+                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
+        String url = "/api/post/"+postId+"/comment";
+        String content = post.getTitle()+"에 "+nickname+"님이 댓글을 남겼습니다.";
+        notificationService.send(postMember, NotificationType.COMMENT, content, url);
 
     }
 
