@@ -43,9 +43,6 @@ public class Post extends Timestamped {
     @Column
     private String musicFile;
 
-    @Column
-    private String musicPart;
-
     @ColumnDefault("0")
     private Long viewCount;
 
@@ -63,13 +60,11 @@ public class Post extends Timestamped {
 
     @Builder
     public Post (String title, String contents, String nickname, String lyrics,
-                 String postImg, String musicFile, String musicPart){
+                 String postImg){
         this.title = title;
         this.contents = contents;
         this.nickname = nickname;
         this.lyrics = lyrics;
-        this.musicFile = musicFile;
-        this.musicPart = musicPart;
         this.postImg = postImg;
     }
 
