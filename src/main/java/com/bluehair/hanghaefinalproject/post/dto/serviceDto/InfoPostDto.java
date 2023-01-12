@@ -11,8 +11,6 @@ public class InfoPostDto {
     private String contents;
     private String lyrics;
     private String postImg;
-    private String musicFile;
-    private String musicPart;
     private Long likeCount;
     private Long viewCount;
     // 태그 리스트 추가 구현 필요
@@ -22,8 +20,6 @@ public class InfoPostDto {
         this.contents = post.getContents();
         this.lyrics = post.getLyrics();
         this.postImg = post.getPostImg();
-        this.musicFile = post.getMusicFile();
-        this.musicPart = post.getMusicPart();
         this.likeCount = post.getLikeCount();
         this.viewCount = post.getViewCount();
     }

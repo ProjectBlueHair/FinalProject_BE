@@ -10,18 +10,14 @@ public class PostDto {
     private String title;
     private String contents;
     private String lyrics;
-    private String musicFile;
-    private String musicPart;
     private String postImg;
 
     @Builder
     public PostDto(String title, String contents, String lyrics,
-                String postImg,String musicFile, String musicPart){
+                String postImg){
         this.title = title;
         this.contents = contents;
         this.lyrics = lyrics;
-        this.musicFile = musicFile;
-        this.musicPart = musicPart;
         this.postImg = postImg;
     }
 
