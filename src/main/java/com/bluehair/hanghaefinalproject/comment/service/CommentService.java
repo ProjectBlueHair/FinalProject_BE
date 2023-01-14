@@ -135,7 +135,7 @@ public class CommentService {
             Long postId = comment.getPost().getId();
             String url = "/api/post/"+postId+"/comment";
             String content = commentMember.getNickname()+"님의 댓글을 "+nickname+"님이 좋아합니다.";
-            notificationService.send(commentMember, NotificationType.COMMENT, content, url);
+            notificationService.send(commentMember, NotificationType.COMMENT_LIKED, content, url);
 
             return liked = true;
         }
