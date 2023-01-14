@@ -54,8 +54,8 @@ public class CommentService {
         }
 
         Optional<Member> member = memberRepository.findByNickname(nickname);
-
-        Comment comment = new Comment(parentId, nickname, member.get().getProfileImg(),commentDto.getContents(), post);
+        Long likeCount = 0L;
+        Comment comment = new Comment(parentId, nickname, member.get().getProfileImg(),commentDto.getContents(),likeCount, post);
 
         commentRepository.save(comment);
         //post 작성자에게 댓글 알림 - 댓글 조회로 이동
@@ -122,12 +122,15 @@ public class CommentService {
         Optional<CommentLike> like = commentLikeRepository.findByCommentIdAndMemberId(commentId,member.getId());
         if (like.isPresent()){
             CommentLike commentLike = like.get();
+            comment.unlike();
             commentLikeRepository.delete(commentLike);
             return liked = false;
         }else{
             CommentLike commentLike = new CommentLike(commentLikeCompositeKey, member, comment);
+            comment.like();
             commentLikeRepository.save(commentLike);
             return liked = true;
         }
+
     }
 }
