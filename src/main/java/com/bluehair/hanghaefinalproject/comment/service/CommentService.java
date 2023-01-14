@@ -129,8 +129,18 @@ public class CommentService {
             CommentLike commentLike = new CommentLike(commentLikeCompositeKey, member, comment);
             comment.like();
             commentLikeRepository.save(commentLike);
+
+            Member commentMember = memberRepository.findByNickname(comment.getNickname())
+                    .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
+            Long postId = comment.getPost().getId();
+            String url = "/api/post/"+postId+"/comment";
+            String content = commentMember.getNickname()+"님의 댓글을 "+nickname+"님이 좋아합니다.";
+            notificationService.send(commentMember, NotificationType.COMMENT_LIKED, content, url);
+
             return liked = true;
         }
+
+
 
     }
 }
