@@ -43,7 +43,9 @@ public enum SucessCode {
     //SSE
     SSE_SUBSCRIBE(HttpStatus.OK, "SSE 연결 성공", 2000),
     NOTIFICATION_LIST(HttpStatus.OK, "알림 전체 조회 성공", 2000),
-    NOTIFICATION_READ(HttpStatus.OK, "알림 확인 성공", 2000 );
+    NOTIFICATION_READ(HttpStatus.OK, "알림 확인 성공", 2000 ),
+
+    POST_LIKE(HttpStatus.OK, "게시글 좋아요 성공", 2000);
 
     private final HttpStatus httpStatus;
     private final String message;

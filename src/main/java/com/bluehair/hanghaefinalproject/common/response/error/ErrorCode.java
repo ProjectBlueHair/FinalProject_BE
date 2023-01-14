@@ -38,6 +38,8 @@ public enum ErrorCode {
     INVALID_SOUNDSAMPLE(HttpStatus.OK, "유효하지 않은 음원입니다.", 4003),
     NOTIFICATION_NOT_FOUND(HttpStatus.OK, "알림이 존재하지 않습니다", 4049),
 
+    ALREADY_LIKEDPOST(HttpStatus.OK, "이미 좋아요한 게시물입니다.", 4048),
+
     // Server Error
     UNHANDLED_SERVER_ERROR(HttpStatus.OK, "처리되지 않은 서버 에러입니다.", 5000);
 

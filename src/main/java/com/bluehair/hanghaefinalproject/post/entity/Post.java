@@ -81,4 +81,12 @@ public class Post extends Timestamped {
         this.postImg = postImg;
 
     }
+
+    public void likeCount(){
+        this.likeCount++;
+    }
+
+    public void disLike(){
+        this.likeCount--;
+    }
 }
