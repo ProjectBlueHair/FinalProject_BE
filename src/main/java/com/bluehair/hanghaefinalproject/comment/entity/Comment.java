@@ -29,19 +29,30 @@ public class Comment extends Timestamped {
     @Column
     private Long parentsId;
 
+    @Column
+    private Long likeCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
 
     @Builder
-    public Comment(Long parentsId, String nickname, String profileImg, String contents, Post post){
+    public Comment(Long parentsId, String nickname, String profileImg, String contents,Long likeCount,Post post){
         this.parentsId = parentsId;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.contents = contents;
+        this.likeCount = likeCount;
         this.post = post;
     }
     public void update(CommentDto commentDto){
         this.contents = commentDto.getContents();
+    }
+    public void like() {
+        this.likeCount += 1;
+    }
+
+    public void unlike() {
+        this.likeCount -= 1;
     }
 }
