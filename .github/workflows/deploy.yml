@@ -48,6 +48,14 @@ jobs:
         OCCUPY_SECRET_DIR: src/main/resources
         OCCUPY_SECRET_DIR_FILE_NAME: application-s3.properties
       run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME
+      
+    # RDS Properties
+    - name: RDSSecret
+      env:
+        OCCUPY_SECRET: ${{ secrets.RDS_SECRET }}
+        OCCUPY_SECRET_DIR: src/main/resources
+        OCCUPY_SECRET_DIR_FILE_NAME: application-MySQL.properties
+      run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME
 
     # (3) Gradle build (Test 제외)
     - name: Build with Gradle
