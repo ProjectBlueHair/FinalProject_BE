@@ -21,8 +21,6 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_COMMENT;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.DELETE_COMMENT;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.GET_COMMENT;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.LIKE_COMMENT;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UNLIKE_COMMENT;
 
 @Tag(name = "Post", description = "댓글 관련 API")
 @RestController
@@ -88,24 +86,6 @@ public class CommentController {
     public ResponseEntity<SuccessResponse<Object>> getCommentList(@PathVariable Long postId){
 
         return SuccessResponse.toResponseEntity(GET_COMMENT, commentService.getComment(postId));
-    }
-
-    @Tag(name = "Comment")
-    @Operation(summary = "댓글 좋아요", description = "댓글 좋아요")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "2000", description = "댓글 좋아요 성공"),
-            @ApiResponse(responseCode = "2000", description = "댓글 좋아요 취소"),
-            @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
-    })
-    @PostMapping("/comment/like/{commentId}")
-    public ResponseEntity<SuccessResponse<Object>> likeComment(@PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails){
-
-        boolean liked = commentService.likeComment(commentId, userDetails.getMember().getNickname());
-        if (liked == true){
-            return SuccessResponse.toResponseEntity(LIKE_COMMENT,null);
-        }else{
-            return SuccessResponse.toResponseEntity(UNLIKE_COMMENT,null);
-        }
     }
 
 }

@@ -4,9 +4,6 @@ package com.bluehair.hanghaefinalproject.comment.service;
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentDto;
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentListDto;
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
-import com.bluehair.hanghaefinalproject.comment.entity.CommentLike;
-import com.bluehair.hanghaefinalproject.comment.entity.CommentLikeCompositeKey;
-import com.bluehair.hanghaefinalproject.comment.repository.CommentLikeRepository;
 import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
 import com.bluehair.hanghaefinalproject.common.exception.Layer;
@@ -40,7 +37,6 @@ public class CommentService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
-    private final CommentLikeRepository commentLikeRepository;
 
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
 
@@ -107,40 +103,4 @@ public class CommentService {
         return commentList;
     }
 
-    public boolean likeComment(Long commentId, String nickname) {
-
-        boolean liked = false;
-
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND)
-        );
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
-        );
-
-        CommentLikeCompositeKey commentLikeCompositeKey = new CommentLikeCompositeKey(commentId, member.getId());
-        Optional<CommentLike> like = commentLikeRepository.findByCommentIdAndMemberId(commentId,member.getId());
-        if (like.isPresent()){
-            CommentLike commentLike = like.get();
-            comment.unlike();
-            commentLikeRepository.delete(commentLike);
-            return liked = false;
-        }else{
-            CommentLike commentLike = new CommentLike(commentLikeCompositeKey, member, comment);
-            comment.like();
-            commentLikeRepository.save(commentLike);
-
-            Member commentMember = memberRepository.findByNickname(comment.getNickname())
-                    .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
-            Long postId = comment.getPost().getId();
-            String url = "/api/post/"+postId+"/comment";
-            String content = commentMember.getNickname()+"님의 댓글을 "+nickname+"님이 좋아합니다.";
-            notificationService.send(commentMember, NotificationType.COMMENT_LIKED, content, url);
-
-            return liked = true;
-        }
-
-
-
-    }
 }
