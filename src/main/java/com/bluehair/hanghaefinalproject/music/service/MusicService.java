@@ -134,7 +134,9 @@ public class MusicService {
 
         String musicFile = uploadMusic(mixedSampleInMFile);
 
-        deleteS3(post.getMusicFile());
+        if (post.getMusicFile()!=null){
+            deleteS3(post.getMusicFile());
+        }
 
         post.updateMusicFile(musicFile);
 
