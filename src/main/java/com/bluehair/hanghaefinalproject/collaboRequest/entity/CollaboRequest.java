@@ -21,9 +21,6 @@ public class CollaboRequest extends Timestamped {
     private long id;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
     private String contents;
 
     @Column(nullable = false)
@@ -43,8 +40,7 @@ public class CollaboRequest extends Timestamped {
     private List<Music> musicList = new ArrayList<>();
 
     @Builder
-    public CollaboRequest(String title, String contents, String nickname, Boolean activated, Boolean approval, Post post) {
-        this.title = title;
+    public CollaboRequest(String contents, String nickname, Boolean activated, Boolean approval, Post post) {
         this.contents = contents;
         this.nickname = nickname;
         this.activated = activated;
@@ -57,7 +53,6 @@ public class CollaboRequest extends Timestamped {
     }
 
     public void update(CollaboRequestDto requestDto){
-        this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
 }

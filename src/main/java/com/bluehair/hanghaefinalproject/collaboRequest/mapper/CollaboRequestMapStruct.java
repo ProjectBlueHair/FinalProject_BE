@@ -20,7 +20,6 @@ public interface CollaboRequestMapStruct {
 
     default CollaboRequest CollaboRequestDtotoCollaboRequest(CollaboRequestDto collaboRequestDto, Post post){
         return CollaboRequest.builder()
-                .title(collaboRequestDto.getTitle())
                 .contents(collaboRequestDto.getContents())
                 .activated(collaboRequestDto.getActivated())
                 .approval(collaboRequestDto.getApproval())
@@ -35,7 +34,6 @@ public interface CollaboRequestMapStruct {
                                                                            List<String> musicFileList){
         return CollaboRequestListForPostDto.builder()
                 .collaboId(collaboRequest.getId())
-                .title(collaboRequest.getTitle())
                 .nickname(collaboRequest.getNickname())
                 .profileImg(profileImg)
                 .createdAt(collaboRequest.getCreatedAt())

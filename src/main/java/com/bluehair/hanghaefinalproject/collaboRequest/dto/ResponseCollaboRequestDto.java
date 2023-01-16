@@ -14,8 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ResponseCollaboRequestDto {
-    @Schema(description = "콜라보 리퀘스트 제목", example = "콜라보 요청합니다.")
-    private String title;
     @Schema(description = "콜라보 리퀘스트 내용", example = "콜라보하고 싶습니다.")
     private String contents;
     @Schema(description = "닉네임", example = "test01")
@@ -33,7 +31,6 @@ public class ResponseCollaboRequestDto {
 
     @Builder
     public ResponseCollaboRequestDto(CollaboRequest collaboRequest, List<ResponseMusicDto> musicDtoList) {
-        this.title = collaboRequest.getTitle();
         this.contents = collaboRequest.getContents();
         this.nickname = collaboRequest.getNickname();
         this.createdAt = LocalDateTimeConverter.timeToString(collaboRequest.getCreatedAt());
