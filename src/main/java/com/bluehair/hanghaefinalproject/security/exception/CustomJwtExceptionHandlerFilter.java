@@ -28,9 +28,7 @@ public class CustomJwtExceptionHandlerFilter extends OncePerRequestFilter {
 
     private void setErrorResponse(HttpServletResponse response,
                                   CustomJwtException ex) throws IOException{
-        // 1. Json Type으로 반환할 것 명시
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        // 2. HttpStatus 설정
         response.setStatus(ex.getErrorCode().getHttpStatus().value());
         try (OutputStream os = response.getOutputStream()) {
             ObjectMapper objectMapper = new ObjectMapper();
