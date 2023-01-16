@@ -1,15 +1,20 @@
 package com.bluehair.hanghaefinalproject.common.exception;
 
+import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 import com.bluehair.hanghaefinalproject.common.response.error.ErrorResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private final CollaboRequestRepository collaboRequestRepository;
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
         log.error("NotFoundException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
@@ -36,7 +41,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleInvalidRequestException(InvalidRequestException e) {
-        log.error("InvalidException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("InvalidRequestException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        return ErrorResponse.toResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler
+    @Transactional
+    public ResponseEntity<ErrorResponse> handleInvalidAudioFileException(InvalidAudioFileException e) {
+        log.error("InvalidAudioFileException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        if(e.getCollaboRequest()!=null){
+            collaboRequestRepository.delete(e.getCollaboRequest());
+        }
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 }
