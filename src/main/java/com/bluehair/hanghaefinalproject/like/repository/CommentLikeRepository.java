@@ -1,6 +1,6 @@
-package com.bluehair.hanghaefinalproject.comment.repository;
+package com.bluehair.hanghaefinalproject.like.repository;
 
-import com.bluehair.hanghaefinalproject.comment.entity.CommentLike;
+import com.bluehair.hanghaefinalproject.like.entity.CommentLike;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

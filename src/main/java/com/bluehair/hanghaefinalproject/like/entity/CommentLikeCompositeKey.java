@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.comment.entity;
+package com.bluehair.hanghaefinalproject.like.entity;
 
 import lombok.NoArgsConstructor;
 

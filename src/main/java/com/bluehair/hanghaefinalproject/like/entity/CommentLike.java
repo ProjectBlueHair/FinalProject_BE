@@ -1,31 +1,29 @@
-package com.bluehair.hanghaefinalproject.postLike.entity;
+package com.bluehair.hanghaefinalproject.like.entity;
 
+import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
-import com.bluehair.hanghaefinalproject.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+
 @Entity
 @NoArgsConstructor
 @Getter
-public class PostLike {
-
+public class CommentLike{
     @EmbeddedId
-    private PostLikeCompositeKey id;
-
+    private CommentLikeCompositeKey id;
     @MapsId("memberId")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
-    @MapsId("postLikedId")
+    @MapsId("commentId")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Post postLiked;
+    private Comment comment;
 
-    public PostLike(PostLikeCompositeKey id, Member member, Post postLiked){
+    public CommentLike(CommentLikeCompositeKey id, Member member, Comment comment) {
         this.id = id;
         this.member = member;
-        this.postLiked = postLiked;
+        this.comment = comment;
     }
 }

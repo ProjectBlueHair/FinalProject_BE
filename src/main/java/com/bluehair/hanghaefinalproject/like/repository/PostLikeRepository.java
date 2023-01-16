@@ -1,7 +1,7 @@
-package com.bluehair.hanghaefinalproject.postLike.repository;
+package com.bluehair.hanghaefinalproject.like.repository;
 
-import com.bluehair.hanghaefinalproject.postLike.entity.PostLike;
-import com.bluehair.hanghaefinalproject.postLike.entity.PostLikeCompositeKey;
+import com.bluehair.hanghaefinalproject.like.entity.PostLike;
+import com.bluehair.hanghaefinalproject.like.entity.PostLikeCompositeKey;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
