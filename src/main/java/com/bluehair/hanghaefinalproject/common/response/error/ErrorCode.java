@@ -19,13 +19,13 @@ public enum ErrorCode {
     ALREADY_UNFOLLWED(HttpStatus.OK, "이미 언팔로우한 회원입니다.", 4040),
 
     // JWT
-    ACCESSTOKEN_NOT_EXIST(HttpStatus.OK, "Access Token이 존재하지 않습니다.", 4011),
-    REFRESHTOKEN_NOT_EXIST(HttpStatus.OK, "Refresh Token이 존재하지 않습니다.", 4012),
-    INVALID_ACCESSTOKEN(HttpStatus.OK, "유효하지 않은 Access Token입니다.", 4013),
-    INVALID_REFRESHTOKEN(HttpStatus.OK, "유효하지 않은 Refresh Token입니다.", 4014),
-    EXPIRED_ACCESSTOKEN(HttpStatus.OK, "만료된 Access Token입니다.", 4015),
-    EXPIRED_REFRESHTOKEN(HttpStatus.OK, "만료된 Refresh Token입니다.", 4016),
-    MEMBER_NOT_AUTHORIZED(HttpStatus.OK, "접근 권한이 없는 사용자입니다.", 4031),
+    ACCESSTOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED, "Access Token이 존재하지 않습니다.", 4011),
+    REFRESHTOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED, "Refresh Token이 존재하지 않습니다.", 4012),
+    INVALID_ACCESSTOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Access Token입니다.", 4013),
+    INVALID_REFRESHTOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다.", 4014),
+    EXPIRED_ACCESSTOKEN(HttpStatus.UNAUTHORIZED, "만료된 Access Token입니다.", 4015),
+    EXPIRED_REFRESHTOKEN(HttpStatus.UNAUTHORIZED, "만료된 Refresh Token입니다.", 4016),
+    MEMBER_NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "접근 권한이 없는 사용자입니다.", 4031),
 
 
     // Post
