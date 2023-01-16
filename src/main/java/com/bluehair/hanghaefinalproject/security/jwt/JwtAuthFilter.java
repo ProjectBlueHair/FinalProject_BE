@@ -27,7 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException, CustomJwtException {
         String token = jwtUtil.resolveToken(request, "AccessToken");
 
-        if (token == null){
+        if (token == null || request.getRequestURI().equals("/api/member/reissuance")){
             filterChain.doFilter(request, response);
             return;
         }
