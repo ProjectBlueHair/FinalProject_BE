@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.post.controller;
 
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
+import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestUpdatePostDto;
 import com.bluehair.hanghaefinalproject.post.service.PostService;
@@ -18,11 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.INFO_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MAIN_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
 
 
 @Tag(name = "Post", description = "게시글 관련 API")
@@ -84,4 +83,14 @@ public class PostController {
         return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable));
     }
 
+    @Tag(name = "Post")
+    @Operation(summary = "상세 게시글 페이지 음악 조회", description = "상세 게시글 페이지 음악 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "게시글 전체 음악 조회 성공"),
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다.")
+    })
+    @GetMapping("/{postId}/music")
+    public ResponseEntity<SuccessResponse<List<ResponseMusicDto>>> musicPost(@PathVariable Long postId){
+        return SuccessResponse.toResponseEntity(MUSIC_POST, postService.musicPost(postId));
+    }
 }
