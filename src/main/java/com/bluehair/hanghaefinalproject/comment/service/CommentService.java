@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.comment.service;
 
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentDto;
 import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.CommentListDto;
+import com.bluehair.hanghaefinalproject.comment.dto.serviceDto.ReplyDto;
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,8 +100,17 @@ public class CommentService {
 
     public List<CommentListDto> getComment(Long postId) {
 
-        List<CommentListDto> commentList = commentRepository.findByPostId(postId);
+        List<Comment> notParentsCommentList = commentRepository.findByPostIdAndParentsId(postId, null);
 
+        List<CommentListDto> commentList = new ArrayList<>();
+        for (Comment comment : notParentsCommentList){
+            Comment comments = commentRepository.findById(comment.getId()).orElseThrow(
+                    () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
+            );
+            List<ReplyDto> replyList = commentRepository.findByParentsId(comments.getId());
+            CommentListDto commentListDto = new CommentListDto(comments, comments.getCreatedAt(), comments.getModifiedAt(), replyList);
+            commentList.add(commentListDto);
+        }
         return commentList;
     }
 

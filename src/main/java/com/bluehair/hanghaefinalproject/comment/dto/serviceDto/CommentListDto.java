@@ -1,11 +1,13 @@
 package com.bluehair.hanghaefinalproject.comment.dto.serviceDto;
 
+import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 import com.bluehair.hanghaefinalproject.common.service.LocalDateTimeConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "댓글 리스트 조회 Dto")
 @Getter
@@ -25,16 +27,18 @@ public class CommentListDto {
     private String createdAt;
     @Schema(description = "수정시간", example = "수정시간")
     private String modifiedAt;
+    @Schema(description = "대댓글 리스트", example = "대댓글 리스트")
+    private List<ReplyDto> replyList;
 
     @Builder
-    public CommentListDto(Long id,String profileImg, String nickname,String contents, Long parentsId
-                          ,LocalDateTime createdAt, LocalDateTime modifiedAt){
-        this.id = id;
-        this.profileImg = profileImg;
-        this.nickname = nickname;
-        this.contents = contents;
-        this.parentsId = parentsId;
+    public CommentListDto(Comment comment, LocalDateTime createdAt, LocalDateTime modifiedAt, List<ReplyDto> replyList){
+        this.id = comment.getId();
+        this.profileImg = comment.getProfileImg();
+        this.nickname = comment.getNickname();
+        this.contents = comment.getContents();
+        this.parentsId = comment.getParentsId();
         this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
         this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
+        this.replyList = replyList;
     }
 }
