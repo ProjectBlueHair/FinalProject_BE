@@ -30,8 +30,7 @@ public interface CollaboRequestMapStruct {
 
     default CollaboRequestListForPostDto CollaboRequestListtoCollaboRequestListDto(CollaboRequest collaboRequest,
                                                                            String profileImg,
-                                                                           List<String> musicPartsList,
-                                                                           List<String> musicFileList){
+                                                                           List<String> musicPartsList){
         return CollaboRequestListForPostDto.builder()
                 .collaboId(collaboRequest.getId())
                 .nickname(collaboRequest.getNickname())
@@ -39,7 +38,6 @@ public interface CollaboRequestMapStruct {
                 .createdAt(collaboRequest.getCreatedAt())
                 .modifiedAt(collaboRequest.getModifiedAt())
                 .musicPartsList(musicPartsList)
-                .musicFileList(musicFileList)
                 .build();
     }
 

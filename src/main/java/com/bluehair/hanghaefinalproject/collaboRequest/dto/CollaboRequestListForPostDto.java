@@ -24,21 +24,16 @@ public class CollaboRequestListForPostDto {
     @ArraySchema
     private List<String> musicPartsList;
 
-    @ArraySchema
-    private List<String> musicFileList;
-
     @Builder
     public CollaboRequestListForPostDto(Long collaboId, String nickname,
                                         String profileImg, LocalDateTime createdAt,
-                                        LocalDateTime modifiedAt, List<String> musicPartsList,
-                                        List<String> musicFileList) {
+                                        LocalDateTime modifiedAt, List<String> musicPartsList) {
         this.collaboId = collaboId;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
         this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
         this.musicPartsList = musicPartsList;
-        this.musicFileList = musicFileList;
 
     }
 }
