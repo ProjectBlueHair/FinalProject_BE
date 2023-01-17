@@ -79,8 +79,8 @@ public class CollaboRequestController {
     })
     @Operation(summary = "해당 게시글 관련 콜라보 전체 조회")
     @GetMapping("/api/post/{postid}/collabo")
-    public ResponseEntity<SuccessResponse<List<CollaboRequestListForPostDto>>> getCollaboRequestList(@PathVariable Long postid){
-        return SuccessResponse.toResponseEntity(COLLABO_LIST, collaboRequestService.getCollaboRequestList(postid));
+    public ResponseEntity<SuccessResponse<List<CollaboRequestListForPostDto>>> getCollaboRequestList(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails ){
+        return SuccessResponse.toResponseEntity(COLLABO_LIST, collaboRequestService.getCollaboRequestList(postid, userDetails.getMember()));
     }
 
     @Tag(name = "CollaboRequest")
