@@ -42,10 +42,7 @@ public class PostController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<Object>> createPost(@RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal CustomUserDetails userDetails){
-
-        postService.createPost(requestPostDto.toPostDto(), userDetails.getMember().getNickname());
-
-        return SuccessResponse.toResponseEntity(CREATE_POST,null);
+        return SuccessResponse.toResponseEntity(CREATE_POST,postService.createPost(requestPostDto.toPostDto(), userDetails.getMember().getNickname()));
     }
     @Tag(name = "Post")
     @Operation(summary = "게시글 수정", description = "게시글 수정")
@@ -85,10 +82,13 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "전체 게시글 조회 성공")
     })
-    @GetMapping("")
-    public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable){
-
-        return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable));
+    @GetMapping(value = {"","/{title}"})
+    public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable, @RequestParam(name = "search", required = false) String search){
+        if(search != null){
+            return SuccessResponse.toResponseEntity(SEARCH_POST,postService.mainPost(pageable,search));
+        }else{
+            return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable, search));
+        }
     }
 
     @Tag(name = "Post")

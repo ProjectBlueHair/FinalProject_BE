@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.common.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class LocalDateTimeConverter {
@@ -35,5 +36,9 @@ public class LocalDateTimeConverter {
             return convertedTime + "전";
         }
         return "0초 전";
+    }
+
+    public static String timeToString8digits(LocalDateTime time) {
+        return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }

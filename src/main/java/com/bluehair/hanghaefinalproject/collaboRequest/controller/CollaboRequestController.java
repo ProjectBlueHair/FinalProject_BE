@@ -50,15 +50,9 @@ public class CollaboRequestController {
                                                                   @Parameter(description = "WAV 및 2 Channel 오디오만 지원합니다.")
                                                                   @RequestPart(value = "musicFile") List<MultipartFile> musicFileList,
                                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        musicService.saveMusic(musicFileList,
-                postid,
-                requestCollaboRequestDto.getMusicPartList(),
-                collaboRequestService.collaboRequest(postid,
-                        requestCollaboRequestDto.tocollaboRequestDetailsDto(),
-                        customUserDetails.getMember()
-        ));
-
-        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, null);
+        Long collaboRequestId = collaboRequestService.collaboRequest(postid, requestCollaboRequestDto.tocollaboRequestDetailsDto(), customUserDetails.getMember());
+        musicService.saveMusic(musicFileList, postid, requestCollaboRequestDto.getMusicPartList(), collaboRequestId);
+        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, collaboRequestId);
     }
 
     @Tag(name = "CollaboRequest")
