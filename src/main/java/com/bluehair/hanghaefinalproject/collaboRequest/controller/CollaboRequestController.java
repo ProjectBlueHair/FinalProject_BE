@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboReques
 import com.bluehair.hanghaefinalproject.collaboRequest.service.CollaboRequestService;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 
+import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.music.service.MusicService;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @Tag(name = "CollaboRequest", description = "콜라보 리퀘스트 관련 API")
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class CollaboRequestController {
 
     private final CollaboRequestService collaboRequestService;
@@ -80,7 +83,13 @@ public class CollaboRequestController {
     @Operation(summary = "해당 게시글 관련 콜라보 전체 조회")
     @GetMapping("/api/post/{postid}/collabo")
     public ResponseEntity<SuccessResponse<List<CollaboRequestListForPostDto>>> getCollaboRequestList(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails ){
-        return SuccessResponse.toResponseEntity(COLLABO_LIST, collaboRequestService.getCollaboRequestList(postid, userDetails.getMember()));
+        Member member = null;
+        try {
+            member = userDetails.getMember();
+        }catch (NullPointerException e){
+            log.info("비로그인 사용자 접근 : post-" +postid + "-collabo_List");
+        }
+        return SuccessResponse.toResponseEntity(COLLABO_LIST, collaboRequestService.getCollaboRequestList(postid, member));
     }
 
     @Tag(name = "CollaboRequest")
