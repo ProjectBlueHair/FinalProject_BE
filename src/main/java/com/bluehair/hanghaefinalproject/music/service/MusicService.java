@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 import com.bluehair.hanghaefinalproject.common.exception.InvalidAudioFileException;
+import com.bluehair.hanghaefinalproject.common.exception.InvalidRequestException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.MultipartFileConverter;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
@@ -60,7 +61,7 @@ public class MusicService {
         try {
             saveMusicListAtS3(multipartFileList, musicPartList, collaboRequest, post);
         }
-        catch(UnsupportedAudioFileException | IOException e) {
+        catch(UnsupportedAudioFileException | IOException | InvalidRequestException e) {
             throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, collaboRequest);
         }
     }
@@ -172,7 +173,7 @@ public class MusicService {
         try {
             saveMusicListAtS3(multipartFileList, musicPartList, collaboRequest, post);
         }
-        catch(UnsupportedAudioFileException | IOException e) {
+        catch(UnsupportedAudioFileException | IOException | InvalidRequestException e) {
             throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, null);
         }
     }

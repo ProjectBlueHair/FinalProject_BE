@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.music.service;
 import com.bluehair.hanghaefinalproject.common.exception.InvalidRequestException;
 
 import com.bluehair.hanghaefinalproject.common.service.MultipartFileConverter;
+import com.bluehair.hanghaefinalproject.common.service.Validator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,12 +28,11 @@ public class AudioSample {
     @Setter
     private float[] left;
 
-    public AudioSample(File file) throws UnsupportedAudioFileException, IOException {
+    public AudioSample(File file) throws UnsupportedAudioFileException, IOException, InvalidRequestException {
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
         format = audioInputStream.getFormat();
 
-        // 2 Channel 인지 확인
-        if (format.getChannels() != 2) {
+        if(Validator.isValidAudioFormat(format)){
             throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE);
         }
 
