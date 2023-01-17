@@ -51,9 +51,12 @@ public class MusicService {
     @Transactional
     public void saveMusic(List<MultipartFile> multipartFileList, Long postId,
                           List<String> musicPartList,
-                          CollaboRequest collaboRequest) {
+                          Long collaboRequestId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, POST_NOT_FOUND));
+        CollaboRequest collaboRequest = collaboRequestRepository.findById(collaboRequestId)
+                .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND));
+
         try {
             saveMusicListAtS3(multipartFileList, musicPartList, collaboRequest, post);
         }
@@ -78,7 +81,6 @@ public class MusicService {
             AudioSample postAudioSample = new AudioSample(file);
             playingTime = (double) postAudioSample.getFrameLength() / postAudioSample.getFormat().getFrameRate();
         } catch (Exception e) {
-            log.error("PostMusicFile 확인 불가능");
             for (AudioSample audioSample : audioSampleList) {
                 if ((double) audioSample.getFrameLength() / audioSample.getFormat().getFrameRate() > playingTime){
                     playingTime = (double) audioSample.getFrameLength() / audioSample.getFormat().getFrameRate();

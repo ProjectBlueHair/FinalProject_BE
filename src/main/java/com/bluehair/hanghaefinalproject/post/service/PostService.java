@@ -47,7 +47,7 @@ public class PostService {
     private final TagRepository tagRepository;
     private final TagExctractor tagExctractor;
     @Transactional
-    public void createPost(PostDto postDto, String nickname) {
+    public Long createPost(PostDto postDto, String nickname) {
 
         if (postDto.getPostImg() == null) {
             postDto.setRandomPostImg();
@@ -64,6 +64,8 @@ public class PostService {
             tagList.add(TAG_MAPPER.stringToTag(s, post));
         }
         tagRepository.saveTagList(tagList);
+
+        return post.getId();
     }
 
     @Transactional
