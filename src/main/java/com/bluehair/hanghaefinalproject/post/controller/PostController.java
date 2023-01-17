@@ -74,10 +74,13 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "전체 게시글 조회 성공")
     })
-    @GetMapping("")
-    public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable){
-
-        return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable));
+    @GetMapping(value = {"","/{title}"})
+    public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable, @RequestParam(name = "search", required = false) String search){
+        if(search != null){
+            return SuccessResponse.toResponseEntity(SEARCH_POST,postService.mainPost(pageable,search));
+        }else{
+            return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable, search));
+        }
     }
 
     @Tag(name = "Post")

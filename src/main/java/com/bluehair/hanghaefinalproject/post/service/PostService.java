@@ -46,6 +46,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
     private final TagExctractor tagExctractor;
+
     @Transactional
     public Long createPost(PostDto postDto, String nickname) {
 
@@ -72,7 +73,7 @@ public class PostService {
     public InfoPostDto infoPost(Long postid) {
 
         Post post = postRepository.findById(postid).orElseThrow(
-                () -> new NotFoundException(Domain.POST, Layer.SERVICE,POST_NOT_FOUND)
+                () -> new NotFoundException(Domain.POST, Layer.SERVICE, POST_NOT_FOUND)
         );
 
         post.viewCount();
@@ -83,11 +84,22 @@ public class PostService {
     }
 
 
-    public List<MainPostDto> mainPost(Pageable pageable) {
+    public List<MainPostDto> mainPost(Pageable pageable, String search) {
 
         List<MainPostDto> mainPostDtoList = new ArrayList<>();
-
-        List<Post> postList = postRepository.findAllByOrderByModifiedAtDesc(pageable);
+        List<Post> postList = new ArrayList<>();
+        String searchContents = search;
+        if (search == null || search.equals(" ")) {
+            postList = postRepository.findAllByOrderByModifiedAtDesc(pageable);
+        }
+        if (search != null) {
+            if (search.charAt(0) != '#') {
+                postList = postRepository.findByTitleContainsOrContentsContains(pageable, search, searchContents);
+            }
+            if (search.charAt(0) == '#') {
+                postList = postRepository.findByContentsContains(pageable, search);
+            }
+        }
 
         for (Post post : postList){
 
@@ -98,8 +110,6 @@ public class PostService {
             List<Tag> tagGet = tagRepository.findAllByPostId(post.getId());
 
             List<String> tagList = new ArrayList<>();
-
-
 
             for (Tag tag : tagGet){
                 tagList.add(tag.getContents());
@@ -126,6 +136,7 @@ public class PostService {
                 MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, member.get().getProfileImg(),collaboRequest.getNickname());
                 mainProfile.add(mainProfileDto);
             }
+
             // 닉네임을 기준으로 중복 제거
             Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
             List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
@@ -136,6 +147,7 @@ public class PostService {
         return mainPostDtoList;
     }
 
+    @Transactional
     public void updatePost(Long postId, PostUpdateDto postUpdateDto, String nickname) {
 
         Post post = postRepository.findById(postId).orElseThrow(
