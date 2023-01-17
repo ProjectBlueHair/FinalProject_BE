@@ -72,7 +72,6 @@ public class PostService {
 
     @Transactional
     public InfoPostDto infoPost(Long postid, Member member) {
-
         Post post = postRepository.findById(postid).orElseThrow(
                 () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
         );
@@ -80,14 +79,19 @@ public class PostService {
         post.viewCount();
 
         postRepository.save(post);
+
+        Boolean isLiked = false;
+
+        if(member!=null){
         Member postMember = memberRepository.findByNickname(post.getNickname()).orElseThrow(
                 () -> new NotFoundException(POST, SERVICE, MEMBER_NOT_FOUND)
         );
-        Boolean isLiked = false;
+
         PostLikeCompositeKey postLikeCompositeKey
                 = new PostLikeCompositeKey(member.getId(), postMember.getId() );
         if (postLikeRepository.findById(postLikeCompositeKey).isPresent()){
             isLiked = true;
+        }
         }
 
         return new InfoPostDto(post, isLiked);

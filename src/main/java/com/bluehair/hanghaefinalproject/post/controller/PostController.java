@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.post.controller;
 
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
+import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestUpdatePostDto;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +30,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @RestController
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -68,8 +71,13 @@ public class PostController {
     })
     @GetMapping("/{postid}")
     public ResponseEntity<SuccessResponse<Object>> infoPost(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails){
-
-        return SuccessResponse.toResponseEntity(INFO_POST,postService.infoPost(postid, userDetails.getMember()));
+        Member member = null;
+        try {
+            member = userDetails.getMember();
+        }catch (NullPointerException e){
+            log.info("비로그인 사용자 접근 : infoPost");
+        }
+        return SuccessResponse.toResponseEntity(INFO_POST,postService.infoPost(postid, member));
     }
 
     @Tag(name = "Post")
