@@ -46,7 +46,7 @@ public class CollaboRequestService {
     private final NotificationService notificationService;
 
     @Transactional
-    public CollaboRequest collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
+    public Long collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
 
@@ -64,7 +64,7 @@ public class CollaboRequestService {
         String content = post.getTitle()+"에 대한 콜라보 요청이 있습니다.";
         notificationService.send(postMember, NotificationType.COLLABO_REQUEST, content, url);
 
-        return collaboRequest;
+        return collaboRequest.getId();
 
     }
 

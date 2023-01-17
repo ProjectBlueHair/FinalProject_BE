@@ -39,10 +39,7 @@ public class PostController {
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<Object>> createPost(@RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal CustomUserDetails userDetails){
-
-        postService.createPost(requestPostDto.toPostDto(), userDetails.getMember().getNickname());
-
-        return SuccessResponse.toResponseEntity(CREATE_POST,null);
+        return SuccessResponse.toResponseEntity(CREATE_POST,postService.createPost(requestPostDto.toPostDto(), userDetails.getMember().getNickname()));
     }
     @Tag(name = "Post")
     @Operation(summary = "게시글 수정", description = "게시글 수정")
