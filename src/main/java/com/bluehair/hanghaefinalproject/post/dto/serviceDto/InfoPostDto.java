@@ -22,6 +22,8 @@ public class InfoPostDto {
     private String postImg;
     @Schema(description = "게시글 좋아요 수", example = "게시글 좋아요 수")
     private Long likeCount;
+    @Schema(description = "게시글 좋아요 여부", example = "true")
+    private Boolean isLiked;
     @Schema(description = "게시글 조회수", example = "게시글 조회수")
     private Long viewCount;
     @Schema(description = "태그 리스트", example = "태그 리스트")
@@ -30,11 +32,12 @@ public class InfoPostDto {
     private String createdAt;
 
     @Builder
-    public InfoPostDto(Post post){
+    public InfoPostDto(Post post, Boolean isLiked){
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.lyrics = post.getLyrics();
         this.postImg = post.getPostImg();
+        this.isLiked = isLiked;
         this.likeCount = post.getLikeCount();
         this.viewCount = post.getViewCount();
         for (Tag tag : post.getTagList()) {

@@ -4,10 +4,11 @@ package com.bluehair.hanghaefinalproject.post.service;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
-import com.bluehair.hanghaefinalproject.common.exception.Layer;
 import com.bluehair.hanghaefinalproject.common.exception.NotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
+import com.bluehair.hanghaefinalproject.like.entity.PostLikeCompositeKey;
+import com.bluehair.hanghaefinalproject.like.repository.PostLikeRepository;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
@@ -30,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.bluehair.hanghaefinalproject.common.exception.Domain.POST;
+import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*;
 import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MAPPER;
 import static com.bluehair.hanghaefinalproject.tag.mapper.TagMapStruct.TAG_MAPPER;
@@ -46,6 +49,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
     private final TagExctractor tagExctractor;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public Long createPost(PostDto postDto, String nickname) {
@@ -70,17 +74,30 @@ public class PostService {
     }
 
     @Transactional
-    public InfoPostDto infoPost(Long postid) {
-
+    public InfoPostDto infoPost(Long postid, Member member) {
         Post post = postRepository.findById(postid).orElseThrow(
-                () -> new NotFoundException(Domain.POST, Layer.SERVICE, POST_NOT_FOUND)
+                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
         );
 
         post.viewCount();
 
         postRepository.save(post);
 
-        return new InfoPostDto(post);
+        Boolean isLiked = false;
+
+        if(member!=null){
+        Member postMember = memberRepository.findByNickname(post.getNickname()).orElseThrow(
+                () -> new NotFoundException(POST, SERVICE, MEMBER_NOT_FOUND)
+        );
+
+        PostLikeCompositeKey postLikeCompositeKey
+                = new PostLikeCompositeKey(member.getId(), postMember.getId() );
+        if (postLikeRepository.findById(postLikeCompositeKey).isPresent()){
+            isLiked = true;
+        }
+        }
+
+        return new InfoPostDto(post, isLiked);
     }
 
 
@@ -151,13 +168,13 @@ public class PostService {
     public void updatePost(Long postId, PostUpdateDto postUpdateDto, String nickname) {
 
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NotFoundException(Domain.POST, Layer.SERVICE,POST_NOT_FOUND)
+                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
         );
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND)
         );
         if (!post.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(Domain.POST,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
         }
 
         post.update(postUpdateDto.getTitle(), postUpdateDto.getContents(),postUpdateDto.getLyrics(), postUpdateDto.getPostImg());
@@ -169,7 +186,7 @@ public class PostService {
         List<ResponseMusicDto> responseMusicDtoList = new ArrayList<>();
 
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NotFoundException(Domain.POST, Layer.SERVICE,POST_NOT_FOUND)
+                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
         );
         for (CollaboRequest collaboRequest : post.getCollaboRequestList()) {
             if (collaboRequest.getApproval()){
