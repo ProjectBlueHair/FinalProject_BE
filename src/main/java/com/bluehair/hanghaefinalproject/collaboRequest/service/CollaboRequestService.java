@@ -104,6 +104,7 @@ public class CollaboRequestService {
                 String profileImg = collabomember.getProfileImg();
                 Long followerCount = collabomember.getFollowerCount();
                 Boolean isFollowed = false;
+
                 if(member!=null){
                 FollowCompositeKey followCompositeKey
                         = new FollowCompositeKey(member.getId(), collabomember.getId());

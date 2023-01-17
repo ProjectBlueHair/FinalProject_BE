@@ -77,6 +77,7 @@ public class CollaboRequestController {
     @Operation(summary = "해당 게시글 관련 콜라보 전체 조회")
     @GetMapping("/api/post/{postid}/collabo")
     public ResponseEntity<SuccessResponse<List<CollaboRequestListForPostDto>>> getCollaboRequestList(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails ){
+
         Member member = null;
         try {
             member = userDetails.getMember();
@@ -84,6 +85,7 @@ public class CollaboRequestController {
             log.info("비로그인 사용자 접근 : post-" +postid + "-collabo_List");
         }
         return SuccessResponse.toResponseEntity(COLLABO_LIST, collaboRequestService.getCollaboRequestList(postid, member));
+
     }
 
     @Tag(name = "CollaboRequest")
