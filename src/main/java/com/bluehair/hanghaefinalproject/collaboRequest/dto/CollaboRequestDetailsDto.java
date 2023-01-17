@@ -10,7 +10,7 @@ public class CollaboRequestDetailsDto {
     public String contents;
 
     @Builder
-    public CollaboRequestDetailsDto (String title, String contents) {
+    public CollaboRequestDetailsDto (String contents) {
         this.contents = contents;
     }
 
