@@ -66,7 +66,7 @@ public class PostController {
             @ApiResponse(responseCode = "2000", description = "상세 게시글 조회 성공"),
             @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다.")
     })
-    @GetMapping("/{postid}")
+    @GetMapping("/details/{postid}")
     public ResponseEntity<SuccessResponse<Object>> infoPost(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails){
         Member member = null;
         try {
@@ -82,7 +82,7 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "전체 게시글 조회 성공")
     })
-    @GetMapping(value = {"","/{title}"})
+    @GetMapping(value = {"","/{search}"})
     public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable, @RequestParam(name = "search", required = false) String search){
         if(search != null){
             return SuccessResponse.toResponseEntity(SEARCH_POST,postService.mainPost(pageable,search));
