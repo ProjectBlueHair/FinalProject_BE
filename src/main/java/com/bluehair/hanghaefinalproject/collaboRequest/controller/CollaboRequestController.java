@@ -10,6 +10,7 @@ import com.bluehair.hanghaefinalproject.music.service.MusicService;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,23 +37,19 @@ public class CollaboRequestController {
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 작성 성공"),
-            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글")
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글"),
+            @ApiResponse(responseCode = "4003", description = "유효하지 않은 음원")
     })
     @Operation(summary = "콜라보 리퀘스트 작성", description = "해당 Post에 대한 콜라보 리퀘스트 작성")
     @PostMapping("/api/post/{postid}/collabo")
     public ResponseEntity<SuccessResponse<Object>> collaboRequest(@PathVariable Long postid,
                                                                   @RequestPart(value = "jsonData") RequestCollaboRequestDto requestCollaboRequestDto,
-                                                                  @RequestPart(value = "musicFile", required = false) List<MultipartFile> musicFileList,
-                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) throws UnsupportedAudioFileException, IOException {
-        musicService.saveMusic(musicFileList,
-                postid,
-                requestCollaboRequestDto.getMusicPartList(),
-                collaboRequestService.collaboRequest(postid,
-                        requestCollaboRequestDto.tocollaboRequestDetailsDto(),
-                        customUserDetails.getMember()
-        ));
-
-        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, null);
+                                                                  @Parameter(description = "WAV 및 2 Channel 오디오만 지원합니다.")
+                                                                  @RequestPart(value = "musicFile") List<MultipartFile> musicFileList,
+                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long collaboRequestId = collaboRequestService.collaboRequest(postid, requestCollaboRequestDto.tocollaboRequestDetailsDto(), customUserDetails.getMember());
+        musicService.saveMusic(musicFileList, postid, requestCollaboRequestDto.getMusicPartList(), collaboRequestId);
+        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, collaboRequestId);
     }
 
     @Tag(name = "CollaboRequest")
@@ -114,14 +111,16 @@ public class CollaboRequestController {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 수정 성공"),
             @ApiResponse(responseCode = "4042", description = "존재하지 않는 콜라보리퀘스트"),
             @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자"),
-            @ApiResponse(responseCode = "4002", description = "이미 승인된 콜라보리퀘스트")
+            @ApiResponse(responseCode = "4002", description = "이미 승인된 콜라보리퀘스트"),
+            @ApiResponse(responseCode = "4003", description = "유효하지 않은 음원")
     })
     @Operation(summary = "미승인 콜라보리퀘스트 수정")
     @PutMapping("/api/collabo/{collaborequestid}")
     public ResponseEntity<SuccessResponse<Object>> updateCollaboRequest(@PathVariable Long collaborequestid,
                                                                         @RequestPart(value = "jsonData") RequestCollaboRequestDto requestCollaboRequestDto,
+                                                                        @Parameter(description = "WAV 및 2 Channel 오디오만 지원합니다.")
                                                                         @RequestPart(value = "musicFile", required = false) List<MultipartFile> musicFileList,
-                                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) throws UnsupportedAudioFileException, IOException {
+                                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         collaboRequestService.updateCollaboRequest(
                 collaborequestid,
                 requestCollaboRequestDto.tocollaboRequestDetailsDto(),

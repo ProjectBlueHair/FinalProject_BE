@@ -32,7 +32,6 @@ import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
 @Slf4j
 public class MemberService {
     private final JwtUtil jwtUtil;
-    private final Validator validator;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
@@ -48,10 +47,10 @@ public class MemberService {
                     throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME);
                 });
 
-        if(!validator.isValidEmail(signUpDto.getEmail())){
+        if(!Validator.isValidEmail(signUpDto.getEmail())){
             throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL);
         }
-        if(!validator.isValidPassword(signUpDto.getPassword())){
+        if(!Validator.isValidPassword(signUpDto.getPassword())){
             throw new FormatException(MEMBER, SERVICE, INVALID_PASSWORD);
         }
 
@@ -67,7 +66,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void validateEmail(ValidateEmailDto validateEmailDto) {
-        if(!validator.isValidEmail(validateEmailDto.getEmail())){
+        if(!Validator.isValidEmail(validateEmailDto.getEmail())){
             throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL);
         }
         memberRepository.findByEmail(validateEmailDto.getEmail())

@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.postLike.dto;
+package com.bluehair.hanghaefinalproject.like.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

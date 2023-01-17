@@ -7,12 +7,10 @@ import lombok.Getter;
 @Schema
 @Getter
 public class CollaboRequestDetailsDto {
-    public String title;
     public String contents;
 
     @Builder
     public CollaboRequestDetailsDto (String title, String contents) {
-        this.title = title;
         this.contents = contents;
     }
 

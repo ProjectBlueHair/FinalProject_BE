@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.dto;
 
 import com.bluehair.hanghaefinalproject.common.service.LocalDateTimeConverter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +13,6 @@ import java.util.List;
 @Getter
 public class CollaboRequestListForPostDto {
     private Long collaboId;
-    @Schema(description = "콜라보 리퀘스트 제목", required = true, example = "콜라보 요청합니다.")
-    private String title;
     @Schema(description = "닉네임", example = "test01")
     private String nickname;
     @Schema(description = "프로필 이미지", example = "Profile Img from S3")
@@ -22,24 +21,19 @@ public class CollaboRequestListForPostDto {
     private String createdAt;
     @Schema(description = "작성시간", example = "수정시간")
     private String modifiedAt;
-    @Schema(description = "콜라보리퀘스트 음악파트 목록", example = "musicPartsList")
+    @ArraySchema
     private List<String> musicPartsList;
-    @Schema(description = "콜라보리퀘스트 음악파일 목록", example = "musicPartsList")
-    private List<String> musicFileList;
 
     @Builder
-    public CollaboRequestListForPostDto(Long collaboId, String title, String nickname,
+    public CollaboRequestListForPostDto(Long collaboId, String nickname,
                                         String profileImg, LocalDateTime createdAt,
-                                        LocalDateTime modifiedAt, List<String> musicPartsList,
-                                        List<String> musicFileList) {
+                                        LocalDateTime modifiedAt, List<String> musicPartsList) {
         this.collaboId = collaboId;
-        this.title = title;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
         this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
         this.musicPartsList = musicPartsList;
-        this.musicFileList = musicFileList;
 
     }
 }

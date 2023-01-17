@@ -10,6 +10,7 @@ import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
+import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.*;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*;
 import static com.bluehair.hanghaefinalproject.post.mapper.PostMapStruct.POST_MAPPER;
 import static com.bluehair.hanghaefinalproject.tag.mapper.TagMapStruct.TAG_MAPPER;
+import static com.bluehair.hanghaefinalproject.music.mapper.MusicMapStruct.MUSIC_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +47,7 @@ public class PostService {
     private final TagRepository tagRepository;
     private final TagExctractor tagExctractor;
     @Transactional
-    public void createPost(PostDto postDto, String nickname) {
+    public Long createPost(PostDto postDto, String nickname) {
 
         if (postDto.getPostImg() == null) {
             postDto.setRandomPostImg();
@@ -62,6 +64,8 @@ public class PostService {
             tagList.add(TAG_MAPPER.stringToTag(s, post));
         }
         tagRepository.saveTagList(tagList);
+
+        return post.getId();
     }
 
     @Transactional
@@ -147,5 +151,19 @@ public class PostService {
         post.update(postUpdateDto.getTitle(), postUpdateDto.getContents(),postUpdateDto.getLyrics(), postUpdateDto.getPostImg());
 
         postRepository.save(post);
+    }
+
+    public List<ResponseMusicDto> musicPost(Long postId){
+        List<ResponseMusicDto> responseMusicDtoList = new ArrayList<>();
+
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new NotFoundException(Domain.POST, Layer.SERVICE,POST_NOT_FOUND)
+        );
+        for (CollaboRequest collaboRequest : post.getCollaboRequestList()) {
+            if (collaboRequest.getApproval()){
+                responseMusicDtoList.addAll(MUSIC_MAPPER.MusictoResponseMusicDto(collaboRequest.getMusicList(), collaboRequest));
+            }
+        }
+        return responseMusicDtoList;
     }
 }
