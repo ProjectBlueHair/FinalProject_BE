@@ -15,7 +15,9 @@ import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*
 import static com.bluehair.hanghaefinalproject.music.mapper.MusicMapStruct.MUSIC_MAPPER;
 
 import com.bluehair.hanghaefinalproject.common.exception.*;
+import com.bluehair.hanghaefinalproject.member.entity.FollowCompositeKey;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.member.repository.FollowRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
@@ -44,6 +46,8 @@ public class CollaboRequestService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
+
+    private final FollowRepository followRepository;
 
     @Transactional
     public Long collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
@@ -79,7 +83,7 @@ public class CollaboRequestService {
     }
 
     @Transactional
-    public List<CollaboRequestListForPostDto> getCollaboRequestList(Long postid) {
+    public List<CollaboRequestListForPostDto> getCollaboRequestList(Long postid, Member member) {
         Post post = postRepository.findById(postid)
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
 
@@ -95,11 +99,18 @@ public class CollaboRequestService {
                     musicPartsList.add(music.getMusicPart());
                 }
 
-                Member member = memberRepository.findByNickname(collaboRequest.getNickname())
+                Member collabomember = memberRepository.findByNickname(collaboRequest.getNickname())
                         .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
-                String profileImg = member.getProfileImg();
+                String profileImg = collabomember.getProfileImg();
+                Long followerCount = collabomember.getFollowerCount();
+                Boolean isFollowed = false;
+                FollowCompositeKey followCompositeKey
+                        = new FollowCompositeKey(member.getId(), collabomember.getId());
+                if (followRepository.existsById(followCompositeKey)){
+                   isFollowed = true;
+                }
 
-                collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, profileImg, musicPartsList));
+                collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, followerCount, isFollowed, profileImg,  musicPartsList));
             }
         }
 

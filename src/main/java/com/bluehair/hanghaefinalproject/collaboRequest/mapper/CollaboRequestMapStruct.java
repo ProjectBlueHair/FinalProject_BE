@@ -29,12 +29,16 @@ public interface CollaboRequestMapStruct {
     }
 
     default CollaboRequestListForPostDto CollaboRequestListtoCollaboRequestListDto(CollaboRequest collaboRequest,
-                                                                           String profileImg,
-                                                                           List<String> musicPartsList){
+                                                                                   Long follwerCount,
+                                                                                   Boolean isFollowed,
+                                                                                   String profileImg,
+                                                                                   List<String> musicPartsList){
         return CollaboRequestListForPostDto.builder()
                 .collaboId(collaboRequest.getId())
                 .nickname(collaboRequest.getNickname())
                 .profileImg(profileImg)
+                .followerCount(follwerCount)
+                .isFollowed(isFollowed)
                 .createdAt(collaboRequest.getCreatedAt())
                 .modifiedAt(collaboRequest.getModifiedAt())
                 .musicPartsList(musicPartsList)

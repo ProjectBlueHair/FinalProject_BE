@@ -15,6 +15,10 @@ public class CollaboRequestListForPostDto {
     private Long collaboId;
     @Schema(description = "닉네임", example = "test01")
     private String nickname;
+
+    private Boolean isFollowed;
+
+    private Long followerCount;
     @Schema(description = "프로필 이미지", example = "Profile Img from S3")
     private String profileImg;
     @Schema(description = "작성시간", example = "작성시간")
@@ -26,11 +30,13 @@ public class CollaboRequestListForPostDto {
 
     @Builder
     public CollaboRequestListForPostDto(Long collaboId, String nickname,
-                                        String profileImg, LocalDateTime createdAt,
+                                        String profileImg, Long followerCount, Boolean isFollowed, LocalDateTime createdAt,
                                         LocalDateTime modifiedAt, List<String> musicPartsList) {
         this.collaboId = collaboId;
         this.nickname = nickname;
         this.profileImg = profileImg;
+        this.followerCount = followerCount;
+        this.isFollowed = isFollowed;
         this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
         this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
         this.musicPartsList = musicPartsList;
