@@ -67,9 +67,9 @@ public class PostController {
             @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다.")
     })
     @GetMapping("/{postid}")
-    public ResponseEntity<SuccessResponse<Object>> infoPost(@PathVariable Long postid){
+    public ResponseEntity<SuccessResponse<Object>> infoPost(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails){
 
-        return SuccessResponse.toResponseEntity(INFO_POST,postService.infoPost(postid));
+        return SuccessResponse.toResponseEntity(INFO_POST,postService.infoPost(postid, userDetails.getMember()));
     }
 
     @Tag(name = "Post")
