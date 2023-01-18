@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.like.service;
 
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
+import com.bluehair.hanghaefinalproject.like.dto.CommentLikeDto;
 import com.bluehair.hanghaefinalproject.like.entity.CommentLike;
 import com.bluehair.hanghaefinalproject.like.entity.CommentLikeCompositeKey;
 import com.bluehair.hanghaefinalproject.like.repository.CommentLikeRepository;
@@ -8,7 +9,7 @@ import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
 import com.bluehair.hanghaefinalproject.common.exception.Layer;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
-import com.bluehair.hanghaefinalproject.like.dto.ResponsePostLikeDto;
+import com.bluehair.hanghaefinalproject.like.dto.PostLikeDto;
 import com.bluehair.hanghaefinalproject.like.repository.PostLikeRepository;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
@@ -39,7 +40,7 @@ public class LikeService {
     private final CommentLikeRepository commentLikeRepository;
     private final NotificationService notificationService;
 
-    public ResponsePostLikeDto postLike(Long postId, Member member){
+    public PostLikeDto postLike(Long postId, Member member){
         Post postliked = postRepository.findById(postId)
                 .orElseThrow(()-> new NotFoundException(LIKE, SERVICE, POST_NOT_FOUND)
                 );
@@ -53,7 +54,7 @@ public class LikeService {
             postRepository.save(postliked);
             likecheck = false;
 
-            return new ResponsePostLikeDto(likecheck, postliked.getLikeCount());
+            return new PostLikeDto(likecheck, postliked.getLikeCount());
         }
 
         postLikeRepository.save(new PostLike(postLikeCompositeKey, member,postliked));
@@ -67,13 +68,13 @@ public class LikeService {
         String content = postliked.getTitle()+"을(를) "+member.getNickname()+"님이 좋아합니다.";
         notificationService.send(postMember, NotificationType.POST_LIKED, content, url);
 
-        return new ResponsePostLikeDto(likecheck, postliked.getLikeCount());
+        return new PostLikeDto(likecheck, postliked.getLikeCount());
 
     }
 
-    public boolean likeComment(Long commentId, String nickname) {
+    public CommentLikeDto likeComment(Long commentId, String nickname) {
 
-        boolean liked = false;
+        boolean isLiked = false;
 
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
                 () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE,MEMBER_NOT_FOUND)
@@ -88,21 +89,24 @@ public class LikeService {
             CommentLike commentLike = like.get();
             comment.unlike();
             commentLikeRepository.delete(commentLike);
-            return liked = false;
-        }else{
-            CommentLike commentLike = new CommentLike(commentLikeCompositeKey, member, comment);
-            comment.like();
-            commentLikeRepository.save(commentLike);
 
-            Member commentMember = memberRepository.findByNickname(comment.getNickname())
-                    .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
-            Long postId = comment.getPost().getId();
-            String url = "/api/post/"+postId+"/comment";
-            String content = commentMember.getNickname()+"님의 댓글을 "+nickname+"님이 좋아합니다.";
-            notificationService.send(commentMember, NotificationType.COMMENT_LIKED, content, url);
+            return new CommentLikeDto(isLiked, comment.getLikeCount());
+        }
+        CommentLike commentLike = new CommentLike(commentLikeCompositeKey, member, comment);
+        comment.like();
+        commentLikeRepository.save(commentLike);
+        isLiked = true;
 
-            return liked = true;
+        Member commentMember = memberRepository.findByNickname(comment.getNickname())
+                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
+        Long postId = comment.getPost().getId();
+        String url = "/api/post/"+postId+"/comment";
+        String content = commentMember.getNickname()+"님의 댓글을 "+nickname+"님이 좋아합니다.";
+        notificationService.send(commentMember, NotificationType.COMMENT_LIKED, content, url);
+        
+        return new CommentLikeDto(isLiked, comment.getLikeCount());
+
         }
 
     }
-}
+

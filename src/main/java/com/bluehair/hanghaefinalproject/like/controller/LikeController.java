@@ -1,7 +1,8 @@
 package com.bluehair.hanghaefinalproject.like.controller;
 
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
-import com.bluehair.hanghaefinalproject.like.dto.ResponsePostLikeDto;
+import com.bluehair.hanghaefinalproject.like.dto.CommentLikeDto;
+import com.bluehair.hanghaefinalproject.like.dto.PostLikeDto;
 import com.bluehair.hanghaefinalproject.like.service.LikeService;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,26 +31,31 @@ public class LikeController {
     })
     @Operation(summary = "게시글 좋아요", description = "게시글 좋아요 표시")
     @PostMapping("/api/post/like/{postid}")
-    public ResponseEntity<SuccessResponse<ResponsePostLikeDto>> postLike(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<SuccessResponse<PostLikeDto>> postLike(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails){
+        PostLikeDto postLikeDto = likeService.postLike(postid, userDetails.getMember());
 
-        return SuccessResponse.toResponseEntity(POST_LIKE, likeService.postLike(postid, userDetails.getMember()));
+        if(postLikeDto.getIsLiked()) {
+            return SuccessResponse.toResponseEntity(POST_LIKE, postLikeDto);
+        }else {
+            return SuccessResponse.toResponseEntity(POST_UNLIKE, postLikeDto);
+        }
     }
 
     @Tag(name = "Like")
     @Operation(summary = "댓글 좋아요", description = "댓글 좋아요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "댓글 좋아요 성공"),
-            @ApiResponse(responseCode = "2000", description = "댓글 좋아요 취소"),
+            @ApiResponse(responseCode = "2000", description = "댓글 좋아요 취소 성공"),
             @ApiResponse(responseCode = "4044", description = "존재하지 않는 댓글입니다.")
     })
     @PostMapping("/api/comment/like/{commentId}")
     public ResponseEntity<SuccessResponse<Object>> likeComment(@PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails){
+        CommentLikeDto commentLikeDto = likeService.likeComment(commentId, userDetails.getMember().getNickname());
 
-        boolean liked = likeService.likeComment(commentId, userDetails.getMember().getNickname());
-        if (liked){
-            return SuccessResponse.toResponseEntity(LIKE_COMMENT,null);
+        if (commentLikeDto.getIsLiked()){
+            return SuccessResponse.toResponseEntity(LIKE_COMMENT,commentLikeDto);
         }else{
-            return SuccessResponse.toResponseEntity(UNLIKE_COMMENT,null);
+            return SuccessResponse.toResponseEntity(UNLIKE_COMMENT,commentLikeDto);
         }
     }
 }
