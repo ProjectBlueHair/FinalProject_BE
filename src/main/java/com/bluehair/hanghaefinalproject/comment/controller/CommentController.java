@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.comment.controller;
 import com.bluehair.hanghaefinalproject.comment.dto.requestDto.RequestCommentDto;
 import com.bluehair.hanghaefinalproject.comment.service.CommentService;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
+import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
@@ -83,9 +86,14 @@ public class CommentController {
     })
 
     @GetMapping("/post/{postId}/comment")
-    public ResponseEntity<SuccessResponse<Object>> getCommentList(@PathVariable Long postId){
-
-        return SuccessResponse.toResponseEntity(GET_COMMENT, commentService.getComment(postId));
+    public ResponseEntity<SuccessResponse<Object>> getCommentList(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails){
+        Member member = null;
+        try {
+            member = userDetails.getMember();
+        }catch (NullPointerException e){
+            log.info("비로그인 사용자 접근 : commentList");
+        }
+        return SuccessResponse.toResponseEntity(GET_COMMENT, commentService.getComment(postId, member));
     }
 
 }
