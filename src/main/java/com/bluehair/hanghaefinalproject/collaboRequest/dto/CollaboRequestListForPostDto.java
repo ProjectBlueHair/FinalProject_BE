@@ -16,6 +16,8 @@ public class CollaboRequestListForPostDto {
     @Schema(description = "닉네임", example = "test01")
     private String nickname;
 
+    private String contents;
+
     private Boolean isFollowed;
 
     private Long followerCount;
@@ -29,11 +31,12 @@ public class CollaboRequestListForPostDto {
     private List<String> musicPartsList;
 
     @Builder
-    public CollaboRequestListForPostDto(Long collaboId, String nickname,
+    public CollaboRequestListForPostDto(Long collaboId, String nickname, String contents,
                                         String profileImg, Long followerCount, Boolean isFollowed, LocalDateTime createdAt,
                                         LocalDateTime modifiedAt, List<String> musicPartsList) {
         this.collaboId = collaboId;
         this.nickname = nickname;
+        this.contents = contents;
         this.profileImg = profileImg;
         this.followerCount = followerCount;
         this.isFollowed = isFollowed;
