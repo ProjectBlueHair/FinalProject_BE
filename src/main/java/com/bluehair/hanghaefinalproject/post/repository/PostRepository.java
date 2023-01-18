@@ -15,4 +15,6 @@ public interface PostRepository {
     List<Post> findAllByOrderByModifiedAtDesc(Pageable pageable);
     List<Post> findByTitleContainsOrContentsContains(Pageable pageable, String search, String searchContents);
     List<Post> findByContentsContains(Pageable pageable, String search);
+
+    List<Post> findByNickname(Pageable pageable,String nickname);
 }

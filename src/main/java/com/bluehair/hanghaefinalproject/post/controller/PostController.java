@@ -23,7 +23,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MY_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.INFO_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.SEARCH_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MAIN_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MUSIC_POST;
 
 
 @Tag(name = "Post", description = "게시글 관련 API")
@@ -82,13 +88,24 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "전체 게시글 조회 성공")
     })
-    @GetMapping(value = {"","/{search}"})
+    @GetMapping(value = {""})
     public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable, @RequestParam(name = "search", required = false) String search){
         if(search != null){
             return SuccessResponse.toResponseEntity(SEARCH_POST,postService.mainPost(pageable,search));
         }else{
             return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable, search));
         }
+    }
+    @Tag(name = "Post")
+    @Operation(summary = "작성한 게시글 조회", description = "작성한 게시글 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "작성한 게시글 조회 성공")
+    })
+    @GetMapping("/my-post")
+    public ResponseEntity<SuccessResponse<Object>> myPost(Pageable pageable, @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        return SuccessResponse.toResponseEntity(MY_POST, postService.myPost(pageable, userDetails.getMember().getNickname()));
+
     }
 
     @Tag(name = "Post")

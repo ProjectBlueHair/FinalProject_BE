@@ -99,7 +99,46 @@ public class PostService {
 
         return new InfoPostDto(post, isLiked);
     }
+    public List<MainPostDto>  myPost(Pageable pageable, String nickname) {
+        List<MainPostDto> mainPostDtoList = new ArrayList<>();
+        List<Post> postList = postRepository.findByNickname(pageable,nickname);
+        for (Post post : postList){
+            List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPostId(post.getId());
 
+            List<MainProfileDto> mainProfile = new ArrayList<>();
+
+            List<Tag> tagGet = tagRepository.findAllByPostId(post.getId());
+
+            List<String> tagList = new ArrayList<>();
+
+            for(Tag tag : tagGet){
+                tagList.add(tag.getContents());
+            }
+
+            String musicFile = post.getMusicFile();
+
+            for (CollaboRequest collaboRequest : collaboRequestList){
+                List<String> musicPart = new ArrayList<>();
+                List<Music> musicList = musicRepository.findAllByCollaboRequest_Nickname(collaboRequest.getNickname());
+                for (Music music : musicList){
+                    musicPart.add(music.getMusicPart());
+                }
+                // musicPart 중복 제거
+                Set<String> set = new HashSet<>(musicPart);
+                // List로 다시 변환
+                List<String> musicPartList = new ArrayList<>(set);
+
+                Optional<Member> member = memberRepository.findByNickname(collaboRequest.getNickname());
+                MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, member.get().getProfileImg(),collaboRequest.getNickname());
+                mainProfile.add(mainProfileDto);
+            }
+            Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
+            List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
+
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList));
+        }
+        return mainPostDtoList;
+    }
 
     public List<MainPostDto> mainPost(Pageable pageable, String search) {
 
@@ -139,9 +178,9 @@ public class PostService {
 
                 List<String> musicPart = new ArrayList<>();
                 // 콜라보 작성자로 음원 목록 조회
-                List<Music> musiclist = musicRepository.findAllByCollaboRequest_Nickname(collaboRequest.getNickname());
+                List<Music> musicList = musicRepository.findAllByCollaboRequest_Nickname(collaboRequest.getNickname());
                 // 음원 수 만큼 반복
-                for (Music music : musiclist){
+                for (Music music : musicList){
                     musicPart.add(music.getMusicPart());
                 }
                 // musicPart 중복 제거
@@ -195,4 +234,6 @@ public class PostService {
         }
         return responseMusicDtoList;
     }
+
+
 }
