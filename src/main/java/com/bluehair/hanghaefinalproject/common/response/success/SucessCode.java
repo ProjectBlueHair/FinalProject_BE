@@ -25,6 +25,7 @@ public enum SucessCode {
     MAIN_POST(HttpStatus.OK, "게시글 전체 조회 성공",2000),
     MUSIC_POST(HttpStatus.OK, "게시글 음악 전체 조회 성공",2000),
     SEARCH_POST(HttpStatus.OK,"게시글 검색 성공", 2000),
+    MY_POST(HttpStatus.OK, "작성한 게시글 조회 성공", 2000),
 
     //Comment
     CREATE_COMMENT(HttpStatus.OK,"댓글 작성 성공",2000),
