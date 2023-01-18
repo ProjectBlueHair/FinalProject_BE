@@ -27,11 +27,16 @@ public class CommentListDto {
     private String createdAt;
     @Schema(description = "수정시간", example = "수정시간")
     private String modifiedAt;
+    @Schema(description = "좋아요 갯수", example = "좋아요 갯수")
+    private Long likeCount;
+    @Schema(description = "좋아요 여부", example = "좋아요 여부")
+    private boolean isLiked;
     @Schema(description = "대댓글 리스트", example = "대댓글 리스트")
     private List<ReplyDto> replyList;
 
     @Builder
-    public CommentListDto(Comment comment, LocalDateTime createdAt, LocalDateTime modifiedAt, List<ReplyDto> replyList){
+    public CommentListDto(Comment comment, LocalDateTime createdAt, LocalDateTime modifiedAt,
+                          boolean isLiked,List<ReplyDto> replyList){
         this.id = comment.getId();
         this.profileImg = comment.getProfileImg();
         this.nickname = comment.getNickname();
@@ -39,6 +44,8 @@ public class CommentListDto {
         this.parentsId = comment.getParentsId();
         this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
         this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
+        this.likeCount = comment.getLikeCount();
+        this.isLiked = isLiked;
         this.replyList = replyList;
     }
 }

@@ -10,6 +10,8 @@ import com.bluehair.hanghaefinalproject.common.exception.Domain;
 import com.bluehair.hanghaefinalproject.common.exception.Layer;
 import com.bluehair.hanghaefinalproject.common.exception.NotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
+import com.bluehair.hanghaefinalproject.like.entity.CommentLike;
+import com.bluehair.hanghaefinalproject.like.repository.CommentLikeRepository;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 
@@ -39,6 +41,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
+    private final CommentLikeRepository commentLikeRepository;
 
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
 
@@ -98,17 +101,39 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    public List<CommentListDto> getComment(Long postId) {
+    public List<CommentListDto> getComment(Long postId, Member member) {
+
 
         List<Comment> notParentsCommentList = commentRepository.findByPostIdAndParentsId(postId, null);
 
         List<CommentListDto> commentList = new ArrayList<>();
         for (Comment comment : notParentsCommentList){
+            boolean commentIsLiked = false;
+            if(member != null){
+                Optional<CommentLike> commentLiked = commentLikeRepository.findByCommentIdAndMemberId(comment.getId(), member.getId());
+                if(commentLiked.isPresent()){
+                    commentIsLiked = true;
+                }
+            }
             Comment comments = commentRepository.findById(comment.getId()).orElseThrow(
                     () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
             );
-            List<ReplyDto> replyList = commentRepository.findByParentsId(comments.getId());
-            CommentListDto commentListDto = new CommentListDto(comments, comments.getCreatedAt(), comments.getModifiedAt(), replyList);
+
+            List<Comment> ParentsCommentList = commentRepository.findByParentsId(comments.getId());
+
+            List<ReplyDto> replyList = new ArrayList<>();
+            for (Comment c : ParentsCommentList){
+                boolean replyIsLiked = false;
+                if(member != null) {
+                    Optional<CommentLike> replyLiked = commentLikeRepository.findByCommentIdAndMemberId(c.getId(), member.getId());
+                    if (replyLiked.isPresent()) {
+                        replyIsLiked = true;
+                    }
+                }
+                ReplyDto replyDto = new ReplyDto(c, c.getCreatedAt(), c.getModifiedAt(), replyIsLiked);
+                replyList.add(replyDto);
+            }
+            CommentListDto commentListDto = new CommentListDto(comments, comments.getCreatedAt(), comments.getModifiedAt(),commentIsLiked,replyList);
             commentList.add(commentListDto);
         }
         return commentList;
