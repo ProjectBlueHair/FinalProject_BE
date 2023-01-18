@@ -1,5 +1,6 @@
 package com.bluehair.hanghaefinalproject.comment.dto.serviceDto;
 
+import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 import com.bluehair.hanghaefinalproject.common.service.LocalDateTimeConverter;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,16 +17,19 @@ public class ReplyDto {
     private Long parentsId;
     private String createdAt;
     private String modifiedAt;
-
+    private Long likeCount;
+    private boolean isLiked;
     @Builder
-    public ReplyDto(Long id, String contents, String nickname, String profileImg, Long parentsId, LocalDateTime createdAt, LocalDateTime modifiedAt){
-        this.id = id;
-        this.contents = contents;
-        this.nickname = nickname;
-        this.profileImg = profileImg;
-        this.parentsId = parentsId;
+    public ReplyDto(Comment comment, LocalDateTime createdAt, LocalDateTime modifiedAt, boolean isLiked){
+        this.id = comment.getId();
+        this.contents = comment.getContents();
+        this.nickname = comment.getNickname();
+        this.profileImg = comment.getProfileImg();
+        this.parentsId = comment.getParentsId();
         this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
         this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
+        this.likeCount = comment.getLikeCount();
+        this.isLiked = isLiked;
     }
 
 }
