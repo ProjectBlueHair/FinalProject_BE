@@ -33,7 +33,7 @@ public enum SucessCode {
     DELETE_COMMENT(HttpStatus.OK, "댓글 삭제 성공", 2000),
     GET_COMMENT(HttpStatus.OK, "댓글 조회 성공", 2000),
     LIKE_COMMENT(HttpStatus.OK, "댓글 좋아요 성공", 2000),
-    UNLIKE_COMMENT(HttpStatus.OK, "댓글 좋아요 취소", 2000),
+    UNLIKE_COMMENT(HttpStatus.OK, "댓글 좋아요 취소 성공", 2000),
 
     //CollaboRequest
     COLLABO_REQUEST_SUCCESS(HttpStatus.OK, "콜라보 리퀘스트 성공", 2000),
@@ -48,7 +48,8 @@ public enum SucessCode {
     NOTIFICATION_LIST(HttpStatus.OK, "알림 전체 조회 성공", 2000),
     NOTIFICATION_READ(HttpStatus.OK, "알림 확인 성공", 2000 ),
 
-    POST_LIKE(HttpStatus.OK, "게시글 좋아요 성공", 2000);
+    POST_LIKE(HttpStatus.OK, "게시글 좋아요 성공", 2000),
+    POST_UNLIKE(HttpStatus.OK, "게시글 좋아요 취소 성공", 2000);
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -36,6 +36,7 @@ public interface CollaboRequestMapStruct {
         return CollaboRequestListForPostDto.builder()
                 .collaboId(collaboRequest.getId())
                 .nickname(collaboRequest.getNickname())
+                .contents(collaboRequest.getContents())
                 .profileImg(profileImg)
                 .followerCount(follwerCount)
                 .isFollowed(isFollowed)
