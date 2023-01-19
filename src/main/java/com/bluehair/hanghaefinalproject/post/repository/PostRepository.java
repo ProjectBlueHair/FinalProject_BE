@@ -12,7 +12,7 @@ public interface PostRepository {
     Post save(Post post);
 
     Optional<Post> findById(Long postId);
-    List<Post> findAllByOrderByModifiedAtDesc(Pageable pageable);
+    List<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
     List<Post> findByTitleContainsOrContentsContains(Pageable pageable, String search, String searchContents);
     List<Post> findByContentsContains(Pageable pageable, String search);
 

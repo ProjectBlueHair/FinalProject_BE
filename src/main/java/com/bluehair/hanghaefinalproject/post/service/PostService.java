@@ -146,7 +146,7 @@ public class PostService {
         List<Post> postList = new ArrayList<>();
         String searchContents = search;
         if (search == null || search.equals(" ")) {
-            postList = postRepository.findAllByOrderByModifiedAtDesc(pageable);
+            postList = postRepository.findAllByOrderByCreatedAtDesc(pageable);
         }
         if (search != null) {
             if (search.charAt(0) != '#') {
