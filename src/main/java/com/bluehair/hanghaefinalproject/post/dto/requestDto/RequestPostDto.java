@@ -8,13 +8,13 @@ public class RequestPostDto {
     private String title;
     private String contents;
     private String postImg;
-    private String lyrics;
+    private String collaboNotice;
 
     public PostDto toPostDto() {
         return PostDto.builder()
                 .title(title)
                 .contents(contents)
-                .lyrics(lyrics)
+                .collaboNotice(collaboNotice)
                 .postImg(postImg)
                 .build();
     }

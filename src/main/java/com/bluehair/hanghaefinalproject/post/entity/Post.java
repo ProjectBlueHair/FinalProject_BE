@@ -32,7 +32,7 @@ public class Post extends Timestamped {
     private String contents;
 
     @Column
-    private String lyrics;
+    private String collaboNotice;
 
     @Column(nullable = false)
     private String nickname;
@@ -59,12 +59,12 @@ public class Post extends Timestamped {
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder
-    public Post (String title, String contents, String nickname, String lyrics,
+    public Post (String title, String contents, String nickname, String collaboNotice,
                  String postImg){
         this.title = title;
         this.contents = contents;
         this.nickname = nickname;
-        this.lyrics = lyrics;
+        this.collaboNotice = collaboNotice;
         this.postImg = postImg;
     }
 
@@ -74,10 +74,10 @@ public class Post extends Timestamped {
     public void updateMusicFile(String musicFile){
         this.musicFile = musicFile;
     }
-    public void update(String title, String contents, String lyrics, String postImg) {
+    public void update(String title, String contents, String collaboNotice, String postImg) {
         this.title = title;
         this.contents = contents;
-        this.lyrics = lyrics;
+        this.collaboNotice = collaboNotice;
         this.postImg = postImg;
 
     }

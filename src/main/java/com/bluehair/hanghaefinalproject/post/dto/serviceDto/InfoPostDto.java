@@ -17,7 +17,8 @@ public class InfoPostDto {
     private String title;
     @Schema(description = "게시글 내용", example = "게시글 내용")
     private String contents;
-    private String lyrics;
+    @Schema(description = "게시글 콜라보 요청사항", example = "콜라보 요청사항")
+    private String collaboNotice;
     @Schema(description = "게시글 이미지", example = "게시글 이미지")
     private String postImg;
     @Schema(description = "게시글 좋아요 수", example = "게시글 좋아요 수")
@@ -35,7 +36,7 @@ public class InfoPostDto {
     public InfoPostDto(Post post, Boolean isLiked){
         this.title = post.getTitle();
         this.contents = post.getContents();
-        this.lyrics = post.getLyrics();
+        this.collaboNotice = post.getCollaboNotice();
         this.postImg = post.getPostImg();
         this.isLiked = isLiked;
         this.likeCount = post.getLikeCount();

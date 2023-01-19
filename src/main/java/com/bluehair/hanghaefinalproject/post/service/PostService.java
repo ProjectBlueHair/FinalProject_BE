@@ -216,7 +216,7 @@ public class PostService {
             throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
         }
 
-        post.update(postUpdateDto.getTitle(), postUpdateDto.getContents(),postUpdateDto.getLyrics(), postUpdateDto.getPostImg());
+        post.update(postUpdateDto.getTitle(), postUpdateDto.getContents(),postUpdateDto.getCollaboNotice(), postUpdateDto.getPostImg());
 
         postRepository.save(post);
     }

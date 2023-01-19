@@ -9,15 +9,15 @@ import java.util.Random;
 public class PostDto {
     private String title;
     private String contents;
-    private String lyrics;
+    private String collaboNotice;
     private String postImg;
 
     @Builder
-    public PostDto(String title, String contents, String lyrics,
+    public PostDto(String title, String contents, String collaboNotice,
                 String postImg){
         this.title = title;
         this.contents = contents;
-        this.lyrics = lyrics;
+        this.collaboNotice = collaboNotice;
         this.postImg = postImg;
     }
 

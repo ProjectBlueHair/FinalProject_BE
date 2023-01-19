@@ -8,14 +8,14 @@ public class RequestUpdatePostDto {
 
     private String title;
     private String contents;
-    private String lyrics;
+    private String collaboNotice;
     private String postImg;
 
     public PostUpdateDto toPostUpdateDto() {
         return PostUpdateDto.builder()
                 .title(title)
                 .contents(contents)
-                .lyrics(lyrics)
+                .collaboNotice(collaboNotice)
                 .postImg(postImg)
                 .build();
     }
