@@ -62,7 +62,7 @@ public class PostService {
 
         postRepository.save(post);
         // Query 최적화 필요(save < saveall < jpql)
-        if (postDto.getContents() != null){
+        if (postDto.getContents() != null || postDto.getContents() != "" || postDto.getContents() != " "){
             List<String> hashtagList = tagExctractor.extractHashTags(postDto.getContents());
             List<Tag> tagList = new ArrayList<>();
             for (String s : hashtagList) {
