@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface CommentLikeRepository {
     CommentLike save(CommentLike commentLike);
     void delete(CommentLike commentLike);
+    void deleteByCommentId(Long commentId);
     Optional<CommentLike> findByCommentIdAndMemberId(Long commentId, Long id);
 }
