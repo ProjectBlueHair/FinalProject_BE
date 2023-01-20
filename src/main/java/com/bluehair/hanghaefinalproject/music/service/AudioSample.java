@@ -36,8 +36,7 @@ public class AudioSample {
         log.warn("Channels: " + format.getChannels());
         log.warn("bitDepth: " + format.getSampleSizeInBits());
 
-        if(!file.getName().substring(file.getName().lastIndexOf(".")+1).equals("wav") ||
-                !Validator.isValidAudioFormat(format)) {
+        if(!Validator.isValidAudioFormat(format)) {
             throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE);
         }
 
