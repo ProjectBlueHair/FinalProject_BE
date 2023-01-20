@@ -67,7 +67,7 @@ public class CollaboRequestService {
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
         Long collaboId = collaboRequest.getId();
         String content = post.getTitle()+"에 대한 콜라보 요청이 있습니다.";
-        notificationService.send(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId);
+        notificationService.send(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId, postId);
 
         return collaboRequest.getId();
 
@@ -140,7 +140,7 @@ public class CollaboRequestService {
         Member collaboMember = memberRepository.findByNickname(collaboRequest.getNickname())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
         String content = post.getTitle()+"에 대한 콜라보 요청이 승인되었습니다.";
-        notificationService.send(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId);
+        notificationService.send(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId, null);
     }
 
     @Transactional

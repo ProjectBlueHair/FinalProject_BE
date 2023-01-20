@@ -66,7 +66,7 @@ public class CommentService {
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
         String content = post.getTitle()+"에 "+nickname+"님이 댓글을 남겼습니다.";
-        notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId);
+        notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
 
     }
     @Transactional
