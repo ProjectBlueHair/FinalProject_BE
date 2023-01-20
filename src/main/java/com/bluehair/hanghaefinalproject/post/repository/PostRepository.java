@@ -10,6 +10,7 @@ import java.util.Optional;
 @Component
 public interface PostRepository {
     Post save(Post post);
+    void deleteById(Long postId);
 
     Optional<Post> findById(Long postId);
     List<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
