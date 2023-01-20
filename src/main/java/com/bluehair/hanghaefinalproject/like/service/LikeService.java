@@ -48,19 +48,19 @@ public class LikeService {
         PostLikeCompositeKey postLikeCompositeKey
                 = new PostLikeCompositeKey(member.getId(), postliked.getId());
         boolean likecheck;
-
-        if(postLikeRepository.findById(postLikeCompositeKey).isPresent()){
+        Optional<PostLike> postLike= postLikeRepository.findByPostLikedIdAndMemberId(postliked.getId(), member.getId());
+        if(postLike.isPresent()){
             postLikeRepository.deleteById(postLikeCompositeKey);
-            postliked.disLike();
+            postliked.unLike();
             postRepository.save(postliked);
             likecheck = false;
 
             return new PostLikeDto(likecheck, postliked.getLikeCount());
         }
 
-        postLikeRepository.save(new PostLike(postLikeCompositeKey, member,postliked));
+        postLikeRepository.save(new PostLike(postLikeCompositeKey, member, postliked));
         likecheck=true;
-        postliked.likeCount();
+        postliked.like();
         postRepository.save(postliked);
 
         Member postMember = memberRepository.findByNickname(postliked.getNickname())
