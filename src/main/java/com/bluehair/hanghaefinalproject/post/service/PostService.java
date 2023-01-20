@@ -61,16 +61,23 @@ public class PostService {
         Post post = POST_MAPPER.PostDtoToPost(postDto, nickname);
 
         postRepository.save(post);
-        // Query 최적화 필요(save < saveall < jpql)
-        if (postDto.getContents() != null || postDto.getContents() != "" || postDto.getContents() != " "){
+
+        if (postDto.getContents() != null && !Objects.equals(postDto.getContents(), "") && !Objects.equals(postDto.getContents(), " ")){
             List<String> hashtagList = tagExctractor.extractHashTags(postDto.getContents());
+            saveHashtagList(post, hashtagList);
+        }
+        return post.getId();
+    }
+
+    private void saveHashtagList(Post post, List<String> hashtagList) {
+        if (hashtagList.size() != 0){
             List<Tag> tagList = new ArrayList<>();
             for (String s : hashtagList) {
                 tagList.add(TAG_MAPPER.stringToTag(s, post));
             }
+            // Query 최적화 필요(save < saveall < jpql)
             tagRepository.saveTagList(tagList);
         }
-        return post.getId();
     }
 
     @Transactional
