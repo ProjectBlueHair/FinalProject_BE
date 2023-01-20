@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.sse.dto.ResponseNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.entity.Notification;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
+import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
 import com.bluehair.hanghaefinalproject.sse.repository.EmitterRepository;
 import com.bluehair.hanghaefinalproject.sse.repository.EmitterRepositoryImpl;
 import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
@@ -54,8 +55,8 @@ public class NotificationService {
         return emitter;
     }
 
-    public void send(Member receiver, NotificationType notificationType, String content, String url) {
-        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, url));
+    public void send(Member receiver, Member sender, NotificationType notificationType, String content, RedirectionType type, Long typeId) {
+        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, type, typeId, sender));
         String memberId = String.valueOf(receiver.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByMemberId(memberId);
@@ -80,7 +81,7 @@ public class NotificationService {
 
     @Transactional
     public List<ResponseNotificationDto> getNotificationList(Member member) {
-        List<Notification> notificationList = notificationRepository.findAllByReceiver(member);
+        List<Notification> notificationList = notificationRepository.findAllByReceiverOrderByCreatedAtDesc(member);
         List<ResponseNotificationDto> responseNotificationDtoList= new ArrayList<>();
         for (Notification notification: notificationList) {
             responseNotificationDtoList.add(SSE_MAPPER.NotificationtoResponseNotificationDto(notification));
