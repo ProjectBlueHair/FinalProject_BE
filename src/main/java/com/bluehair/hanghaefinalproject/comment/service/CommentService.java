@@ -22,6 +22,7 @@ import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
     private final CommentLikeRepository commentLikeRepository;
-
+    @Transactional
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
 
         Post post = postRepository.findById(postId).orElseThrow(
@@ -67,7 +68,7 @@ public class CommentService {
         notificationService.send(postMember, NotificationType.COMMENT, content, url);
 
     }
-
+    @Transactional
     public void updateComment(Long commentId, CommentDto commentDto, String nickname) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
@@ -86,7 +87,7 @@ public class CommentService {
         commentRepository.save(comment);
 
     }
-
+    @Transactional
     public void deleteComment(Long commentId, String nickname) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
@@ -97,7 +98,7 @@ public class CommentService {
         if (!comment.getNickname().equals(member.getNickname())){
             throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
         }
-
+        commentLikeRepository.deleteByCommentId(commentId);
         commentRepository.deleteById(commentId);
     }
 
