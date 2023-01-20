@@ -14,6 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ResponseCollaboRequestDto {
+    @Schema(description = "콜라보 리퀘스트 게시글 Id", example = "1")
+    private Long postId;
     @Schema(description = "콜라보 리퀘스트 내용", example = "콜라보하고 싶습니다.")
     private String contents;
     @Schema(description = "닉네임", example = "test01")
@@ -27,10 +29,11 @@ public class ResponseCollaboRequestDto {
     @Schema(description = "승인 여부", example = "false")
     private Boolean approval;
     @Schema(description = "음악파일 리스트", example = "musicList")
-   private List<ResponseMusicDto> musicList;
+    private List<ResponseMusicDto> musicList;
 
     @Builder
     public ResponseCollaboRequestDto(CollaboRequest collaboRequest, List<ResponseMusicDto> musicDtoList) {
+        this.postId = collaboRequest.getPost().getId();
         this.contents = collaboRequest.getContents();
         this.nickname = collaboRequest.getNickname();
         this.createdAt = LocalDateTimeConverter.timeToString(collaboRequest.getCreatedAt());
