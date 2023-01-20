@@ -26,6 +26,7 @@ import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
+import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
 import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -64,9 +65,9 @@ public class CollaboRequestService {
         //post 작성자에게 콜라보 요청 알림 - 콜라보 상세 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
-        String url = "/api/collabo/"+collaboRequest.getId();
+        Long collaboId = collaboRequest.getId();
         String content = post.getTitle()+"에 대한 콜라보 요청이 있습니다.";
-        notificationService.send(postMember, NotificationType.COLLABO_REQUEST, content, url);
+        notificationService.send(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId);
 
         return collaboRequest.getId();
 
@@ -138,9 +139,8 @@ public class CollaboRequestService {
         Long postId = post.getId();
         Member collaboMember = memberRepository.findByNickname(collaboRequest.getNickname())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
-        String url = "/api/post/"+postId;
         String content = post.getTitle()+"에 대한 콜라보 요청이 승인되었습니다.";
-        notificationService.send(collaboMember, NotificationType.COLLABO_APPROVED, content, url);
+        notificationService.send(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId);
     }
 
     @Transactional
