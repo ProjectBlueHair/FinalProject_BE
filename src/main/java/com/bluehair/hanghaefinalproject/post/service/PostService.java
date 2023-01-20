@@ -230,6 +230,12 @@ public class PostService {
         if (!post.getNickname().equals(member.getNickname())){
             throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
         }
+        tagRepository.deleteAllByPost(post);
+
+        if (postUpdateDto.getContents() != null && !Objects.equals(postUpdateDto.getContents(), "") && !Objects.equals(postUpdateDto.getContents(), " ")){
+            List<String> hashtagList = tagExctractor.extractHashTags(postUpdateDto.getContents());
+            saveHashtagList(post, hashtagList);
+        }
 
         post.update(postUpdateDto.getTitle(), postUpdateDto.getContents(),postUpdateDto.getCollaboNotice(), postUpdateDto.getPostImg());
 
