@@ -34,6 +34,7 @@ public class MultipartFileConverter {
     static public File convertMFileToFile(MultipartFile mFile) throws IOException {
         File file = File.createTempFile("temp_", mFile.getOriginalFilename()
                 , new File(tmpPath));
+        System.out.println("Original Filename:" + mFile.getOriginalFilename());
         try{
             mFile.transferTo(file);
         } catch (IOException e) {

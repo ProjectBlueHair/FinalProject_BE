@@ -32,7 +32,11 @@ public class AudioSample {
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
         format = audioInputStream.getFormat();
 
-        if(!Validator.isValidAudioFormat(format)){
+        log.warn("filename: " + file.getName());
+        log.warn("Channels: " + format.getChannels());
+        log.warn("bitDepth: " + format.getSampleSizeInBits());
+
+        if(!Validator.isValidAudioFormat(format)) {
             throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE);
         }
 
