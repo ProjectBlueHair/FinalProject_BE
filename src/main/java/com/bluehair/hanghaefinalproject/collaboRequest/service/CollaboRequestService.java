@@ -70,7 +70,20 @@ public class CollaboRequestService {
         notificationService.send(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId, postId);
 
         return collaboRequest.getId();
+    }
 
+    @Transactional
+    public Long collaboRequestFirst(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
+
+        String nickname = member.getNickname();
+
+        CollaboRequestDto collaboRequestDto = COLLABOREQUEST_MAPPER.CollaboRequestDetailsDtotoCollaboRequestDto(collaboRequestDetailsDto, nickname);
+        CollaboRequest collaboRequest = COLLABOREQUEST_MAPPER.CollaboRequestDtotoCollaboRequest(collaboRequestDto, post);
+
+        collaboRequestRepository.save(collaboRequest);
+        return collaboRequest.getId();
     }
 
     @Transactional
