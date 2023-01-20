@@ -45,12 +45,13 @@ public class Notification extends Timestamped {
                         String content,
                         RedirectionType type,
                         Long typeId,
+                        Long postId,
                         Member sender
                         ) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = new NotificationContent(content);
-        this.url = new RelatedUrl(type, typeId);
+        this.url = new RelatedUrl(type, typeId, postId);
         this.sender = new Sender(sender);
         this.isRead = false;
     }

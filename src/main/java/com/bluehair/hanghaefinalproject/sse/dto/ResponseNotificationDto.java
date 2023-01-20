@@ -14,6 +14,7 @@ public class ResponseNotificationDto {
     private String content;
     private RedirectionType type;
     private Long typeId;
+    private Long postId;
     private String sender;
     private String senderImg;
     private Boolean isRead;
@@ -26,6 +27,7 @@ public class ResponseNotificationDto {
         this.content = notification.getContent();
         this.type = notification.getUrl().getType();
         this.typeId = notification.getUrl().getTypeId();
+        this.postId = notification.getUrl().getPostId();
         this.sender = notification.getSender().getSender();
         this.senderImg = notification.getSender().getSenderImg();
         this.isRead = notification.getIsRead();

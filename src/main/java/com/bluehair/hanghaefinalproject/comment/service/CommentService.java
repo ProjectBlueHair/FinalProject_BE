@@ -66,7 +66,7 @@ public class CommentService {
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
         String content = post.getTitle()+"에 "+nickname+"님이 댓글을 남겼습니다.";
-        notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId);
+        notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
 
     }
     @Transactional
@@ -99,7 +99,7 @@ public class CommentService {
         if (!comment.getNickname().equals(member.getNickname())){
             throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
         }
-        commentLikeRepository.deleteByCommentId(commentId);
+        deleteCommentLike(commentId);
         commentRepository.deleteById(commentId);
     }
 
@@ -140,5 +140,8 @@ public class CommentService {
         }
         return commentList;
     }
-
+    @Transactional
+    public void deleteCommentLike(Long commentId){
+        commentLikeRepository.deleteByCommentId(commentId);
+    }
 }
