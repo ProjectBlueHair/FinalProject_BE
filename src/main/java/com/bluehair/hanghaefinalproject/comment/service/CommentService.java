@@ -18,6 +18,7 @@ import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
+import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
 import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 
@@ -54,17 +55,17 @@ public class CommentService {
             );
         }
 
-        Optional<Member> member = memberRepository.findByNickname(nickname);
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
         Long likeCount = 0L;
-        Comment comment = new Comment(parentId, nickname, member.get().getProfileImg(),commentDto.getContents(),likeCount, post);
+        Comment comment = new Comment(parentId, nickname, member.getProfileImg(),commentDto.getContents(),likeCount, post);
 
         commentRepository.save(comment);
         //post 작성자에게 댓글 알림 - 댓글 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
-        String url = "/api/post/"+postId+"/comment";
         String content = post.getTitle()+"에 "+nickname+"님이 댓글을 남겼습니다.";
-        notificationService.send(postMember, NotificationType.COMMENT, content, url);
+        notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId);
 
     }
 
