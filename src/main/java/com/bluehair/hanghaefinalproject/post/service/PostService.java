@@ -3,11 +3,14 @@ package com.bluehair.hanghaefinalproject.post.service;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
+import com.bluehair.hanghaefinalproject.comment.entity.Comment;
+import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
 import com.bluehair.hanghaefinalproject.common.exception.NotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
 import com.bluehair.hanghaefinalproject.like.entity.PostLikeCompositeKey;
+import com.bluehair.hanghaefinalproject.like.repository.CommentLikeRepository;
 import com.bluehair.hanghaefinalproject.like.repository.PostLikeRepository;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
@@ -18,6 +21,7 @@ import com.bluehair.hanghaefinalproject.post.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
+import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
 import com.bluehair.hanghaefinalproject.tag.entity.Tag;
 import com.bluehair.hanghaefinalproject.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +54,10 @@ public class PostService {
     private final TagRepository tagRepository;
     private final TagExctractor tagExctractor;
     private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
+
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public Long createPost(PostDto postDto, String nickname) {
@@ -243,4 +251,46 @@ public class PostService {
     }
 
 
+    public void deletePost(Long postId, String nickname) {
+
+        // 게시글 검색
+        Post post = postRepository.findById(postId).orElseThrow(
+            () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
+        );
+
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND)
+        );
+
+        if (!post.getNickname().equals(member.getNickname())){
+            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
+        }
+
+        // 해당 게시글 콜라보 리스트 조회
+        List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPostId(postId);
+        // 콜라보 리스트 각각의 뮤직 삭제
+        for(CollaboRequest collaboRequest : collaboRequestList){
+            musicRepository.deleteAllByCollaboRequest(collaboRequest);
+        }
+        // 해당 게시글의 콜라보 삭제
+        collaboRequestRepository.deleteAllByPost(post);
+
+        // 해당 게시글의 댓글 리스트 조회
+        List<Comment> commentList = commentRepository.findByPostId(postId);
+
+        // 댓글 각각의 좋아요 삭제
+        for (Comment comment : commentList){
+            commentLikeRepository.deleteAllByComment(comment);
+        }
+        // 해당 게시글의 태그 삭제
+        tagRepository.deleteAllByPost(post);
+        // 게시글 좋아요 삭제
+        postLikeRepository.deleteAllByPost(post);
+        // 해당 게시글의 댓글 삭제
+        commentRepository.deleteAllByPost(post);
+        // 게시글 삭제
+        postRepository.deleteById(postId);
+
+
+    }
 }

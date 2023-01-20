@@ -30,6 +30,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_POST;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_POST;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MUSIC_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.DELETE_POST;
 
 
 @Tag(name = "Post", description = "게시글 관련 API")
@@ -117,5 +118,17 @@ public class PostController {
     @GetMapping("/{postId}/music")
     public ResponseEntity<SuccessResponse<List<ResponseMusicDto>>> musicPost(@PathVariable Long postId){
         return SuccessResponse.toResponseEntity(MUSIC_POST, postService.musicPost(postId));
+    }
+    @Tag(name="Post")
+    @Operation(summary = "게시글 삭제", description = "게시글 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "게시글 삭제 성공"),
+            @ApiResponse(responseCode = "4031", description = "접근 권한이 없는 사용자입니다."),
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글입니다.")
+    })
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<SuccessResponse<List<ResponseMusicDto>>> deletePost(@PathVariable Long postId,@AuthenticationPrincipal CustomUserDetails userDetails){
+        postService.deletePost(postId, userDetails.getMember().getNickname());
+        return SuccessResponse.toResponseEntity(DELETE_POST, null);
     }
 }

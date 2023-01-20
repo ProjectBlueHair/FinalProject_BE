@@ -99,7 +99,7 @@ public class CommentService {
         if (!comment.getNickname().equals(member.getNickname())){
             throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
         }
-        commentLikeRepository.deleteByCommentId(commentId);
+        deleteCommentLike(commentId);
         commentRepository.deleteById(commentId);
     }
 
@@ -140,5 +140,8 @@ public class CommentService {
         }
         return commentList;
     }
-
+    @Transactional
+    public void deleteCommentLike(Long commentId){
+        commentLikeRepository.deleteByCommentId(commentId);
+    }
 }
