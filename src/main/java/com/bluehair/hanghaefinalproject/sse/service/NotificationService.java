@@ -55,8 +55,8 @@ public class NotificationService {
         return emitter;
     }
 
-    public void send(Member receiver, Member sender, NotificationType notificationType, String content, RedirectionType type, Long typeId) {
-        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, type, typeId, sender));
+    public void send(Member receiver, Member sender, NotificationType notificationType, String content, RedirectionType type, Long typeId, Long postId) {
+        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, type, typeId, postId, sender));
         String memberId = String.valueOf(receiver.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByMemberId(memberId);

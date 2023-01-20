@@ -18,9 +18,13 @@ public class RelatedUrl {
     @Column(nullable = false)
     private Long typeId;
 
-    public RelatedUrl(RedirectionType type, Long typeId){
+    @Column(nullable = true)
+    private Long postId;
+
+    public RelatedUrl(RedirectionType type, Long typeId, Long postId){
 
         this.type = type;
         this.typeId = typeId;
+        this.postId = postId;
     }
 }
