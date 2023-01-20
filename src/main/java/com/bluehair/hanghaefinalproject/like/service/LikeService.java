@@ -18,6 +18,7 @@ import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 import com.bluehair.hanghaefinalproject.like.entity.PostLike;
 import com.bluehair.hanghaefinalproject.like.entity.PostLikeCompositeKey;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
+import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
 import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -64,9 +65,8 @@ public class LikeService {
 
         Member postMember = memberRepository.findByNickname(postliked.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
-        String url = "/api/post/"+postId+"/comment";
         String content = postliked.getTitle()+"을(를) "+member.getNickname()+"님이 좋아합니다.";
-        notificationService.send(postMember, NotificationType.POST_LIKED, content, url);
+        notificationService.send(postMember, member, NotificationType.POST_LIKED, content, RedirectionType.detail, postId);
 
         return new PostLikeDto(likecheck, postliked.getLikeCount());
 
@@ -100,9 +100,8 @@ public class LikeService {
         Member commentMember = memberRepository.findByNickname(comment.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
         Long postId = comment.getPost().getId();
-        String url = "/api/post/"+postId+"/comment";
         String content = commentMember.getNickname()+"님의 댓글을 "+nickname+"님이 좋아합니다.";
-        notificationService.send(commentMember, NotificationType.COMMENT_LIKED, content, url);
+        notificationService.send(commentMember, member, NotificationType.COMMENT_LIKED, content, RedirectionType.detail, postId);
         
         return new CommentLikeDto(isLiked, comment.getLikeCount());
 

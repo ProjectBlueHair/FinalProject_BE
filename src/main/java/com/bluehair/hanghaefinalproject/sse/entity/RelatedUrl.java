@@ -5,15 +5,22 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Getter
 @Embeddable
 @NoArgsConstructor
 public class RelatedUrl {
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String url;
+    private RedirectionType type;
+    @Column(nullable = false)
+    private Long typeId;
 
-    public RelatedUrl(String url){
-        this.url = url;
+    public RelatedUrl(RedirectionType type, Long typeId){
+
+        this.type = type;
+        this.typeId = typeId;
     }
 }

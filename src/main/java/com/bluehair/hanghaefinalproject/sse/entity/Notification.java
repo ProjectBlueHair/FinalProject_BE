@@ -36,21 +36,27 @@ public class Notification extends Timestamped {
     @JoinColumn(name = "MEMBER_ID")
     private Member receiver;
 
+    @Embedded
+    private Sender sender;
+
     @Builder
-    public Notification(Member receiver, NotificationType notificationType, String content, String url) {
+    public Notification(Member receiver,
+                        NotificationType notificationType,
+                        String content,
+                        RedirectionType type,
+                        Long typeId,
+                        Member sender
+                        ) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = new NotificationContent(content);
-        this.url = new RelatedUrl(url);
+        this.url = new RelatedUrl(type, typeId);
+        this.sender = new Sender(sender);
         this.isRead = false;
     }
 
     public String getContent() {
         return content.getContent();
-    }
-
-    public String getUrl() {
-        return url.getUrl();
     }
 
     public void read(){
