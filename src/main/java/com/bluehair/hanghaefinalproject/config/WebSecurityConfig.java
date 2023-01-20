@@ -28,7 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity(debug = true) // Filter 적용 순서 등 확인할 때 쓰시면 좋습니다. 서비스 런칭하고는 옵션 삭제
+//@EnableWebSecurity(debug = true) // Filter 적용 순서 등 확인할 때 쓰시면 좋습니다. 서비스 런칭하고는 옵션 삭제
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
