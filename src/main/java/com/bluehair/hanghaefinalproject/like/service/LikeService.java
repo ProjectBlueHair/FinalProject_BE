@@ -63,10 +63,13 @@ public class LikeService {
         postliked.like();
         postRepository.save(postliked);
 
+
         Member postMember = memberRepository.findByNickname(postliked.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
-        String content = postliked.getTitle()+"을(를) "+member.getNickname()+"님이 좋아합니다.";
-        notificationService.send(postMember, member, NotificationType.POST_LIKED, content, RedirectionType.detail, postId, null);
+        if(!postMember.getNickname().equals(member.getNickname())) {
+            String content = postliked.getTitle() + "을(를) " + member.getNickname() + "님이 좋아합니다.";
+            notificationService.send(postMember, member, NotificationType.POST_LIKED, content, RedirectionType.detail, postId, null);
+        }
 
         return new PostLikeDto(likecheck, postliked.getLikeCount());
 
@@ -99,10 +102,12 @@ public class LikeService {
 
         Member commentMember = memberRepository.findByNickname(comment.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
-        Long postId = comment.getPost().getId();
-        String content = commentMember.getNickname()+"님의 댓글을 "+nickname+"님이 좋아합니다.";
-        notificationService.send(commentMember, member, NotificationType.COMMENT_LIKED, content, RedirectionType.detail, postId, null);
-        
+        if(!commentMember.getNickname().equals(member.getNickname())) {
+            Long postId = comment.getPost().getId();
+            String content = commentMember.getNickname() + "님의 댓글을 " + nickname + "님이 좋아합니다.";
+            notificationService.send(commentMember, member, NotificationType.COMMENT_LIKED, content, RedirectionType.detail, postId, null);
+        }
+
         return new CommentLikeDto(isLiked, comment.getLikeCount());
 
         }

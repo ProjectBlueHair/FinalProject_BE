@@ -57,8 +57,6 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    private final NotificationRepository notificationRepository;
-
     @Transactional
     public Long createPost(PostDto postDto, String nickname) {
 

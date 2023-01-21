@@ -127,7 +127,7 @@ public class CollaboRequestService {
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
         Post post = postRepository.findById(collaboRequest.getPost().getId())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
-        if (!post.getNickname().equals(member.getNickname())){
+        if (!post.getNickname().equals(member.getNickname())) {
             throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED);
         }
 
@@ -139,8 +139,10 @@ public class CollaboRequestService {
         Long postId = post.getId();
         Member collaboMember = memberRepository.findByNickname(collaboRequest.getNickname())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
-        String content = post.getTitle()+"에 대한 콜라보 요청이 승인되었습니다.";
-        notificationService.send(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId, null);
+        if (!collaboMember.getNickname().equals(member.getNickname())) {
+            String content = post.getTitle() + "에 대한 콜라보 요청이 승인되었습니다.";
+            notificationService.send(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId, null);
+        }
     }
 
     @Transactional
