@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.common.exception;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 import com.bluehair.hanghaefinalproject.common.response.error.ErrorResponse;
+import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final CollaboRequestRepository collaboRequestRepository;
+    private final PostRepository postRepository;
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
         log.error("NotFoundException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
@@ -51,6 +53,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("InvalidAudioFileException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
         if(e.getCollaboRequest()!=null){
             collaboRequestRepository.delete(e.getCollaboRequest());
+        }
+        if(e.getPost()!=null){
+            postRepository.deleteById(e.getPost().getId());
         }
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }

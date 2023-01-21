@@ -62,7 +62,7 @@ public class MusicService {
             saveMusicListAtS3(multipartFileList, musicPartList, collaboRequest, post);
         }
         catch(UnsupportedAudioFileException | IOException | InvalidRequestException e) {
-            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, collaboRequest);
+            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, collaboRequest, post);
         }
     }
 
@@ -174,7 +174,7 @@ public class MusicService {
             saveMusicListAtS3(multipartFileList, musicPartList, collaboRequest, post);
         }
         catch(UnsupportedAudioFileException | IOException | InvalidRequestException e) {
-            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, null);
+            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, null, null);
         }
     }
 
