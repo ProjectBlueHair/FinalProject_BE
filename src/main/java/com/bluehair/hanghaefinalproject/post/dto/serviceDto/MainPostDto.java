@@ -24,9 +24,12 @@ public class MainPostDto {
     private List<String> tagList;
     @Schema(description = "댓글 번호", example = "댓글 번호")
     private List<MainProfileDto> mainProfileList;
+    @Schema(description = "게시글 좋아요 여부", example = "게시글 좋아요 여부")
+    private boolean isLiked;
 
     @Builder
-    public MainPostDto(Long id, String title, String postImg, Long likeCount, Long viewCount, String musicFile, List<String> tagList,List<MainProfileDto> mainProfileList){
+    public MainPostDto(Long id, String title, String postImg, Long likeCount, Long viewCount, String musicFile, List<String> tagList,
+                       List<MainProfileDto> mainProfileList, boolean isLiked){
         this.id = id;
         this.title = title;
         this.postImg = postImg;
@@ -35,6 +38,7 @@ public class MainPostDto {
         this.musicFile = musicFile;
         this.tagList = tagList;
         this.mainProfileList = mainProfileList;
+        this.isLiked = isLiked;
     }
 
 }
