@@ -62,12 +62,15 @@ public class CommentService {
         Comment comment = new Comment(parentId, nickname, member.getProfileImg(),commentDto.getContents(),likeCount, post);
 
         commentRepository.save(comment);
+
         //post 작성자에게 댓글 알림 - 댓글 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
-        String content = post.getTitle()+"에 "+nickname+"님이 댓글을 남겼습니다.";
-        notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
 
+        if(!postMember.getNickname().equals(member.getNickname())) {
+            String content = post.getTitle() + "에 " + nickname + "님이 댓글을 남겼습니다.";
+            notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
+        }
     }
     @Transactional
     public void updateComment(Long commentId, CommentDto commentDto, String nickname) {
