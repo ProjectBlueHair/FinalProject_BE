@@ -57,6 +57,24 @@ public class CollaboRequestController {
 
     @Tag(name = "CollaboRequest")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 작성 성공"),
+            @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글"),
+            @ApiResponse(responseCode = "4003", description = "유효하지 않은 음원")
+    })
+    @Operation(summary = "게시물에 대한 첫 콜라보 리퀘스트 작성", description = "해당 Post에 대한 첫 콜라보 리퀘스트 작성")
+    @PostMapping("/api/post/{postid}/collabo/first")
+    public ResponseEntity<SuccessResponse<Object>> collaboRequestFirst(@PathVariable Long postid,
+                                                                  @RequestPart(value = "jsonData") RequestCollaboRequestDto requestCollaboRequestDto,
+                                                                  @Parameter(description = "WAV 및 2 Channel 오디오만 지원합니다.")
+                                                                  @RequestPart(value = "musicFile") List<MultipartFile> musicFileList,
+                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long collaboRequestId = collaboRequestService.collaboRequestFirst(postid, requestCollaboRequestDto.tocollaboRequestDetailsDto(), customUserDetails.getMember());
+        musicService.saveMusic(musicFileList, postid, requestCollaboRequestDto.getMusicPartList(), collaboRequestId);
+        return SuccessResponse.toResponseEntity(COLLABO_REQUEST_SUCCESS, collaboRequestId);
+    }
+
+    @Tag(name = "CollaboRequest")
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "콜라보리퀘스트 상세 조회 성공"),
             @ApiResponse(responseCode = "4041", description = "존재하지 않는 게시글"),
             @ApiResponse(responseCode = "4042", description = "존재하지 않는 콜라보리퀘스트")
