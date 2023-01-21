@@ -82,11 +82,11 @@ public class Post extends Timestamped {
 
     }
 
-    public void likeCount(){
+    public void like(){
         this.likeCount++;
     }
 
-    public void disLike(){
+    public void unLike(){
         this.likeCount--;
     }
 }
