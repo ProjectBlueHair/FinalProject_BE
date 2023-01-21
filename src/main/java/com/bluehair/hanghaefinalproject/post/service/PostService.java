@@ -9,6 +9,7 @@ import com.bluehair.hanghaefinalproject.common.exception.Domain;
 import com.bluehair.hanghaefinalproject.common.exception.NotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
+import com.bluehair.hanghaefinalproject.like.entity.PostLike;
 import com.bluehair.hanghaefinalproject.like.entity.PostLikeCompositeKey;
 import com.bluehair.hanghaefinalproject.like.repository.CommentLikeRepository;
 import com.bluehair.hanghaefinalproject.like.repository.PostLikeRepository;
@@ -114,7 +115,13 @@ public class PostService {
     }
     public List<MainPostDto>  myPost(Pageable pageable, String nickname) {
         List<MainPostDto> mainPostDtoList = new ArrayList<>();
+
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND)
+        );
+
         List<Post> postList = postRepository.findByNickname(pageable,nickname);
+
         for (Post post : postList){
             List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPostId(post.getId());
 
@@ -123,6 +130,15 @@ public class PostService {
             List<Tag> tagGet = tagRepository.findAllByPostId(post.getId());
 
             List<String> tagList = new ArrayList<>();
+
+            boolean isLiked = false;
+
+            PostLikeCompositeKey postLikeCompositeKey
+                    = new PostLikeCompositeKey(member.getId(), post.getId());
+            Optional<PostLike> liked = postLikeRepository.findById(postLikeCompositeKey);
+            if (liked.isPresent()){
+                isLiked = true;
+            }
 
             for(Tag tag : tagGet){
                 tagList.add(tag.getContents());
@@ -141,23 +157,24 @@ public class PostService {
                 // List로 다시 변환
                 List<String> musicPartList = new ArrayList<>(set);
 
-                Optional<Member> member = memberRepository.findByNickname(collaboRequest.getNickname());
-                MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, member.get().getProfileImg(),collaboRequest.getNickname());
+                Optional<Member> collaboMember = memberRepository.findByNickname(collaboRequest.getNickname());
+                MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, collaboMember.get().getProfileImg(),collaboRequest.getNickname());
                 mainProfile.add(mainProfileDto);
             }
             Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
             List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
 
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList));
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList, isLiked));
         }
         return mainPostDtoList;
     }
 
-    public List<MainPostDto> mainPost(Pageable pageable, String search) {
+    public List<MainPostDto> mainPost(Pageable pageable, String search, Member member) {
 
         List<MainPostDto> mainPostDtoList = new ArrayList<>();
         List<Post> postList = new ArrayList<>();
         String searchContents = search;
+
         if (search == null || search.equals(" ")) {
             postList = postRepository.findAllByOrderByCreatedAtDesc(pageable);
         }
@@ -180,6 +197,17 @@ public class PostService {
 
             List<String> tagList = new ArrayList<>();
 
+            boolean isLiked = false;
+
+            if (member != null){
+                PostLikeCompositeKey postLikeCompositeKey
+                        = new PostLikeCompositeKey(member.getId(), post.getId());
+                Optional<PostLike> liked = postLikeRepository.findById(postLikeCompositeKey);
+                if (liked.isPresent()){
+                    isLiked = true;
+                }
+            }
+
             for (Tag tag : tagGet){
                 tagList.add(tag.getContents());
             }
@@ -201,8 +229,8 @@ public class PostService {
                 // List로 다시 변환
                 List<String> musicPartList = new ArrayList<>(set);
 
-                Optional<Member> member = memberRepository.findByNickname(collaboRequest.getNickname());
-                MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, member.get().getProfileImg(),collaboRequest.getNickname());
+                Optional<Member> collaboMember = memberRepository.findByNickname(collaboRequest.getNickname());
+                MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, collaboMember.get().getProfileImg(),collaboRequest.getNickname());
                 mainProfile.add(mainProfileDto);
             }
 
@@ -210,7 +238,7 @@ public class PostService {
             Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
             List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
 
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList));
+            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList,isLiked));
         }
 
         return mainPostDtoList;

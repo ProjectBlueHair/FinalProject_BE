@@ -90,11 +90,17 @@ public class PostController {
             @ApiResponse(responseCode = "2000", description = "전체 게시글 조회 성공")
     })
     @GetMapping(value = {""})
-    public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable, @RequestParam(name = "search", required = false) String search){
+    public ResponseEntity<SuccessResponse<Object>> mainPost(Pageable pageable, @RequestParam(name = "search", required = false) String search, @AuthenticationPrincipal CustomUserDetails userDetails){
+        Member member = null;
+        try {
+            member = userDetails.getMember();
+        }catch (NullPointerException e){
+            log.info("비로그인 사용자 접근 : mainPost");
+        }
         if(search != null){
-            return SuccessResponse.toResponseEntity(SEARCH_POST,postService.mainPost(pageable,search));
+            return SuccessResponse.toResponseEntity(SEARCH_POST,postService.mainPost(pageable,search, member));
         }else{
-            return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable, search));
+            return SuccessResponse.toResponseEntity(MAIN_POST,postService.mainPost(pageable, search, member));
         }
     }
     @Tag(name = "Post")
