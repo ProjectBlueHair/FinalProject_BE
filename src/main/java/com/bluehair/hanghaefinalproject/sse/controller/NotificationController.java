@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @Tag(name = "SSE", description = "SSE 관련 API")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -32,10 +34,10 @@ public class NotificationController {
             @ApiResponse(responseCode = "5000", description = "SSE 연결 실패")
     })
     @Operation(summary = "SSE 연결")
-    @GetMapping(value="/api/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
+    @GetMapping(value="/api/subscribe/{nickname}", produces = "text/event-stream")
+    public SseEmitter subscribe(@PathVariable String nickname, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
 
-        return notificationService.subscribe(userDetails.getMember().getId(), lastEventId);
+        return notificationService.subscribe(nickname, lastEventId);
     }
 
     @Tag(name = "SSE")
