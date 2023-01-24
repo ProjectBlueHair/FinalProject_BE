@@ -64,6 +64,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/member/login", "/api/member/signup", "/api/member/reissuance").permitAll()
                 .antMatchers("/api/member/validate/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
+                .antMatchers("/api/subscribe/*").permitAll()
                 .antMatchers().permitAll()
                 .anyRequest().authenticated();
 
