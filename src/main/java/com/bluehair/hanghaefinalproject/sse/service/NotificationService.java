@@ -72,6 +72,8 @@ public class NotificationService {
 
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
         try {
+            log.warn("emitterId : " + emitterId);
+            log.warn("data : " + data.toString());
             emitter.send(SseEmitter.event()
                     .id(emitterId)
                     .data(data));
