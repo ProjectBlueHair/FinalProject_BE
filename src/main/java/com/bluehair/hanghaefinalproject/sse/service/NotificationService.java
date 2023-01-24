@@ -37,6 +37,7 @@ public class NotificationService {
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
+    @Transactional
     public SseEmitter subscribe(String lastEventId, Long memberId) {
         String emitterId = memberId + "_" + System.currentTimeMillis();
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
@@ -55,7 +56,7 @@ public class NotificationService {
 
         return emitter;
     }
-
+    @Transactional
     public void send(Member receiver, Member sender, NotificationType notificationType, String content, RedirectionType type, Long typeId, Long postId) {
         Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, type, typeId, postId, sender));
         String memberId = String.valueOf(receiver.getId());
@@ -90,6 +91,7 @@ public class NotificationService {
         return responseNotificationDtoList;
     }
 
+    @Transactional
     public void readNotification(Long notificationid, Member member) {
         Notification notification = notificationRepository.findById(notificationid)
                 .orElseThrow(()-> new NotFoundException(SSE, SERVICE, NOTIFICATION_NOT_FOUND));
