@@ -3,7 +3,6 @@ package com.bluehair.hanghaefinalproject.sse.service;
 import com.bluehair.hanghaefinalproject.common.exception.InvalidRequestException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
-import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.sse.dto.ResponseNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.entity.Notification;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
@@ -35,15 +34,10 @@ import static com.bluehair.hanghaefinalproject.sse.mapper.SseMapStruct.SSE_MAPPE
 public class NotificationService {
     private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
     private final NotificationRepository notificationRepository;
-    private final MemberRepository memberRepository;
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
-    public SseEmitter subscribe(String nickname, String lastEventId) {
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(SSE, SERVICE, MEMBER_NOT_FOUND)
-        );
-        Long memberId = member.getId();
+    public SseEmitter subscribe(String lastEventId, Long memberId) {
         String emitterId = memberId + "_" + System.currentTimeMillis();
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
 
