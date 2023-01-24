@@ -1,9 +1,6 @@
 package com.bluehair.hanghaefinalproject.sse.controller;
 
-import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
-import com.bluehair.hanghaefinalproject.member.entity.Member;
-import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.sse.dto.ResponseNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
@@ -20,9 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
-import static com.bluehair.hanghaefinalproject.common.exception.Domain.SSE;
-import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
-import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.MEMBER_NOT_FOUND;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.NOTIFICATION_LIST;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.NOTIFICATION_READ;
 
@@ -40,7 +34,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "5000", description = "SSE 연결 실패")
     })
     @Operation(summary = "SSE 연결")
-    @GetMapping(value="/api/subscribe/{nickname}", produces = "text/event-stream")
+    @GetMapping(value="/api/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
         return notificationService.subscribe(lastEventId, userDetails.getMember().getId());
     }
