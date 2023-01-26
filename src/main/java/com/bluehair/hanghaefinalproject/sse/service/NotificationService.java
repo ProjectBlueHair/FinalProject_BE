@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.sse.service;
 import com.bluehair.hanghaefinalproject.common.exception.InvalidRequestException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.sse.dto.ResponseCountNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.dto.ResponseNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.entity.Notification;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
@@ -103,5 +104,13 @@ public class NotificationService {
             notification.read();
         }
         notificationRepository.save(notification);
+    }
+
+    public ResponseCountNotificationDto countUnreadNotifications(Member member) {
+        String nickname = member.getNickname();
+        Long count = notificationRepository.countUnreadNotifications(nickname);
+
+        return new ResponseCountNotificationDto(count);
+
     }
 }
