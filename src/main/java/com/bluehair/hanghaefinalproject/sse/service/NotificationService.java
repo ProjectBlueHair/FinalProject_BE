@@ -1,6 +1,5 @@
 package com.bluehair.hanghaefinalproject.sse.service;
 
-import com.bluehair.hanghaefinalproject.common.exception.InvalidRequestException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.sse.dto.ResponseCountNotificationDto;
@@ -44,7 +43,7 @@ public class NotificationService {
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
 
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
-        emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
+        emitter.onTimeout(() -> {emitterRepository.deleteById(emitterId);emitter.complete();}); //안되면 범준님 책임
 
         sendToClient(emitter, emitterId, "EventStream Created. [memberId=" + memberId + "]");
 
@@ -81,8 +80,8 @@ public class NotificationService {
                     .id(emitterId)
                     .data(data));
         } catch (IOException exception) {
+            log.error("Unable to emit");
             emitterRepository.deleteById(emitterId);
-            throw new InvalidRequestException(SSE, SERVICE, UNHANDLED_SERVER_ERROR, "Emitter ID : " + emitterId);
         }
     }
 
@@ -106,6 +105,7 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Transactional
     public ResponseCountNotificationDto countUnreadNotifications(Member member) {
         String nickname = member.getNickname();
         Long count = notificationRepository.countUnreadNotifications(nickname);
