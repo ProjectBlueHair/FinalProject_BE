@@ -48,6 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleInvalidRequestException(InvalidRequestException e) {
         log.error("InvalidRequestException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 

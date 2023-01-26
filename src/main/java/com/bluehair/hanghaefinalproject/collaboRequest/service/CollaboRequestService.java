@@ -174,7 +174,7 @@ public class CollaboRequestService {
             throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
         if(collaboRequest.getApproval()){
-            throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED);
+            throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED, "CollaboRequest Status : " + collaboRequest.getApproval());
         }
     }
 }

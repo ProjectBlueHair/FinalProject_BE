@@ -81,7 +81,7 @@ public class NotificationService {
                     .data(data));
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
-            throw new InvalidRequestException(SSE, SERVICE, UNHANDLED_SERVER_ERROR);
+            throw new InvalidRequestException(SSE, SERVICE, UNHANDLED_SERVER_ERROR, "Emitter ID : " + emitterId);
         }
     }
 

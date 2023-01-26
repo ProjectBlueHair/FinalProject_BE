@@ -151,7 +151,7 @@ public class MemberService {
                 = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
 
         if (followRepository.existsById(followCompositeKey)){
-            throw new InvalidRequestException(MEMBER, SERVICE, ALREADY_FOLLWED);
+            throw new InvalidRequestException(MEMBER, SERVICE, ALREADY_FOLLWED, myFollowingMember.getNickname());
         }
 
         Follow follow = new Follow(followCompositeKey, userDetails.getMember(), myFollowingMember);
@@ -170,7 +170,7 @@ public class MemberService {
                 = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
 
         if (!followRepository.existsById(followCompositeKey)){
-            throw new InvalidRequestException(MEMBER, SERVICE, ALREADY_UNFOLLWED);
+            throw new InvalidRequestException(MEMBER, SERVICE, ALREADY_UNFOLLWED, myFollowingMember.getNickname());
         }
 
         followRepository.deleteById(followCompositeKey);
