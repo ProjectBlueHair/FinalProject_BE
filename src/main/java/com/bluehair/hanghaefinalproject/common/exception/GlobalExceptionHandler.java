@@ -20,6 +20,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
         log.error("NotFoundException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
@@ -32,12 +33,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleFormatException(FormatException e) {
         log.error("FormatException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleDuplicationException(DuplicationException e) {
         log.error("DuplicationException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 

@@ -11,4 +11,5 @@ public class FormatException extends IllegalArgumentException {
     private Domain domain;
     private Layer layer;
     private ErrorCode errorCode;
+    private Object causeVariable;
 }

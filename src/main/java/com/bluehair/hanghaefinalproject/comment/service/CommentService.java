@@ -48,16 +48,16 @@ public class CommentService {
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
 
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE,POST_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE,POST_NOT_FOUND, "Post ID : " + postId)
         );
         if (parentId != null){
             commentRepository.findById(parentId).orElseThrow(
-                    () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
+                    () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND, "Parent Comment ID : " + parentId)
             );
         }
 
         Member member = memberRepository.findByNickname(nickname)
-                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
         Long likeCount = 0L;
         Comment comment = new Comment(parentId, nickname, member.getProfileImg(),commentDto.getContents(),likeCount, post);
 
@@ -65,7 +65,7 @@ public class CommentService {
 
         //post 작성자에게 댓글 알림 - 댓글 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
-                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
 
         if(!postMember.getNickname().equals(member.getNickname())) {
             String content = post.getTitle() + "에 " + nickname + "님이 댓글을 남겼습니다.";
@@ -76,10 +76,10 @@ public class CommentService {
     public void updateComment(Long commentId, CommentDto commentDto, String nickname) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND, "Comment ID : " + commentId)
         );
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
 
         if (!comment.getNickname().equals(member.getNickname())){
@@ -94,10 +94,10 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, String nickname) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND, "Comment ID : " + commentId)
         );
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
         if (!comment.getNickname().equals(member.getNickname())){
             throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
@@ -121,7 +121,7 @@ public class CommentService {
                 }
             }
             Comment comments = commentRepository.findById(comment.getId()).orElseThrow(
-                    () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
+                    () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND, "Comment ID : " + comment.getId())
             );
 
             List<Comment> ParentsCommentList = commentRepository.findByParentsId(comments.getId());

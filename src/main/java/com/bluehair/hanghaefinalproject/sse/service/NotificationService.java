@@ -41,8 +41,7 @@ public class NotificationService {
 
     public SseEmitter subscribe(String nickname, String lastEventId) {
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(SSE, SERVICE, MEMBER_NOT_FOUND)
-        );
+                () -> new NotFoundException(SSE, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
         Long memberId = member.getId();
         String emitterId = memberId + "_" + System.currentTimeMillis();
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
@@ -98,7 +97,7 @@ public class NotificationService {
 
     public void readNotification(Long notificationid, Member member) {
         Notification notification = notificationRepository.findById(notificationid)
-                .orElseThrow(()-> new NotFoundException(SSE, SERVICE, NOTIFICATION_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(SSE, SERVICE, NOTIFICATION_NOT_FOUND, "Notification ID : " + notificationid));
         if(member.getId().equals(notification.getReceiver().getId())) {
             notification.read();
         }

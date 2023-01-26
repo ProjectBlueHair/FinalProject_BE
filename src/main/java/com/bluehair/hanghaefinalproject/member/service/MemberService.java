@@ -40,18 +40,18 @@ public class MemberService {
     public void signUp(SignUpDto signUpDto) {
         memberRepository.findByEmail(signUpDto.getEmail())
                 .ifPresent(m->{
-                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_EMAIL);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_EMAIL, signUpDto.getEmail());
                 });
         memberRepository.findByNickname(signUpDto.getNickname())
                 .ifPresent(m-> {
-                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME, signUpDto.getNickname());
                 });
 
         if(!Validator.isValidEmail(signUpDto.getEmail())){
-            throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL);
+            throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL, signUpDto.getEmail());
         }
         if(!Validator.isValidPassword(signUpDto.getPassword())){
-            throw new FormatException(MEMBER, SERVICE, INVALID_PASSWORD);
+            throw new FormatException(MEMBER, SERVICE, INVALID_PASSWORD, signUpDto.getPassword());
         }
 
         signUpDto.encryptPassword(passwordEncoder.encode(signUpDto.getPassword()));
@@ -67,18 +67,18 @@ public class MemberService {
     @Transactional(readOnly = true)
     public void validateEmail(ValidateEmailDto validateEmailDto) {
         if(!Validator.isValidEmail(validateEmailDto.getEmail())){
-            throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL);
+            throw new FormatException(MEMBER, SERVICE, INVALID_EMAIL, validateEmailDto.getEmail());
         }
         memberRepository.findByEmail(validateEmailDto.getEmail())
                 .ifPresent(m->{
-                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_EMAIL);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_EMAIL, validateEmailDto.getEmail());
                 });
     }
     @Transactional(readOnly = true)
     public void validateNickname(ValidateNicknameDto validateNicknameDto){
         memberRepository.findByNickname(validateNicknameDto.getNickname())
                 .ifPresent(m->{
-                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME);
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME, validateNicknameDto.getNickname());
                 });
     }
 
@@ -93,7 +93,7 @@ public class MemberService {
     @Transactional
     public void login(LoginDto loginDto, HttpServletResponse response) {
         Member member = memberRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Email : " + loginDto.getEmail()));
 
         if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())){
             throw new NotAuthorizedMemberException(MEMBER, SERVICE, PASSWORD_INCORRECT);
@@ -111,7 +111,7 @@ public class MemberService {
         jwtUtil.validateToken(refreshToken, false);
 
         Member member = memberRepository.findByEmail(claims.getSubject())
-                .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Email : " + claims.getSubject()));
 
         if(!member.getRefreshToken().substring(7).equals(refreshToken)){
             throw new CustomJwtException(INVALID_REFRESHTOKEN);
@@ -145,7 +145,7 @@ public class MemberService {
     @Transactional
     public void doFollow(CustomUserDetails userDetails, FollowDto followDto) {
         Member myFollowingMember = memberRepository.findByNickname(followDto.getMyFollowingMemberNickname())
-                .orElseThrow(()-> new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + followDto.getMyFollowingMemberNickname()));
 
         FollowCompositeKey followCompositeKey
                 = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
@@ -164,7 +164,7 @@ public class MemberService {
     @Transactional
     public void doUnfollow(CustomUserDetails userDetails, FollowDto followDto) {
         Member myFollowingMember = memberRepository.findByNickname(followDto.getMyFollowingMemberNickname())
-                .orElseThrow(()-> new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + followDto.getMyFollowingMemberNickname()));
 
         FollowCompositeKey followCompositeKey
                 = new FollowCompositeKey(userDetails.getMember().getId(), myFollowingMember.getId());
