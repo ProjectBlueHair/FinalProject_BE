@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.post.dto.serviceDto;
+package com.bluehair.hanghaefinalproject.post.dto.responseDto;
 
 import com.bluehair.hanghaefinalproject.common.service.LocalDateTimeConverter;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Schema(description = "상세 조회 응답 Dto")
 @Getter
-public class InfoPostDto {
+public class ResponseInfoPostDto {
     @Schema(description = "게시글 제목", example = "게시글 제목")
     private String title;
     @Schema(description = "게시글 내용", example = "게시글 내용")
@@ -33,7 +33,7 @@ public class InfoPostDto {
     private String createdAt;
 
     @Builder
-    public InfoPostDto(Post post, Boolean isLiked){
+    public ResponseInfoPostDto(Post post, Boolean isLiked){
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.collaboNotice = post.getCollaboNotice();

@@ -1,6 +1,5 @@
 package com.bluehair.hanghaefinalproject.music.entity;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.RequestCollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import lombok.Builder;
 import lombok.Getter;

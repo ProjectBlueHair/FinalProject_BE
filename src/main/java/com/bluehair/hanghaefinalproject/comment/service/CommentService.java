@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.bluehair.hanghaefinalproject.comment.mapper.CommentMapStruct.COMMENT_MAPPER;
 import static com.bluehair.hanghaefinalproject.common.exception.Domain.COMMENT;
 import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.POST_NOT_FOUND;
@@ -44,6 +45,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
     private final CommentLikeRepository commentLikeRepository;
+
     @Transactional
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
 
@@ -55,12 +57,10 @@ public class CommentService {
                     () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND, "Parent Comment ID : " + parentId)
             );
         }
-
         Member member = memberRepository.findByNickname(nickname)
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
-        Long likeCount = 0L;
-        Comment comment = new Comment(parentId, nickname, member.getProfileImg(),commentDto.getContents(),likeCount, post);
 
+        Comment comment = COMMENT_MAPPER.commentDtoToComment(commentDto, member, post, parentId);
         commentRepository.save(comment);
 
         //post 작성자에게 댓글 알림 - 댓글 조회로 이동
@@ -87,9 +87,7 @@ public class CommentService {
         }
 
         comment.update(commentDto);
-
         commentRepository.save(comment);
-
     }
     @Transactional
     public void deleteComment(Long commentId, String nickname) {
@@ -99,16 +97,16 @@ public class CommentService {
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
                 () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
+
         if (!comment.getNickname().equals(member.getNickname())){
             throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
+
         deleteCommentLike(commentId);
         commentRepository.deleteById(commentId);
     }
 
     public List<CommentListDto> getComment(Long postId, Member member) {
-
-
         List<Comment> notParentsCommentList = commentRepository.findByPostIdAndParentsId(postId, null);
 
         List<CommentListDto> commentList = new ArrayList<>();
@@ -135,10 +133,10 @@ public class CommentService {
                         replyIsLiked = true;
                     }
                 }
-                ReplyDto replyDto = new ReplyDto(c, c.getCreatedAt(), c.getModifiedAt(), replyIsLiked);
+                ReplyDto replyDto = COMMENT_MAPPER.commentToReplyDto(c, replyIsLiked);
                 replyList.add(replyDto);
             }
-            CommentListDto commentListDto = new CommentListDto(comments, comments.getCreatedAt(), comments.getModifiedAt(),commentIsLiked,replyList);
+            CommentListDto commentListDto = COMMENT_MAPPER.synthesisCommentAndReplyListToCommentListDto(comment, commentIsLiked, replyList);
             commentList.add(commentListDto);
         }
         return commentList;

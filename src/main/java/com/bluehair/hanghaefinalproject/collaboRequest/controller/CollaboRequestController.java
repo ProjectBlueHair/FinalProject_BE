@@ -1,8 +1,8 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.controller;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.RequestCollaboRequestDto;
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.responseDto.ResponseCollaboRequestListForPostDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.requestDto.RequestCollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.responseDto.ResponseCollaboRequestDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.service.CollaboRequestService;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 
@@ -76,7 +76,7 @@ public class CollaboRequestController {
     })
     @Operation(summary = "해당 게시글 관련 콜라보 전체 조회")
     @GetMapping("/api/post/{postid}/collabo")
-    public ResponseEntity<SuccessResponse<List<CollaboRequestListForPostDto>>> getCollaboRequestList(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails ){
+    public ResponseEntity<SuccessResponse<List<ResponseCollaboRequestListForPostDto>>> getCollaboRequestList(@PathVariable Long postid, @AuthenticationPrincipal CustomUserDetails userDetails ){
 
         Member member = null;
         try {

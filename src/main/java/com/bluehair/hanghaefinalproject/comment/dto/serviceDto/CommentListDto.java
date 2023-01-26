@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Schema(description = "댓글 리스트 조회 Dto")
@@ -35,15 +34,14 @@ public class CommentListDto {
     private List<ReplyDto> replyList;
 
     @Builder
-    public CommentListDto(Comment comment, LocalDateTime createdAt, LocalDateTime modifiedAt,
-                          boolean isLiked,List<ReplyDto> replyList){
+    public CommentListDto(Comment comment, boolean isLiked, List<ReplyDto> replyList){
         this.id = comment.getId();
         this.profileImg = comment.getProfileImg();
         this.nickname = comment.getNickname();
         this.contents = comment.getContents();
         this.parentsId = comment.getParentsId();
-        this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
-        this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
+        this.createdAt = LocalDateTimeConverter.timeToString(comment.getCreatedAt());
+        this.modifiedAt = LocalDateTimeConverter.timeToString(comment.getModifiedAt());
         this.likeCount = comment.getLikeCount();
         this.isLiked = isLiked;
         this.replyList = replyList;

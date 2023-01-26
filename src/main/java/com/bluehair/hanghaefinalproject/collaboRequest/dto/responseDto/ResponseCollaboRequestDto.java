@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.collaboRequest.dto;
+package com.bluehair.hanghaefinalproject.collaboRequest.dto.responseDto;
 
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.common.service.LocalDateTimeConverter;

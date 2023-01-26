@@ -1,4 +1,4 @@
-package com.bluehair.hanghaefinalproject.collaboRequest.dto;
+package com.bluehair.hanghaefinalproject.collaboRequest.dto.serviceDto;
 
 import lombok.Builder;
 import lombok.Getter;

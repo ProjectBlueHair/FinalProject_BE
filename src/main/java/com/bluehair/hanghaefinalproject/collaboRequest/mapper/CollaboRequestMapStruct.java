@@ -1,8 +1,8 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.mapper;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDetailsDto;
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.serviceDto.CollaboRequestDetailsDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.serviceDto.CollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.responseDto.ResponseCollaboRequestListForPostDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 
@@ -14,7 +14,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CollaboRequestMapStruct {
     CollaboRequestMapStruct COLLABOREQUEST_MAPPER = Mappers.getMapper(CollaboRequestMapStruct.class);
-
     CollaboRequestDto CollaboRequestDetailsDtotoCollaboRequestDto(CollaboRequestDetailsDto collaboRequestDetailsDto, String nickname);
     CollaboRequestDto CollaboRequestDetailsDtotoUpdate(CollaboRequestDetailsDto collaboRequestDetailsDto);
 
@@ -28,12 +27,12 @@ public interface CollaboRequestMapStruct {
                 .build();
     }
 
-    default CollaboRequestListForPostDto CollaboRequestListtoCollaboRequestListDto(CollaboRequest collaboRequest,
-                                                                                   Long follwerCount,
-                                                                                   Boolean isFollowed,
-                                                                                   String profileImg,
-                                                                                   List<String> musicPartsList){
-        return CollaboRequestListForPostDto.builder()
+    default ResponseCollaboRequestListForPostDto CollaboRequestListtoCollaboRequestListDto(CollaboRequest collaboRequest,
+                                                                                           Long follwerCount,
+                                                                                           Boolean isFollowed,
+                                                                                           String profileImg,
+                                                                                           List<String> musicPartsList){
+        return ResponseCollaboRequestListForPostDto.builder()
                 .collaboId(collaboRequest.getId())
                 .nickname(collaboRequest.getNickname())
                 .contents(collaboRequest.getContents())
