@@ -59,10 +59,10 @@ public class NotificationController {
             @ApiResponse(responseCode = "4049", description = "존재하지 않는 알림")
     })
     @PostMapping("/api/notification/{notificationid}")
-    public ResponseEntity<SuccessResponse<Object>> readNotification(@PathVariable Long notificationid, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<SuccessResponse<ResponseCountNotificationDto>> readNotification(@PathVariable Long notificationid, @AuthenticationPrincipal CustomUserDetails userDetails){
         notificationService.readNotification(notificationid,userDetails.getMember());
 
-        return SuccessResponse.toResponseEntity(NOTIFICATION_READ, null);
+        return SuccessResponse.toResponseEntity(NOTIFICATION_READ, notificationService.countUnreadNotifications(userDetails.getMember()));
     }
 
     @Tag(name = "SSE")
