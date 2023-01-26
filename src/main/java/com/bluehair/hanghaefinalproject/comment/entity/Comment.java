@@ -51,7 +51,6 @@ public class Comment extends Timestamped {
     public void like() {
         this.likeCount += 1;
     }
-
     public void unlike() {
         this.likeCount -= 1;
     }

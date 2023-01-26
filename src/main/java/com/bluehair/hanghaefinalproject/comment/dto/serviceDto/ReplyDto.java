@@ -5,8 +5,6 @@ import com.bluehair.hanghaefinalproject.common.service.LocalDateTimeConverter;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 public class ReplyDto {
 
@@ -18,16 +16,16 @@ public class ReplyDto {
     private String createdAt;
     private String modifiedAt;
     private Long likeCount;
-    private boolean isLiked;
+    private Boolean isLiked;
     @Builder
-    public ReplyDto(Comment comment, LocalDateTime createdAt, LocalDateTime modifiedAt, boolean isLiked){
+    public ReplyDto(Comment comment, Boolean isLiked){
         this.id = comment.getId();
         this.contents = comment.getContents();
         this.nickname = comment.getNickname();
         this.profileImg = comment.getProfileImg();
         this.parentsId = comment.getParentsId();
-        this.createdAt = LocalDateTimeConverter.timeToString(createdAt);
-        this.modifiedAt = LocalDateTimeConverter.timeToString(modifiedAt);
+        this.createdAt = LocalDateTimeConverter.timeToString(comment.getCreatedAt());
+        this.modifiedAt = LocalDateTimeConverter.timeToString(comment.getModifiedAt());
         this.likeCount = comment.getLikeCount();
         this.isLiked = isLiked;
     }
