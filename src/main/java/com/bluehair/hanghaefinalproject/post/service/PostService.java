@@ -253,7 +253,7 @@ public class PostService {
                 () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
         if (!post.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
         tagRepository.deleteAllByPost(post);
 
@@ -294,7 +294,7 @@ public class PostService {
         );
 
         if (!post.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
 
         // 해당 게시글 콜라보 리스트 조회

@@ -127,7 +127,7 @@ public class CollaboRequestService {
         Post post = postRepository.findById(collaboRequest.getPost().getId())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND, "Post ID : " + collaboRequest.getPost().getId()));
         if (!post.getNickname().equals(member.getNickname())) {
-            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
 
         Boolean approval = true;
@@ -171,7 +171,7 @@ public class CollaboRequestService {
     private static void checkCollaboMember(Member member, CollaboRequest collaboRequest) {
         String nickname = collaboRequest.getNickname();
         if(!nickname.equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
         if(collaboRequest.getApproval()){
             throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED);

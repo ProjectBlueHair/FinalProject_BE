@@ -27,6 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotAuthorizedMemberException(NotAuthorizedMemberException e) {
         log.error("NotAuthorizedMemberException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 

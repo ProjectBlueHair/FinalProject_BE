@@ -83,7 +83,7 @@ public class CommentService {
         );
 
         if (!comment.getNickname().equals(member.getNickname())){
-             throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
+             throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
 
         comment.update(commentDto);
@@ -100,7 +100,7 @@ public class CommentService {
                 () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
         if (!comment.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(Domain.COMMENT,Layer.SERVICE,MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
         deleteCommentLike(commentId);
         commentRepository.deleteById(commentId);

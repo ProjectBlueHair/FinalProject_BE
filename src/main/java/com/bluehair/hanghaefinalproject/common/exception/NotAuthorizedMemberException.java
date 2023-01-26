@@ -10,4 +10,5 @@ public class NotAuthorizedMemberException extends SecurityException{
     private Domain domain;
     private Layer layer;
     private ErrorCode errorCode;
+    private Object causeVariable;
 }

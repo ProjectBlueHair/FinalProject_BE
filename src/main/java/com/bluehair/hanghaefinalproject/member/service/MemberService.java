@@ -96,7 +96,7 @@ public class MemberService {
                 .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Email : " + loginDto.getEmail()));
 
         if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())){
-            throw new NotAuthorizedMemberException(MEMBER, SERVICE, PASSWORD_INCORRECT);
+            throw new NotAuthorizedMemberException(MEMBER, SERVICE, PASSWORD_INCORRECT, loginDto.getEmail());
         }
 
         setNewTokens(response, member);
