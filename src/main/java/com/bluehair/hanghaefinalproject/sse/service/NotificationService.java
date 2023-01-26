@@ -14,6 +14,7 @@ import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -55,6 +56,8 @@ public class NotificationService {
 
         return emitter;
     }
+
+    @Async // 비동기 처리를 위한 어노테이션
     @Transactional
     public void send(Member receiver, Member sender, NotificationType notificationType, String content, RedirectionType type, Long typeId, Long postId) {
         Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, type, typeId, postId, sender));
