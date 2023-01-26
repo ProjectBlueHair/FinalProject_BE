@@ -64,7 +64,7 @@ public class CollaboRequestService {
 
         //post 작성자에게 콜라보 요청 알림 - 콜라보 상세 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + post.getNickname()));
 
         if (!collaboRequest.getNickname().equals(member.getNickname())){
             Long collaboId = collaboRequest.getId();
