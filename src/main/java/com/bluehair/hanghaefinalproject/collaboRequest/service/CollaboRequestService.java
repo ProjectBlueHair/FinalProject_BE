@@ -64,11 +64,13 @@ public class CollaboRequestService {
 
         //post 작성자에게 콜라보 요청 알림 - 콜라보 상세 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + post.getNickname()));
-        Long collaboId = collaboRequest.getId();
-        String content = post.getTitle()+"에 대한 콜라보 요청이 있습니다.";
-        notificationService.send(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId, postId);
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
 
+        if (!collaboRequest.getNickname().equals(member.getNickname())){
+            Long collaboId = collaboRequest.getId();
+            String content = post.getTitle()+"에 대한 콜라보 요청이 있습니다.";
+            notificationService.send(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId, postId);
+        }
         return collaboRequest.getId();
     }
 
