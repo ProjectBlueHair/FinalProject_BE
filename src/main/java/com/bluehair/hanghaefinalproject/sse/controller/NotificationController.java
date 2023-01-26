@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.sse.controller;
 
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
+import com.bluehair.hanghaefinalproject.sse.dto.ResponseCountNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.dto.ResponseNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.NOTIFICATION_LIST;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.NOTIFICATION_READ;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.NOTIFICATION_COUNT;
 
 @Tag(name = "SSE", description = "SSE 관련 API")
 @RestController
@@ -61,5 +63,15 @@ public class NotificationController {
         notificationService.readNotification(notificationid,userDetails.getMember());
 
         return SuccessResponse.toResponseEntity(NOTIFICATION_READ, null);
+    }
+
+    @Tag(name = "SSE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "읽지않은 알림 갯수 조회 성공")
+    })
+    @Operation(summary = "읽지않은 알림 갯수 조회")
+    @GetMapping(value = "/api/notification/count")
+    public ResponseEntity<SuccessResponse<ResponseCountNotificationDto>> countUnreadNotifications(@AuthenticationPrincipal CustomUserDetails userDetails){
+        return SuccessResponse.toResponseEntity(NOTIFICATION_COUNT, notificationService.countUnreadNotifications(userDetails.getMember()));
     }
 }
