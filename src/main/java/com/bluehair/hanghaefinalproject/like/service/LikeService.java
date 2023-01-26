@@ -22,6 +22,7 @@ import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
 import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -41,6 +42,7 @@ public class LikeService {
     private final CommentLikeRepository commentLikeRepository;
     private final NotificationService notificationService;
 
+    @Transactional
     public PostLikeDto postLike(Long postId, Member member){
         Post postliked = postRepository.findById(postId)
                 .orElseThrow(()-> new NotFoundException(LIKE, SERVICE, POST_NOT_FOUND, "Post ID : " + postId)
@@ -49,6 +51,7 @@ public class LikeService {
                 = new PostLikeCompositeKey(member.getId(), postliked.getId());
         boolean likecheck;
         Optional<PostLike> postLike= postLikeRepository.findByPostLikedIdAndMemberId(postliked.getId(), member.getId());
+
         if(postLike.isPresent()){
             postLikeRepository.deleteById(postLikeCompositeKey);
             postliked.unLike();
@@ -75,6 +78,7 @@ public class LikeService {
 
     }
 
+    @Transactional
     public CommentLikeDto likeComment(Long commentId, String nickname) {
 
         boolean isLiked = false;
