@@ -56,6 +56,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Transactional
     public ResponseEntity<ErrorResponse> handleInvalidAudioFileException(InvalidAudioFileException e) {
         log.error("InvalidAudioFileException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
+
         if(e.getCollaboRequest()!=null){
             collaboRequestRepository.delete(e.getCollaboRequest());
         }
