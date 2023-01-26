@@ -54,15 +54,15 @@ public class MusicService {
                           List<String> musicPartList,
                           Long collaboRequestId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, POST_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, POST_NOT_FOUND, "Post ID : " + postId));
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaboRequestId)
-                .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND, "CollaboReqeust Id : " + collaboRequestId));
 
         try {
             saveMusicListAtS3(multipartFileList, musicPartList, collaboRequest, post);
         }
         catch(UnsupportedAudioFileException | IOException | InvalidRequestException e) {
-            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, collaboRequest, null);
+            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, collaboRequest, null, musicPartList.toString());
         }
     }
 
@@ -107,7 +107,7 @@ public class MusicService {
     @Transactional
     public void mixMusic(Long collaboRequestId) throws IOException, UnsupportedAudioFileException {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaboRequestId)
-                .orElseThrow(()->new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(()->new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND, "CollaboRequest ID : " + collaboRequestId));
         Post post = collaboRequest.getPost();
 
         List<File> fileList = new ArrayList<>();
@@ -149,7 +149,7 @@ public class MusicService {
     @Transactional
     public void deleteMusicList(Long collaboRequestId) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaboRequestId)
-                .orElseThrow(() -> new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND, "CollaboRequest ID : " + collaboRequestId));
 
         for (Music music : collaboRequest.getMusicList()) {
             deleteS3(music.getMusicFile());
@@ -166,7 +166,7 @@ public class MusicService {
     @Transactional
     public void updateMusic(Long collaboRequestId, List<MultipartFile> multipartFileList, List<String> musicPartList) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaboRequestId)
-                .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(MUSIC, SERVICE, COLLABO_NOT_FOUND, "CollaboRequest ID : " + collaboRequestId));
 
         Post post = collaboRequest.getPost();
 
@@ -174,7 +174,7 @@ public class MusicService {
             saveMusicListAtS3(multipartFileList, musicPartList, collaboRequest, post);
         }
         catch(UnsupportedAudioFileException | IOException | InvalidRequestException e) {
-            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, null, null);
+            throw new InvalidAudioFileException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, null, null, musicPartList.toString());
         }
     }
 

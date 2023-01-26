@@ -37,7 +37,6 @@ public class NotificationService {
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
-    @Transactional
     public SseEmitter subscribe(String lastEventId, Long memberId) {
         String emitterId = memberId + "_" + System.currentTimeMillis();
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
@@ -79,7 +78,7 @@ public class NotificationService {
                     .data(data));
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
-            throw new InvalidRequestException(SSE, SERVICE, UNHANDLED_SERVER_ERROR);
+            throw new InvalidRequestException(SSE, SERVICE, UNHANDLED_SERVER_ERROR, "Emitter ID : " + emitterId);
         }
     }
 
@@ -96,7 +95,7 @@ public class NotificationService {
     @Transactional
     public void readNotification(Long notificationid, Member member) {
         Notification notification = notificationRepository.findById(notificationid)
-                .orElseThrow(()-> new NotFoundException(SSE, SERVICE, NOTIFICATION_NOT_FOUND));
+                .orElseThrow(()-> new NotFoundException(SSE, SERVICE, NOTIFICATION_NOT_FOUND, "Notification ID : " + notificationid));
         if(member.getId().equals(notification.getReceiver().getId())) {
             notification.read();
         }

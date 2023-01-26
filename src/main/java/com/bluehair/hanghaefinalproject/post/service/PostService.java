@@ -22,7 +22,6 @@ import com.bluehair.hanghaefinalproject.post.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
-import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
 import com.bluehair.hanghaefinalproject.tag.entity.Tag;
 import com.bluehair.hanghaefinalproject.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +89,7 @@ public class PostService {
     @Transactional
     public InfoPostDto infoPost(Long postid, Member member) {
         Post post = postRepository.findById(postid).orElseThrow(
-                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
+                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND, "Post ID : " + postid)
         );
 
         post.viewCount();
@@ -101,7 +100,7 @@ public class PostService {
 
         if(member!=null){
         Member postMember = memberRepository.findByNickname(post.getNickname()).orElseThrow(
-                () -> new NotFoundException(POST, SERVICE, MEMBER_NOT_FOUND)
+                () -> new NotFoundException(POST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + post.getNickname())
         );
 
         PostLikeCompositeKey postLikeCompositeKey
@@ -117,7 +116,7 @@ public class PostService {
         List<MainPostDto> mainPostDtoList = new ArrayList<>();
 
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
 
         List<Post> postList = postRepository.findByNickname(pageable,nickname);
@@ -248,13 +247,13 @@ public class PostService {
     public void updatePost(Long postId, PostUpdateDto postUpdateDto, String nickname) {
 
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
+                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND, "Post ID : " + postId)
         );
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
         if (!post.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
         tagRepository.deleteAllByPost(post);
 
@@ -272,7 +271,7 @@ public class PostService {
         List<ResponseMusicDto> responseMusicDtoList = new ArrayList<>();
 
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
+                () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND, "Post ID : " + postId)
         );
         for (CollaboRequest collaboRequest : post.getCollaboRequestList()) {
             if (collaboRequest.getApproval()){
@@ -287,15 +286,15 @@ public class PostService {
 
         // 게시글 검색
         Post post = postRepository.findById(postId).orElseThrow(
-            () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND)
+            () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND, "Post ID : " + postId)
         );
 
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
 
         if (!post.getNickname().equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(POST, SERVICE,MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
 
         // 해당 게시글 콜라보 리스트 조회

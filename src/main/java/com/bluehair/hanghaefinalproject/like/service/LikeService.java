@@ -43,7 +43,7 @@ public class LikeService {
 
     public PostLikeDto postLike(Long postId, Member member){
         Post postliked = postRepository.findById(postId)
-                .orElseThrow(()-> new NotFoundException(LIKE, SERVICE, POST_NOT_FOUND)
+                .orElseThrow(()-> new NotFoundException(LIKE, SERVICE, POST_NOT_FOUND, "Post ID : " + postId)
                 );
         PostLikeCompositeKey postLikeCompositeKey
                 = new PostLikeCompositeKey(member.getId(), postliked.getId());
@@ -65,7 +65,7 @@ public class LikeService {
 
 
         Member postMember = memberRepository.findByNickname(postliked.getNickname())
-                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + postliked.getNickname()));
         if(!postMember.getNickname().equals(member.getNickname())) {
             String content = postliked.getTitle() + "을(를) " + member.getNickname() + "님이 좋아합니다.";
             notificationService.send(postMember, member, NotificationType.POST_LIKED, content, RedirectionType.detail, postId, null);
@@ -80,10 +80,10 @@ public class LikeService {
         boolean isLiked = false;
 
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE,MEMBER_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
         );
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND)
+                () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND, "Comment ID : " + commentId)
         );
 
         CommentLikeCompositeKey commentLikeCompositeKey = new CommentLikeCompositeKey(commentId, member.getId());
@@ -101,7 +101,7 @@ public class LikeService {
         isLiked = true;
 
         Member commentMember = memberRepository.findByNickname(comment.getNickname())
-                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + comment.getNickname()));
         if(!commentMember.getNickname().equals(member.getNickname())) {
             Long postId = comment.getPost().getId();
             String content = commentMember.getNickname() + "님의 댓글을 " + nickname + "님이 좋아합니다.";

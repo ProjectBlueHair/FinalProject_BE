@@ -32,12 +32,11 @@ public class AudioSample {
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
         format = audioInputStream.getFormat();
 
-        log.warn("filename: " + file.getName());
-        log.warn("Channels: " + format.getChannels());
-        log.warn("bitDepth: " + format.getSampleSizeInBits());
-
         if(!Validator.isValidAudioFormat(format)) {
-            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE);
+            log.warn("filename: " + file.getName());
+            log.warn("Channels: " + format.getChannels());
+            log.warn("bitDepth: " + format.getSampleSizeInBits());
+            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, "Check Above");
         }
 
         // Frame의 크기(Frame을 표현할 수 있는 범위) - byte
@@ -53,7 +52,7 @@ public class AudioSample {
 
         // AudioBytes에 오디오 인풋 저장. numbytes와 다를 경우 파일이 커서 못읽는 경우, 잘라내야함
         if(numBytes != audioInputStream.read(audioBytes)) {
-            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE);
+            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, numBytes + " / " + audioInputStream.read(audioBytes));
         }
 
         convertToFloat(audioBytes, format);

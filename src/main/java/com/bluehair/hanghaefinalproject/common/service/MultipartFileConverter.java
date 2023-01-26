@@ -18,7 +18,6 @@ import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.I
 public class MultipartFileConverter {
     public static final String tmpPath = System.getProperty("user.dir") + File.separator + "temp";
 
-    // 변환이 정상적으로 안되었던 이유 노션에 정리
     static public void generateTempPath() {
         File dir = new File(tmpPath);
         if(!dir.exists()) {
@@ -34,11 +33,10 @@ public class MultipartFileConverter {
     static public File convertMFileToFile(MultipartFile mFile) throws IOException {
         File file = File.createTempFile("temp_", mFile.getOriginalFilename()
                 , new File(tmpPath));
-        System.out.println("Original Filename:" + mFile.getOriginalFilename());
         try{
             mFile.transferTo(file);
         } catch (IOException e) {
-            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE);
+            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, mFile.getOriginalFilename());
         }
         return file;
     }
@@ -47,7 +45,7 @@ public class MultipartFileConverter {
         try (FileInputStream is = new FileInputStream(file)){
             IOUtils.copy(is, fileItem.getOutputStream());
         } catch (IOException ex) {
-            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE);
+            throw new InvalidRequestException(MUSIC, SERVICE, INVALID_SOUNDSAMPLE, file.getName());
         }
         MultipartFile mFile = new CommonsMultipartFile(fileItem);
         fileItem.delete();

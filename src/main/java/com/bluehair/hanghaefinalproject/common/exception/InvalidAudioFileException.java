@@ -14,4 +14,5 @@ public class InvalidAudioFileException extends IllegalArgumentException {
     private ErrorCode errorCode;
     private CollaboRequest collaboRequest;
     private Post post;
+    private Object causeVariable;
 }

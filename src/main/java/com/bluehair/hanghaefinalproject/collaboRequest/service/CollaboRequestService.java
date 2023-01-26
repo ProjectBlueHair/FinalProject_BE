@@ -53,7 +53,7 @@ public class CollaboRequestService {
     @Transactional
     public Long collaboRequest(Long postId, CollaboRequestDetailsDto collaboRequestDetailsDto, Member member) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND, "Post ID : " + postId));
 
         String nickname = member.getNickname();
 
@@ -64,7 +64,7 @@ public class CollaboRequestService {
 
         //post 작성자에게 콜라보 요청 알림 - 콜라보 상세 조회로 이동
         Member postMember = memberRepository.findByNickname(post.getNickname())
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + post.getNickname()));
 
         if (!collaboRequest.getNickname().equals(member.getNickname())){
             Long collaboId = collaboRequest.getId();
@@ -77,7 +77,7 @@ public class CollaboRequestService {
     @Transactional
     public ResponseCollaboRequestDto getCollaboRequest(Long collaborequestid) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND, "CollbaoRequest ID : " + collaborequestid));
         List<Music> musicList = musicRepository.findAllByCollaboRequest(collaboRequest);
         List<ResponseMusicDto> musicDtoList = MUSIC_MAPPER.MusictoResponseMusicDto(musicList, collaboRequest);
 
@@ -87,7 +87,7 @@ public class CollaboRequestService {
     @Transactional
     public List<CollaboRequestListForPostDto> getCollaboRequestList(Long postid, Member member) {
         Post post = postRepository.findById(postid)
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND, "Post ID : " + postid));
 
         List<CollaboRequestListForPostDto> collaboRequestListForPostDto = new ArrayList<>();
         List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPost(post);
@@ -102,7 +102,7 @@ public class CollaboRequestService {
                 }
 
                 Member collabomember = memberRepository.findByNickname(collaboRequest.getNickname())
-                        .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
+                        .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + collaboRequest.getNickname()));
                 String profileImg = collabomember.getProfileImg();
                 Long followerCount = collabomember.getFollowerCount();
                 Boolean isFollowed = false;
@@ -125,11 +125,11 @@ public class CollaboRequestService {
     @Transactional
     public void approveCollaboRequest(Long collaborequestid, Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND, "CollaboRequest ID : " + collaborequestid));
         Post post = postRepository.findById(collaboRequest.getPost().getId())
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND, "Post ID : " + collaboRequest.getPost().getId()));
         if (!post.getNickname().equals(member.getNickname())) {
-            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
 
         Boolean approval = true;
@@ -139,7 +139,7 @@ public class CollaboRequestService {
         //요청한 사람한테 승인 완료 알림 - 게시글 상세 조회로 이동
         Long postId = post.getId();
         Member collaboMember = memberRepository.findByNickname(collaboRequest.getNickname())
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + collaboRequest.getNickname()));
         if (!collaboMember.getNickname().equals(member.getNickname())) {
             String content = post.getTitle() + "에 대한 콜라보 요청이 승인되었습니다.";
             notificationService.send(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId, null);
@@ -149,7 +149,7 @@ public class CollaboRequestService {
     @Transactional
     public void deleteCollaboRequest(Long collaborequestid, Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND, "CollaboRequest ID : " + collaborequestid));
 
         checkCollaboMember(member, collaboRequest);
 
@@ -161,7 +161,7 @@ public class CollaboRequestService {
                                      CollaboRequestDetailsDto collaboRequestDetailsDto,
                                      Member member) {
         CollaboRequest collaboRequest = collaboRequestRepository.findById(collaborequestid)
-                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, COLLABO_NOT_FOUND, "CollaboRequest ID : " + collaborequestid));
 
         checkCollaboMember(member, collaboRequest);
 
@@ -173,10 +173,10 @@ public class CollaboRequestService {
     private static void checkCollaboMember(Member member, CollaboRequest collaboRequest) {
         String nickname = collaboRequest.getNickname();
         if(!nickname.equals(member.getNickname())){
-            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED);
+            throw new NotAuthorizedMemberException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_AUTHORIZED, member.getNickname());
         }
         if(collaboRequest.getApproval()){
-            throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED);
+            throw new InvalidRequestException(COLLABO_REQUEST, SERVICE, COLLABO_ALREADY_APPROVED, "CollaboRequest Status : " + collaboRequest.getApproval());
         }
     }
 }

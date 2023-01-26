@@ -20,30 +20,35 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
         log.error("NotFoundException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotAuthorizedMemberException(NotAuthorizedMemberException e) {
         log.error("NotAuthorizedMemberException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleFormatException(FormatException e) {
         log.error("FormatException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleDuplicationException(DuplicationException e) {
         log.error("DuplicationException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleInvalidRequestException(InvalidRequestException e) {
         log.error("InvalidRequestException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
@@ -51,6 +56,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Transactional
     public ResponseEntity<ErrorResponse> handleInvalidAudioFileException(InvalidAudioFileException e) {
         log.error("InvalidAudioFileException throwed at " + e.getDomain() + "_"+ e.getLayer() + " : " + e.getErrorCode());
+        log.error("Cause : " + e.getCauseVariable());
+
         if(e.getCollaboRequest()!=null){
             collaboRequestRepository.delete(e.getCollaboRequest());
         }
