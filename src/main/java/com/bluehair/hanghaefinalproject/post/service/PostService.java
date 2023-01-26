@@ -52,7 +52,6 @@ public class PostService {
     private final MusicRepository musicRepository;
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
-    private final TagExctractor tagExctractor;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
@@ -69,7 +68,7 @@ public class PostService {
         postRepository.save(post);
 
         if (postDto.getContents() != null && !Objects.equals(postDto.getContents(), "") && !Objects.equals(postDto.getContents(), " ")){
-            List<String> hashtagList = tagExctractor.extractHashTags(postDto.getContents());
+            List<String> hashtagList = TagExctractor.extractHashTags(postDto.getContents());
             saveHashtagList(post, hashtagList);
         }
         return post.getId();
@@ -258,7 +257,7 @@ public class PostService {
         tagRepository.deleteAllByPost(post);
 
         if (postUpdateDto.getContents() != null && !Objects.equals(postUpdateDto.getContents(), "") && !Objects.equals(postUpdateDto.getContents(), " ")){
-            List<String> hashtagList = tagExctractor.extractHashTags(postUpdateDto.getContents());
+            List<String> hashtagList = TagExctractor.extractHashTags(postUpdateDto.getContents());
             saveHashtagList(post, hashtagList);
         }
 
