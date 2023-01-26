@@ -34,10 +34,9 @@ public class NotificationController {
             @ApiResponse(responseCode = "5000", description = "SSE 연결 실패")
     })
     @Operation(summary = "SSE 연결")
-    @GetMapping(value="/api/subscribe/{nickname}", produces = "text/event-stream")
-    public SseEmitter subscribe(@PathVariable String nickname, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
-
-        return notificationService.subscribe(nickname, lastEventId);
+    @GetMapping(value="/api/subscribe", produces = "text/event-stream")
+    public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
+        return notificationService.subscribe(lastEventId, userDetails.getMember().getId());
     }
 
     @Tag(name = "SSE")
