@@ -1,6 +1,6 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.entity;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.serviceDto.CollaboRequestDto;
 import com.bluehair.hanghaefinalproject.common.entity.Timestamped;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.post.entity.Post;

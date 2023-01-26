@@ -1,10 +1,10 @@
 package com.bluehair.hanghaefinalproject.collaboRequest.service;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDetailsDto;
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.serviceDto.CollaboRequestDetailsDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.serviceDto.CollaboRequestDto;
 
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.ResponseCollaboRequestDto;
-import com.bluehair.hanghaefinalproject.collaboRequest.dto.CollaboRequestListForPostDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.responseDto.ResponseCollaboRequestDto;
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.responseDto.ResponseCollaboRequestListForPostDto;
 import com.bluehair.hanghaefinalproject.collaboRequest.entity.CollaboRequest;
 import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
 
@@ -85,11 +85,11 @@ public class CollaboRequestService {
     }
 
     @Transactional
-    public List<CollaboRequestListForPostDto> getCollaboRequestList(Long postid, Member member) {
+    public List<ResponseCollaboRequestListForPostDto> getCollaboRequestList(Long postid, Member member) {
         Post post = postRepository.findById(postid)
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, POST_NOT_FOUND, "Post ID : " + postid));
 
-        List<CollaboRequestListForPostDto> collaboRequestListForPostDto = new ArrayList<>();
+        List<ResponseCollaboRequestListForPostDto> responseCollaboRequestListForPostDto = new ArrayList<>();
         List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPost(post);
 
         for (CollaboRequest collaboRequest : collaboRequestList) {
@@ -108,18 +108,16 @@ public class CollaboRequestService {
                 Boolean isFollowed = false;
 
                 if(member!=null){
-                FollowCompositeKey followCompositeKey
-                        = new FollowCompositeKey(member.getId(), collabomember.getId());
-                if (followRepository.existsById(followCompositeKey)){
-                   isFollowed = true;
+                    FollowCompositeKey followCompositeKey
+                            = new FollowCompositeKey(member.getId(), collabomember.getId());
+                    if (followRepository.existsById(followCompositeKey)){
+                        isFollowed = true;
+                    }
                 }
-                }
-
-                collaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, followerCount, isFollowed, profileImg,  musicPartsList));
+                responseCollaboRequestListForPostDto.add(COLLABOREQUEST_MAPPER.CollaboRequestListtoCollaboRequestListDto(collaboRequest, followerCount, isFollowed, profileImg,  musicPartsList));
             }
         }
-
-        return collaboRequestListForPostDto;
+        return responseCollaboRequestListForPostDto;
     }
 
     @Transactional

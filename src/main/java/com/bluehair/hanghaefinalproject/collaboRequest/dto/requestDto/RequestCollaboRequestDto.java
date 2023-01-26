@@ -1,5 +1,6 @@
-package com.bluehair.hanghaefinalproject.collaboRequest.dto;
+package com.bluehair.hanghaefinalproject.collaboRequest.dto.requestDto;
 
+import com.bluehair.hanghaefinalproject.collaboRequest.dto.serviceDto.CollaboRequestDetailsDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
