@@ -135,11 +135,7 @@ public class MemberService {
 
     @Transactional
     public ResponseMemberInfoDto memberInfo(CustomUserDetails userDetails){
-        return ResponseMemberInfoDto.builder()
-                .email(userDetails.getMember().getEmail())
-                .nickname(userDetails.getMember().getNickname())
-                .profileImg(userDetails.getMember().getProfileImg())
-                .build();
+        return MEMBER_MAPPER.userDetailsToResponseMemberInfoDto(userDetails);
     }
 
     @Transactional
