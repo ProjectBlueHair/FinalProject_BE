@@ -18,6 +18,8 @@ import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.music.entity.Music;
 import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
+import com.bluehair.hanghaefinalproject.post.dto.responseDto.ResponseInfoPostDto;
+import com.bluehair.hanghaefinalproject.post.dto.responseDto.ResponseMainPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
@@ -86,7 +88,7 @@ public class PostService {
     }
 
     @Transactional
-    public InfoPostDto infoPost(Long postid, Member member) {
+    public ResponseInfoPostDto infoPost(Long postid, Member member) {
         Post post = postRepository.findById(postid).orElseThrow(
                 () -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND, "Post ID : " + postid)
         );
@@ -109,10 +111,10 @@ public class PostService {
         }
         }
 
-        return new InfoPostDto(post, isLiked);
+        return POST_MAPPER.postToResponseInfoPostDto(post, isLiked);
     }
-    public List<MainPostDto>  myPost(Pageable pageable, String nickname) {
-        List<MainPostDto> mainPostDtoList = new ArrayList<>();
+    public List<ResponseMainPostDto>  myPost(Pageable pageable, String nickname) {
+        List<ResponseMainPostDto> responseMainPostDtoList = new ArrayList<>();
 
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
                 () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
@@ -162,14 +164,14 @@ public class PostService {
             Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
             List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
 
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList, isLiked));
+            responseMainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList, isLiked));
         }
-        return mainPostDtoList;
+        return responseMainPostDtoList;
     }
 
-    public List<MainPostDto> mainPost(Pageable pageable, String search, Member member) {
+    public List<ResponseMainPostDto> mainPost(Pageable pageable, String search, Member member) {
 
-        List<MainPostDto> mainPostDtoList = new ArrayList<>();
+        List<ResponseMainPostDto> responseMainPostDtoList = new ArrayList<>();
         List<Post> postList = new ArrayList<>();
         String searchContents = search;
 
@@ -236,10 +238,10 @@ public class PostService {
             Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
             List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
 
-            mainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList,isLiked));
+            responseMainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList,isLiked));
         }
 
-        return mainPostDtoList;
+        return responseMainPostDtoList;
     }
 
     @Transactional

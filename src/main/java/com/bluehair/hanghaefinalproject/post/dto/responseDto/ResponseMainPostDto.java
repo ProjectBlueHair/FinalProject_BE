@@ -1,5 +1,6 @@
-package com.bluehair.hanghaefinalproject.post.dto.serviceDto;
+package com.bluehair.hanghaefinalproject.post.dto.responseDto;
 
+import com.bluehair.hanghaefinalproject.post.dto.serviceDto.MainProfileDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Getter;
 import java.util.List;
 @Schema(description = "전체 조회 응답 Dto")
 @Getter
-public class MainPostDto {
+public class ResponseMainPostDto {
     @Schema(description = "게시글 번호", example = "게시글 번호")
     private Long id;
     @Schema(description = "게시글 제목", example = "게시글 제목")
@@ -28,8 +29,8 @@ public class MainPostDto {
     private boolean isLiked;
 
     @Builder
-    public MainPostDto(Long id, String title, String postImg, Long likeCount, Long viewCount, String musicFile, List<String> tagList,
-                       List<MainProfileDto> mainProfileList, boolean isLiked){
+    public ResponseMainPostDto(Long id, String title, String postImg, Long likeCount, Long viewCount, String musicFile, List<String> tagList,
+                               List<MainProfileDto> mainProfileList, boolean isLiked){
         this.id = id;
         this.title = title;
         this.postImg = postImg;
