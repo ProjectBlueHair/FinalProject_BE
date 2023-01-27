@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.member.mapper;
 
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
+import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMypageDto;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseSettingDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.SignUpDto;
 import com.bluehair.hanghaefinalproject.member.entity.Job;
@@ -8,8 +9,6 @@ import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.entity.MemberDetail;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
@@ -40,4 +39,5 @@ public interface MemberMapStruct {
         return result;
     }
     ResponseSettingDto memberAndMemberDetailToResponseSettingDto(Member member, MemberDetail memberDetail);
+    ResponseMypageDto memberAndMemberDetailToResponseMypageDto(Member member, MemberDetail memberDetail, Boolean isMine);
 }

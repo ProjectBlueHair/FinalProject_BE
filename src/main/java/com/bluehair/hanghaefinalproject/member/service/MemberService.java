@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.member.service;
 import com.bluehair.hanghaefinalproject.common.exception.*;
 import com.bluehair.hanghaefinalproject.common.service.Validator;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
+import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMypageDto;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseSettingDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.member.entity.*;
@@ -218,5 +219,18 @@ public class MemberService {
     @Transactional
     public ResponseSettingDto getSetting(CustomUserDetails userDetails) {
         return MEMBER_MAPPER.memberAndMemberDetailToResponseSettingDto(userDetails.getMember(), userDetails.getMember().getMemberDetail());
+    }
+
+    @Transactional
+    public ResponseMypageDto getMypage(CustomUserDetails userDetails, String nickname) {
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
+
+        Boolean isMine = false;
+        if (userDetails != null && userDetails.getMember().getNickname().equals(nickname)){
+            isMine = true;
+        }
+
+        return MEMBER_MAPPER.memberAndMemberDetailToResponseMypageDto(member, member.getMemberDetail(), isMine);
     }
 }
