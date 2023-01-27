@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.member.controller;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 import com.bluehair.hanghaefinalproject.member.dto.requestDto.*;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
+import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMypageDto;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseSettingDto;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
@@ -147,5 +148,16 @@ public class MemberController {
     @GetMapping("/setting")
     public ResponseEntity<SuccessResponse<ResponseSettingDto>> getSetting(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         return SuccessResponse.toResponseEntity(MEMBER_GET_SETTING, memberService.getSetting(customUserDetails));
+    }
+
+    @Tag(name = "Member")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "마이페이지 유저 정보 불러오기 성공")
+    })
+    @Operation(summary = "마이페이지 유저 정보 불러오기", description = "본인일 경우 isMine = true")
+    @GetMapping("/mypage/{nickname}")
+    public ResponseEntity<SuccessResponse<ResponseMypageDto>> getMypage(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                        @PathVariable String nickname){
+        return SuccessResponse.toResponseEntity(MEMBER_GET_SETTING, memberService.getMypage(customUserDetails, nickname));
     }
 }
