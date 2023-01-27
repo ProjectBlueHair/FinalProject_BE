@@ -17,8 +17,9 @@ public enum SucessCode {
     UNFOLLOW_MEMBER(HttpStatus.OK, "언팔로우 성공", 2000),
     MEMBER_INFO(HttpStatus.OK, "사용자 정보 반환 성공", 2000),
     TOKEN_REISSUANCE(HttpStatus.OK, "토큰 재발행 성공", 2001),
-    MEMBER_UPDATE_SETTING(HttpStatus.OK, "계정 설정 업데이트 성공", 2001),
-    MEMBER_GET_SETTING(HttpStatus.OK, "계정 설정 불러오기 성공", 2001),
+    MEMBER_UPDATE_SETTING(HttpStatus.OK, "계정 설정 업데이트 성공", 2000),
+    MEMBER_GET_SETTING(HttpStatus.OK, "계정 설정 불러오기 성공", 2000),
+    MEMBER_GET_MYPAGE(HttpStatus.OK, "마이페이지 유저 정보 불러오기 성공", 2000),
 
     // Post
     INFO_POST(HttpStatus.OK, "상세 게시글 조회 성공", 2000),
