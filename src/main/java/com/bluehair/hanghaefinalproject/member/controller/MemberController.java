@@ -3,6 +3,7 @@ package com.bluehair.hanghaefinalproject.member.controller;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 import com.bluehair.hanghaefinalproject.member.dto.requestDto.*;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
+import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseSettingDto;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
@@ -144,7 +145,7 @@ public class MemberController {
     })
     @Operation(summary = "계정 설정 불러오기", description = "계정 설정 불러오기")
     @GetMapping("/setting")
-    public ResponseEntity<SuccessResponse<Object>> getSetting(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<SuccessResponse<ResponseSettingDto>> getSetting(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         return SuccessResponse.toResponseEntity(MEMBER_GET_SETTING, memberService.getSetting(customUserDetails));
     }
 }
