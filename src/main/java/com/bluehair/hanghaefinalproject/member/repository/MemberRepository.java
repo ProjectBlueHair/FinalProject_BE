@@ -13,4 +13,5 @@ public interface MemberRepository {
     void updateFollowingCount(Long followingCount, Long memberId);
     void updateFollowerCount(Long followerCount, Long memberId);
 
+    Optional<Member> findById(Long memberId);
 }
