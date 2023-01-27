@@ -123,4 +123,28 @@ public class MemberController {
         memberService.doFollow(customUserDetails, requestFollowDto.toFollowDto());
         return SuccessResponse.toResponseEntity(FOLLOW_MEMBER, null);
     }
+
+    @Tag(name = "Member")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "계정 설정 업데이트 성공"),
+            @ApiResponse(responseCode = "4000", description = "유효하지 않은 비밀번호")
+    })
+    @Operation(summary = "계정 설정 업데이트", description = "계정 설정 업데이트")
+    @PutMapping("/setting")
+    public ResponseEntity<SuccessResponse<Object>> updateSetting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                 @RequestBody RequestSettingDto requestSettingDto){
+        memberService.updateSetting(customUserDetails, requestSettingDto.requestSettingDtoToSettingMemberDto(),
+                requestSettingDto.requestSettingDtoToSettingMemberDetailDto());
+        return SuccessResponse.toResponseEntity(MEMBER_UPDATE_SETTING, null);
+    }
+
+    @Tag(name = "Member")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "계정 설정 불러오기 성공")
+    })
+    @Operation(summary = "계정 설정 불러오기", description = "계정 설정 불러오기")
+    @GetMapping("/setting")
+    public ResponseEntity<SuccessResponse<Object>> getSetting(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        return SuccessResponse.toResponseEntity(MEMBER_GET_SETTING, memberService.getSetting(customUserDetails));
+    }
 }
