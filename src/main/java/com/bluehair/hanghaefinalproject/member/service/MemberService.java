@@ -3,11 +3,12 @@ package com.bluehair.hanghaefinalproject.member.service;
 import com.bluehair.hanghaefinalproject.common.exception.*;
 import com.bluehair.hanghaefinalproject.common.service.Validator;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
+import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseSettingDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.*;
-import com.bluehair.hanghaefinalproject.member.entity.Follow;
-import com.bluehair.hanghaefinalproject.member.entity.FollowCompositeKey;
-import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.member.entity.*;
 import com.bluehair.hanghaefinalproject.member.repository.FollowRepository;
+import com.bluehair.hanghaefinalproject.member.repository.JobRepository;
+import com.bluehair.hanghaefinalproject.member.repository.MemberDetailRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtException;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.*;
 import static com.bluehair.hanghaefinalproject.member.mapper.MemberMapStruct.MEMBER_MAPPER;
 import static com.bluehair.hanghaefinalproject.common.exception.Domain.MEMBER;
@@ -35,6 +38,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
+    private final MemberDetailRepository memberDetailRepository;
+    private final JobRepository jobRepository;
 
     @Transactional
     public void signUp(SignUpDto signUpDto) {
@@ -62,6 +67,11 @@ public class MemberService {
 
         Member member = MEMBER_MAPPER.SignUpDtoToMember(signUpDto);
         memberRepository.save(member);
+
+        MemberDetail memberDetail = new MemberDetail(member);
+        memberDetailRepository.save(memberDetail);
+
+        member.updateMemberDetail(memberDetail);
     }
 
     @Transactional(readOnly = true)
@@ -173,5 +183,40 @@ public class MemberService {
 
         memberRepository.updateFollowingCount(userDetails.getMember().getFollowingCount()-1, userDetails.getMember().getId());
         memberRepository.updateFollowerCount(myFollowingMember.getFollowerCount()-1, myFollowingMember.getId());
+    }
+
+    @Transactional
+    public void updateSetting(CustomUserDetails userDetails, SettingMemberDto settingMemberDto, SettingMemberDetailDto settingMemberDetailDto) {
+        memberRepository.findByNickname(settingMemberDto.getNickname())
+                .ifPresent(m-> {
+                    throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME, settingMemberDto.getNickname());
+                });
+
+        if (settingMemberDto.getPassword()!=null){
+            if(!Validator.isValidPassword(settingMemberDto.getPassword())){
+                throw new FormatException(MEMBER, SERVICE, INVALID_PASSWORD, settingMemberDto.getPassword());
+            }
+            settingMemberDto.encryptPassword(passwordEncoder.encode(settingMemberDto.getPassword()));
+        }
+
+        Member member = userDetails.getMember();
+        MemberDetail memberDetail = member.getMemberDetail();
+
+        member.updateSetting(settingMemberDto);
+        memberRepository.save(member);
+
+        memberDetail.updateSettings(settingMemberDetailDto);
+        memberDetailRepository.save(memberDetail);
+
+        jobRepository.deleteAllByMemberDetail(memberDetail);
+        if (settingMemberDetailDto.getJobList() != null){
+            List<Job> jobList = MEMBER_MAPPER.SettingMemberDetailDtoToJob(settingMemberDetailDto.getJobList(), memberDetail);
+            jobRepository.saveJobList(jobList);
+        }
+    }
+
+    @Transactional
+    public ResponseSettingDto getSetting(CustomUserDetails userDetails) {
+        return MEMBER_MAPPER.memberAndMemberDetailToResponseSettingDto(userDetails.getMember(), userDetails.getMember().getMemberDetail());
     }
 }
