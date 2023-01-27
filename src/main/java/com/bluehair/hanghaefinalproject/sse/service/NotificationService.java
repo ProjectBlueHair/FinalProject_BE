@@ -43,7 +43,7 @@ public class NotificationService {
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
 
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
-        emitter.onTimeout(() -> {emitterRepository.deleteById(emitterId);emitter.complete();}); //안되면 범준님 책임
+        emitter.onTimeout(() -> {emitterRepository.deleteById(emitterId);emitter.complete();});
 
         sendToClient(emitter, emitterId, "EventStream Created. [memberId=" + memberId + "]");
 
