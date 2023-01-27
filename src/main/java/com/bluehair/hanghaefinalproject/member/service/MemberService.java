@@ -7,7 +7,9 @@ import com.bluehair.hanghaefinalproject.member.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.member.entity.Follow;
 import com.bluehair.hanghaefinalproject.member.entity.FollowCompositeKey;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.member.entity.MemberDetail;
 import com.bluehair.hanghaefinalproject.member.repository.FollowRepository;
+import com.bluehair.hanghaefinalproject.member.repository.MemberDetailRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtException;
@@ -36,6 +38,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
 
+    private final MemberDetailRepository memberDetailRepository;
+
     @Transactional
     public void signUp(SignUpDto signUpDto) {
         memberRepository.findByEmail(signUpDto.getEmail())
@@ -62,6 +66,11 @@ public class MemberService {
 
         Member member = MEMBER_MAPPER.SignUpDtoToMember(signUpDto);
         memberRepository.save(member);
+
+        MemberDetail memberDetail = new MemberDetail(member);
+        memberDetailRepository.save(memberDetail);
+
+        member.updateMemberDetail(memberDetail);
     }
 
     @Transactional(readOnly = true)
