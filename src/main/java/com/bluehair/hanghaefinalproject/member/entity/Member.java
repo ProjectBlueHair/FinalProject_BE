@@ -38,6 +38,18 @@ public class Member {
     @Column
     private String refreshToken;
 
+    @Column
+    private Boolean commentNotify = true;
+    @Column
+    private Boolean likeNotify = true;
+    @Column
+    private Boolean dmNotify = true;
+    @Column
+    private Boolean followNotify = true;
+
+    @OneToOne
+    private MemberDetail memberDetail;
+
     @Builder
     public Member(String email, String nickname, String password, String profileImg) {
         this.email = email;
@@ -48,5 +60,14 @@ public class Member {
 
     public void updateToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+    public void updateNotify(Boolean commentNotify, Boolean likeNotify, Boolean dmNotify, Boolean followNotify) {
+        this.commentNotify = commentNotify;
+        this.likeNotify = likeNotify;
+        this.dmNotify = dmNotify;
+        this.followNotify = followNotify;
+    }
+    public void updateMemberDetail(MemberDetail memberDetail){
+        this.memberDetail = memberDetail;
     }
 }
