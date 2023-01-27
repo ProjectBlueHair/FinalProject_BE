@@ -1,11 +1,12 @@
-package com.bluehair.hanghaefinalproject.member.repository;
+package com.bluehair.hanghaefinalproject.member.repository.JPA;
 
 import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface JPAMemberRepository extends JpaRepository<Member, Long>, MemberRepository  {
+public interface JPAMemberRepository extends JpaRepository<Member, Long>, MemberRepository {
     @Modifying
     @Query("UPDATE Member SET followingCount = ?1 WHERE id = ?2")
     void updateFollowingCount(Long followingCount, Long memberId);
