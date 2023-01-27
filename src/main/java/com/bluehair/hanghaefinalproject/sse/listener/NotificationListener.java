@@ -23,7 +23,7 @@ public class NotificationListener {
     public void handleNotification(RequestNotificationDto requestNotificationDto){
         notificationService.send(requestNotificationDto.getReceiver(), requestNotificationDto.getSender(),requestNotificationDto.getNotificationType(),
                 requestNotificationDto.getContent(), requestNotificationDto.getType(), requestNotificationDto.getTypeId(), requestNotificationDto.getPostId());
-        log.info("EventListener has been operated. Sender Id: " + requestNotificationDto.getSender() + "NotificationType: " +requestNotificationDto.getNotificationType());
+        log.info("EventListener has been operated. Sender Id: " + requestNotificationDto.getSender().getId() + "NotificationType: " +requestNotificationDto.getNotificationType());
     }
 
 }

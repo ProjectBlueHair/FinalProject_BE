@@ -17,10 +17,12 @@ import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 import com.bluehair.hanghaefinalproject.like.entity.PostLike;
 import com.bluehair.hanghaefinalproject.like.entity.PostLikeCompositeKey;
+import com.bluehair.hanghaefinalproject.sse.dto.RequestNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
 import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
-import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +42,7 @@ public class LikeService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
-    private final NotificationService notificationService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public PostLikeDto postLike(Long postId, Member member){
@@ -71,7 +73,7 @@ public class LikeService {
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + postliked.getNickname()));
         if(!postMember.getNickname().equals(member.getNickname())) {
             String content = postliked.getTitle() + "을(를) " + member.getNickname() + "님이 좋아합니다.";
-            notificationService.send(postMember, member, NotificationType.POST_LIKED, content, RedirectionType.detail, postId, null);
+            notify(postMember, member, NotificationType.POST_LIKED, content, RedirectionType.detail, postId, null);
         }
 
         return new PostLikeDto(likecheck, postliked.getLikeCount());
@@ -109,12 +111,18 @@ public class LikeService {
         if(!commentMember.getNickname().equals(member.getNickname())) {
             Long postId = comment.getPost().getId();
             String content = commentMember.getNickname() + "님의 댓글을 " + nickname + "님이 좋아합니다.";
-            notificationService.send(commentMember, member, NotificationType.COMMENT_LIKED, content, RedirectionType.detail, postId, null);
+            notify(commentMember, member, NotificationType.COMMENT_LIKED, content, RedirectionType.detail, postId, null);
         }
 
         return new CommentLikeDto(isLiked, comment.getLikeCount());
 
         }
+
+    private void notify(Member postMember, Member sender, NotificationType notificationType,
+                            String content, RedirectionType type, Long typeId, Long postId){
+        eventPublisher.publishEvent(new RequestNotificationDto(postMember,sender, notificationType,content,type, typeId, postId));
+
+    }
 
     }
 

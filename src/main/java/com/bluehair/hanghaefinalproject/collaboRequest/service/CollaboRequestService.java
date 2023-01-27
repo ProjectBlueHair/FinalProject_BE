@@ -25,11 +25,13 @@ import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
+import com.bluehair.hanghaefinalproject.sse.dto.RequestNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
 import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
-import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +48,7 @@ public class CollaboRequestService {
     private final MusicRepository musicRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final NotificationService notificationService;
-
+    private final ApplicationEventPublisher eventPublisher;
     private final FollowRepository followRepository;
 
     @Transactional
@@ -66,10 +67,10 @@ public class CollaboRequestService {
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + post.getNickname()));
 
-        if (!collaboRequest.getNickname().equals(member.getNickname())){
+        if (!postMember.getNickname().equals(nickname)){
             Long collaboId = collaboRequest.getId();
             String content = post.getTitle()+"에 대한 콜라보 요청이 있습니다.";
-            notificationService.send(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId, postId);
+            notify(postMember, member, NotificationType.COLLABO_REQUEST, content, RedirectionType.collaboRequested, collaboId, postId);
         }
         return collaboRequest.getId();
     }
@@ -140,9 +141,16 @@ public class CollaboRequestService {
                 .orElseThrow(() -> new NotFoundException(COLLABO_REQUEST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + collaboRequest.getNickname()));
         if (!collaboMember.getNickname().equals(member.getNickname())) {
             String content = post.getTitle() + "에 대한 콜라보 요청이 승인되었습니다.";
-            notificationService.send(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId, null);
+            notify(collaboMember, member, NotificationType.COLLABO_APPROVED, content, RedirectionType.detail, postId, null);
         }
     }
+
+    private void notify(Member postMember, Member sender, NotificationType notificationType,
+                        String content, RedirectionType type, Long typeId, Long postId){
+        eventPublisher.publishEvent(new RequestNotificationDto(postMember,sender, notificationType,content,type, typeId, postId));
+
+    }
+
 
     @Transactional
     public void deleteCollaboRequest(Long collaborequestid, Member member) {

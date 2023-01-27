@@ -17,11 +17,13 @@ import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
+import com.bluehair.hanghaefinalproject.sse.dto.RequestNotificationDto;
 import com.bluehair.hanghaefinalproject.sse.entity.NotificationType;
 import com.bluehair.hanghaefinalproject.sse.entity.RedirectionType;
-import com.bluehair.hanghaefinalproject.sse.service.NotificationService;
+
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +45,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final NotificationService notificationService;
     private final CommentLikeRepository commentLikeRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
@@ -69,9 +71,16 @@ public class CommentService {
 
         if(!postMember.getNickname().equals(member.getNickname())) {
             String content = post.getTitle() + "에 " + nickname + "님이 댓글을 남겼습니다.";
-            notificationService.send(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
+            notify(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
         }
     }
+
+    private void notify(Member postMember, Member sender, NotificationType notificationType,
+                        String content, RedirectionType type, Long typeId, Long postId){
+        eventPublisher.publishEvent(new RequestNotificationDto(postMember,sender, notificationType,content,type, typeId, postId));
+
+    }
+
     @Transactional
     public void updateComment(Long commentId, CommentDto commentDto, String nickname) {
 
@@ -145,4 +154,5 @@ public class CommentService {
     public void deleteCommentLike(Long commentId){
         commentLikeRepository.deleteByCommentId(commentId);
     }
+
 }
