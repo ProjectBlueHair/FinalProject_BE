@@ -43,7 +43,7 @@ public class MemberDetail {
     @OneToOne(mappedBy = "memberDetail")
     private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "memberDetail")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "memberDetail")
     private List<Job> jobList = new ArrayList<>();
 
     @Builder
@@ -52,14 +52,32 @@ public class MemberDetail {
     }
 
     public void updateSettings(SettingMemberDetailDto dto) {
-        this.aboutMe = dto.getAboutMe();
-        this.facebookActivated = dto.getFacebookActivated();
-        this.facebookURL = dto.getFacebookURL();
-        this.instagramActivated = dto.getInstagramActivated();
-        this.instagramURL = dto.getInstagramURL();
-        this.twitterActivated = dto.getTwitterActivated();
-        this.twitterURL = dto.getTwitterURL();
-        this.linkedinActivated = dto.getLinkedinActivated();
-        this.linkedinURL = dto.getLinkedinURL();
+        if(dto.getAboutMe()!=null){
+            this.aboutMe = dto.getAboutMe();
+        }
+        if(dto.getFacebookActivated()!=null){
+            this.facebookActivated = dto.getFacebookActivated();
+        }
+        if(dto.getFacebookURL()!=null){
+            this.facebookURL = dto.getFacebookURL();
+        }
+        if(dto.getInstagramActivated()!=null){
+            this.instagramActivated = dto.getInstagramActivated();
+        }
+        if(dto.getInstagramURL()!=null){
+            this.instagramURL = dto.getInstagramURL();
+        }
+        if(dto.getTwitterActivated()!=null){
+            this.twitterActivated = dto.getTwitterActivated();
+        }
+        if(dto.getTwitterURL()!=null){
+            this.twitterURL = dto.getTwitterURL();
+        }
+        if(dto.getLinkedinActivated()!=null){
+            this.linkedinActivated = dto.getLinkedinActivated();
+        }
+        if(dto.getLinkedinURL()!=null){
+            this.linkedinURL = dto.getLinkedinURL();
+        }
     }
 }
