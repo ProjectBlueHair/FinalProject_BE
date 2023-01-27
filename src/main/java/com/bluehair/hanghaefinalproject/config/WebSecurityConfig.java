@@ -80,6 +80,11 @@ public class WebSecurityConfig {
 
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://152.69.229.168:84/");
+        configuration.addAllowedOrigin("http://d6y8g7dkunqrb.cloudfront.net/");
+        configuration.addAllowedOrigin("https://d6y8g7dkunqrb.cloudfront.net/");
+        configuration.addAllowedOrigin("http://oncounter.co.kr/");
+        configuration.addAllowedOrigin("https://oncounter.co.kr/");
+
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE", "PUT"));
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
