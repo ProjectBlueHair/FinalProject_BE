@@ -47,6 +47,12 @@ public enum SucessCode {
     COLLABO_REQUEST_DELETE(HttpStatus.OK, "콜라보 리퀘스트 삭제 성공", 2000),
     COLLABO_REQUEST_UPDATE(HttpStatus.OK, "콜라보 리퀘스트 수정 성공", 2000),
 
+    //Chat
+    CHAT_SUCESS(HttpStatus.OK, "메세지 전송 성공", 2000),
+    ROOM_CREATE(HttpStatus.OK, "채팅방 개설 성공", 2000),
+    ROOM_LIST(HttpStatus.OK, "채팅방 목록 조회 성공", 2000),
+    MESSAGE_LIST(HttpStatus.OK, "메세지 목록 조회 성공", 2000),
+
     //SSE
     SSE_SUBSCRIBE(HttpStatus.OK, "SSE 연결 성공", 2000),
     NOTIFICATION_LIST(HttpStatus.OK, "알림 전체 조회 성공", 2000),
