@@ -48,6 +48,7 @@ public class Member {
     private Boolean followNotify = true;
 
     @OneToOne
+    @JoinColumn(name = "member_detail_id")
     private MemberDetail memberDetail;
 
     @Builder

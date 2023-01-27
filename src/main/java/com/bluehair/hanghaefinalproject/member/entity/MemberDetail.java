@@ -1,6 +1,7 @@
 package com.bluehair.hanghaefinalproject.member.entity;
 
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.SettingMemberDetailDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,8 +40,16 @@ public class MemberDetail {
     @Column
     private String linkedinURL;
 
+    @OneToOne(mappedBy = "memberDetail")
+    private Member member;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "memberDetail")
     private List<Job> jobList = new ArrayList<>();
+
+    @Builder
+    public MemberDetail(Member member) {
+        this.member = member;
+    }
 
     public void updateSettings(SettingMemberDetailDto dto) {
         this.aboutMe = dto.getAboutMe();
