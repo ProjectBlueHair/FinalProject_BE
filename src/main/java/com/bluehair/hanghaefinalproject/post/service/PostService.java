@@ -94,25 +94,22 @@ public class PostService {
         );
 
         post.viewCount();
-
         postRepository.save(post);
 
-        Boolean isLiked = false;
+        boolean isLiked = false;
+        if(member!=null) {
 
-        if(member!=null){
-        Member postMember = memberRepository.findByNickname(post.getNickname()).orElseThrow(
-                () -> new NotFoundException(POST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + post.getNickname())
-        );
-
-        PostLikeCompositeKey postLikeCompositeKey
-                = new PostLikeCompositeKey(member.getId(), postMember.getId() );
-        if (postLikeRepository.findById(postLikeCompositeKey).isPresent()){
-            isLiked = true;
-        }
+            PostLikeCompositeKey postLikeCompositeKey
+                    = new PostLikeCompositeKey(member.getId(), post.getId());
+            Optional<PostLike> liked = postLikeRepository.findById(postLikeCompositeKey);
+            if (liked.isPresent()) {
+                isLiked = true;
+            }
         }
 
         return POST_MAPPER.postToResponseInfoPostDto(post, isLiked);
     }
+
     public List<ResponseMainPostDto>  myPost(Pageable pageable, String nickname) {
         List<ResponseMainPostDto> responseMainPostDtoList = new ArrayList<>();
 
