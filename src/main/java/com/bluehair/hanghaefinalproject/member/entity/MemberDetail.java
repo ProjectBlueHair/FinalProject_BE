@@ -53,6 +53,11 @@ public class MemberDetail {
         this.linkedinActivated = false;
         this.twitterActivated = false;
 
+        this.facebookURL = "https://www.facebook.com/";
+        this.instagramURL = "https://www.instagram.com/";
+        this.linkedinURL = "https://www.linkedin.com/";
+        this.twitterURL = "https://twitter.com/";
+
         this.member = member;
     }
 
