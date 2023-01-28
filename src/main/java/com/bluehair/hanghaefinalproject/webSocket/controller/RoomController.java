@@ -29,7 +29,6 @@ public class RoomController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "채팅방 목록 조회 성공")
     })
-    @PostMapping
     @GetMapping("/rooms")
     public ResponseEntity<SuccessResponse<Object>> room(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -42,8 +41,8 @@ public class RoomController {
             @ApiResponse(responseCode = "4040", description = "존재하지 않는 회원")
     })
     // 채팅방 생성
-    @PostMapping("/room")
-    public ResponseEntity<SuccessResponse<Object>> createRoom(@RequestParam String nickname, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PostMapping("/room/{nickname}")
+    public ResponseEntity<SuccessResponse<Object>> createRoom(@PathVariable String nickname, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         return SuccessResponse.toResponseEntity(ROOM_CREATE,chatService.createRoom(nickname, userDetails.getMember().getNickname()));
     }
