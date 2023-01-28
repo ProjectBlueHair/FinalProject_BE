@@ -14,6 +14,7 @@ import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,7 +79,7 @@ public class NotificationService {
             log.warn("data : " + data.toString());
             emitter.send(SseEmitter.event()
                     .id(emitterId)
-                    .data(data));
+                    .data(data, MediaType.APPLICATION_JSON));
         } catch (IOException exception) {
             log.error("Unable to emit");
             emitterRepository.deleteById(emitterId);
