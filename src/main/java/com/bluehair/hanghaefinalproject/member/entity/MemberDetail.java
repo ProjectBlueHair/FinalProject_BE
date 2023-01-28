@@ -48,6 +48,11 @@ public class MemberDetail {
 
     @Builder
     public MemberDetail(Member member) {
+        this.facebookActivated = false;
+        this.instagramActivated = false;
+        this.linkedinActivated = false;
+        this.twitterActivated = false;
+
         this.member = member;
     }
 
