@@ -11,6 +11,8 @@ import com.bluehair.hanghaefinalproject.sse.repository.EmitterRepository;
 import com.bluehair.hanghaefinalproject.sse.repository.EmitterRepositoryImpl;
 import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +70,9 @@ public class NotificationService {
         sseEmitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    sendToClient(emitter, key, SSE_MAPPER.NotificationtoResponseNotificationDto(notification));
+                    Gson gson = new Gson();
+                    String data = gson.toJson(notification);
+                    sendToClient(emitter, key, data);
                 }
         );
     }
@@ -79,7 +83,7 @@ public class NotificationService {
             log.warn("data : " + data.toString());
             emitter.send(SseEmitter.event()
                     .id(emitterId)
-                    .data(data, MediaType.APPLICATION_JSON));
+                    .data(data));
         } catch (IOException exception) {
             log.error("Unable to emit");
             emitterRepository.deleteById(emitterId);
