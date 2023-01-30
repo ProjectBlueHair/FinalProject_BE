@@ -58,7 +58,10 @@ public class WebSecurityConfig {
 
         http.authorizeRequests()
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+
                 .antMatchers("/api/member/login", "/api/member/signup", "/api/member/reissuance").permitAll()
+                .antMatchers("/api/member/kakao/callback").permitAll()
+
                 .antMatchers("/api/member/validate/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/member/mypage/**").permitAll()
