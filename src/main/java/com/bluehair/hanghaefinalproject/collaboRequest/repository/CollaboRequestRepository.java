@@ -20,4 +20,9 @@ public interface CollaboRequestRepository extends JpaRepository<CollaboRequest, 
     @Modifying
     @Query("DELETE from CollaboRequest c where c.post = :Post")
     void deleteAllByPost(@Param("Post") Post post);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE CollaboRequest c set c.nickname = :after where c.nickname = :nickname")
+    void updateNickname(@Param("before") String before, @Param("after") String after);
 }

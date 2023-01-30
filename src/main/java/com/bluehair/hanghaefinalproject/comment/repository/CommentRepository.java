@@ -30,4 +30,5 @@ public interface CommentRepository {
     @Query("DELETE from Comment c where c.post = :Post")
     void deleteAllByPost(@Param("Post") Post post);
 
+    void updateNickname(String before, String after);
 }
