@@ -212,6 +212,7 @@ public class MemberService {
 
         Member member = userDetails.getMember();
         MemberDetail memberDetail = member.getMemberDetail();
+        String before = member.getNickname();
 
         member.updateSetting(settingMemberDto);
         memberRepository.save(member);
@@ -220,11 +221,12 @@ public class MemberService {
         memberDetailRepository.save(memberDetail);
 
         if(settingMemberDto.getNickname() != null) {
-            messageRepository.updateNickname(userDetails.getMember().getNickname(), settingMemberDto.getNickname());
-            collaboRequestRepository.updateNickname(userDetails.getMember().getNickname(), settingMemberDto.getNickname());
-            commentRepository.updateNickname(userDetails.getMember().getNickname(), settingMemberDto.getNickname());
-            notificationRepository.updateNickname(userDetails.getMember().getNickname(), settingMemberDto.getNickname());
-            postRepository.updateNickname(userDetails.getMember().getNickname(), settingMemberDto.getNickname());
+            messageRepository.updateNickname(before, settingMemberDto.getNickname());
+            collaboRequestRepository.updateNickname(before, settingMemberDto.getNickname());
+            commentRepository.updateNickname(before, settingMemberDto.getNickname());
+            postRepository.updateNickname(before, settingMemberDto.getNickname());
+
+            notificationRepository.updateNickname(before, settingMemberDto.getNickname());
         }
 
         jobRepository.deleteAllByMemberDetail(memberDetail);
