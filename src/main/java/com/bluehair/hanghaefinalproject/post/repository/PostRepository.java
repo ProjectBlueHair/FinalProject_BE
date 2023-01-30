@@ -2,6 +2,7 @@ package com.bluehair.hanghaefinalproject.post.repository;
 
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface PostRepository {
     List<Post> findByContentsContains(Pageable pageable, String search);
     List<Post> findByNickname(Pageable pageable,String nickname);
     void deleteById(Long postId);
+    void updateNickname(String before, String after);
 }

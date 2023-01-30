@@ -1,5 +1,7 @@
 package com.bluehair.hanghaefinalproject.member.service;
 
+import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequestRepository;
+import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.common.exception.*;
 import com.bluehair.hanghaefinalproject.common.service.Validator;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
@@ -11,9 +13,12 @@ import com.bluehair.hanghaefinalproject.member.repository.FollowRepository;
 import com.bluehair.hanghaefinalproject.member.repository.JobRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberDetailRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
+import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtException;
 import com.bluehair.hanghaefinalproject.security.jwt.JwtUtil;
+import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
+import com.bluehair.hanghaefinalproject.webSocket.repository.MessageRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +47,11 @@ public class MemberService {
     private final MemberDetailRepository memberDetailRepository;
     private final JobRepository jobRepository;
 
+    private final MessageRepository messageRepository;
+    private final CollaboRequestRepository collaboRequestRepository;
+    private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
+    private final PostRepository postRepository;
     @Transactional
     public void signUp(SignUpDto signUpDto) {
         memberRepository.findByEmail(signUpDto.getEmail())
@@ -202,12 +212,22 @@ public class MemberService {
 
         Member member = userDetails.getMember();
         MemberDetail memberDetail = member.getMemberDetail();
+        String before = member.getNickname();
 
         member.updateSetting(settingMemberDto);
         memberRepository.save(member);
 
         memberDetail.updateSettings(settingMemberDetailDto);
         memberDetailRepository.save(memberDetail);
+
+        if(settingMemberDto.getNickname() != null) {
+            messageRepository.updateNickname(before, settingMemberDto.getNickname());
+            collaboRequestRepository.updateNickname(before, settingMemberDto.getNickname());
+            commentRepository.updateNickname(before, settingMemberDto.getNickname());
+            postRepository.updateNickname(before, settingMemberDto.getNickname());
+
+            notificationRepository.updateNickname(before, settingMemberDto.getNickname());
+        }
 
         jobRepository.deleteAllByMemberDetail(memberDetail);
         if (settingMemberDetailDto.getJobList() != null){
