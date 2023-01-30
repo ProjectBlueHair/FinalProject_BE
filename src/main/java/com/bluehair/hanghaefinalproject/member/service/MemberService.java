@@ -210,30 +210,33 @@ public class MemberService {
             settingMemberDto.encryptPassword(passwordEncoder.encode(settingMemberDto.getPassword()));
         }
 
+
         Member member = userDetails.getMember();
-        MemberDetail memberDetail = member.getMemberDetail();
+        MemberDetail memberDetail = userDetails.getMember().getMemberDetail();
+
         String before = member.getNickname();
-
-        member.updateSetting(settingMemberDto);
-        memberRepository.save(member);
-
-        memberDetail.updateSettings(settingMemberDetailDto);
-        memberDetailRepository.save(memberDetail);
 
         if(settingMemberDto.getNickname() != null) {
             messageRepository.updateNickname(before, settingMemberDto.getNickname());
             collaboRequestRepository.updateNickname(before, settingMemberDto.getNickname());
             commentRepository.updateNickname(before, settingMemberDto.getNickname());
             postRepository.updateNickname(before, settingMemberDto.getNickname());
-
 //            notificationRepository.updateNickname(before, settingMemberDto.getNickname());
         }
 
-        jobRepository.deleteAllByMemberDetail(memberDetail);
+        jobRepository.deleteAllByMemberDetail(userDetails.getMember().getMemberDetail());
+
+        List<Job> jobList = null;
         if (settingMemberDetailDto.getJobList() != null){
-            List<Job> jobList = MEMBER_MAPPER.SettingMemberDetailDtoToJob(settingMemberDetailDto.getJobList(), memberDetail);
+             jobList = MEMBER_MAPPER.SettingMemberDetailDtoToJob(settingMemberDetailDto.getJobList(), userDetails.getMember().getMemberDetail());
             jobRepository.saveJobList(jobList);
         }
+
+        memberDetail.updateSettings(settingMemberDetailDto, jobList);
+        memberDetailRepository.save(memberDetail);
+
+        member.updateSetting(settingMemberDto);
+        memberRepository.save(member);
     }
 
     @Transactional
