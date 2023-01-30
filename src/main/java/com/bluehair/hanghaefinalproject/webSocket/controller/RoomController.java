@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import  com.bluehair.hanghaefinalproject.webSocket.service.*;
 
@@ -18,7 +17,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MESSAGE_LIST;
 
 @Tag(name = "Room", description = "채팅방 관련 API")
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class RoomController {
@@ -31,7 +30,6 @@ public class RoomController {
     })
     @GetMapping("/rooms")
     public ResponseEntity<SuccessResponse<Object>> room(@AuthenticationPrincipal CustomUserDetails userDetails) {
-
         return SuccessResponse.toResponseEntity(ROOM_LIST,chatService.findAllRoom(userDetails.getMember().getNickname()));
     }
     @Tag(name = "Room")
