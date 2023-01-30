@@ -86,7 +86,7 @@ public class WebSecurityConfig {
         configuration.addAllowedOrigin("http://oncounter.co.kr/");
         configuration.addAllowedOrigin("https://oncounter.co.kr/");
 
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE", "PUT"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE", "PUT", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
