@@ -11,12 +11,9 @@ import com.bluehair.hanghaefinalproject.sse.repository.EmitterRepository;
 import com.bluehair.hanghaefinalproject.sse.repository.EmitterRepositoryImpl;
 import com.bluehair.hanghaefinalproject.sse.repository.NotificationRepository;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,9 +67,8 @@ public class NotificationService {
         sseEmitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    Gson gson = new Gson();
-                    String data = gson.toJson(notification);
-                    sendToClient(emitter, key, data);
+
+                    sendToClient(emitter, key, notification.getContent());
                 }
         );
     }
