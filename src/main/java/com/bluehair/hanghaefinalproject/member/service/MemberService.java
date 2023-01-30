@@ -226,7 +226,7 @@ public class MemberService {
             commentRepository.updateNickname(before, settingMemberDto.getNickname());
             postRepository.updateNickname(before, settingMemberDto.getNickname());
 
-            notificationRepository.updateNickname(before, settingMemberDto.getNickname());
+//            notificationRepository.updateNickname(before, settingMemberDto.getNickname());
         }
 
         jobRepository.deleteAllByMemberDetail(memberDetail);
