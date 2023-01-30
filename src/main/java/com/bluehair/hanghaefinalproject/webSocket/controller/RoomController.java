@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,9 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 
 @Tag(name = "Room", description = "채팅방 관련 API")
 @RestController
+@RequestMapping("/api/chat")
 @RequiredArgsConstructor
-@RequestMapping("/chat")
+@Slf4j
 public class RoomController {
     private final RoomService chatService;
 
