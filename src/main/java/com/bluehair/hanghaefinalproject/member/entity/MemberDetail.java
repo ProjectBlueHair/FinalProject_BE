@@ -61,7 +61,7 @@ public class MemberDetail {
         this.member = member;
     }
 
-    public void updateSettings(SettingMemberDetailDto dto) {
+    public void updateSettings(SettingMemberDetailDto dto, List<Job> jobList) {
         if(dto.getAboutMe()!=null){
             this.aboutMe = dto.getAboutMe();
         }
@@ -89,5 +89,6 @@ public class MemberDetail {
         if(dto.getLinkedinURL()!=null){
             this.linkedinURL = dto.getLinkedinURL();
         }
+        this.jobList = jobList;
     }
 }
