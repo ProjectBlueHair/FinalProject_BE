@@ -6,13 +6,10 @@ import com.bluehair.hanghaefinalproject.security.exception.CustomJwtExceptionHan
 import com.bluehair.hanghaefinalproject.security.jwt.JwtAuthFilter;
 import com.bluehair.hanghaefinalproject.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,6 +63,9 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/member/mypage/**").permitAll()
                 .antMatchers("/api/subscribe/*").permitAll()
+                .antMatchers("/chat/*").permitAll()
+                .antMatchers("/topic/*").permitAll()
+                .antMatchers("/app/*").permitAll()
                 .antMatchers().permitAll()
                 .anyRequest().authenticated();
 
