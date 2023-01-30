@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface JPAPostRepository extends JpaRepository<Post, Long>, PostRepository {
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Post p set p.nickname = :after where p.nickname = :nickname")
+    @Query("UPDATE Post p set p.nickname = :after where p.nickname = :before")
     void updateNickname(@Param("before") String before, @Param("after") String after);
 }

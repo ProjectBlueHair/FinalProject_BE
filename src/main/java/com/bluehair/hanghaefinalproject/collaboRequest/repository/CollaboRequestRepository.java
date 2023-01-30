@@ -23,6 +23,6 @@ public interface CollaboRequestRepository extends JpaRepository<CollaboRequest, 
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE CollaboRequest c set c.nickname = :after where c.nickname = :nickname")
+    @Query("UPDATE CollaboRequest c set c.nickname = :after where c.nickname = :before")
     void updateNickname(@Param("before") String before, @Param("after") String after);
 }

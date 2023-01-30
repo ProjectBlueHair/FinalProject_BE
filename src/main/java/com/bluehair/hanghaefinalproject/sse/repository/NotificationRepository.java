@@ -19,6 +19,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Notification n set n.sender = :after where n.sender = :nickname")
+    @Query("UPDATE Notification n set n.sender = :after where n.sender = :before")
     void updateNickname(@Param("before") String before, @Param("after") String after);
 }

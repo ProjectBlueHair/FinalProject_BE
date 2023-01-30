@@ -15,7 +15,7 @@ public interface MessageRepository extends JpaRepository<ChatMessage, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE ChatMessage c set c.nickname = :after where c.nickname = :nickname")
+    @Query("UPDATE ChatMessage c set c.nickname = :after where c.nickname = :before")
     void updateNickname(@Param("before") String before, @Param("after") String after);
 }
 

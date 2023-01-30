@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface JPACommentRepository extends JpaRepository<Comment, Long>, CommentRepository {
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Comment c set c.nickname = :after where c.nickname = :nickname")
+    @Query("UPDATE Comment c set c.nickname = :after where c.nickname = :before")
     void updateNickname(@Param("before") String before, @Param("after") String after);
 }
