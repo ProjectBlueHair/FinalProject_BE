@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "5000", description = "SSE 연결 실패")
     })
     @Operation(summary = "SSE 연결")
-    @GetMapping(value="/api/subscribe", produces = "text/event-stream")
+    @GetMapping(value="/api/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
         return notificationService.subscribe(lastEventId, userDetails.getMember().getId());
     }
