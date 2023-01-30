@@ -31,15 +31,26 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
+//    @Tag(name = "SSE")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "2000", description = "SSE 연결 성공"),
+//            @ApiResponse(responseCode = "5000", description = "SSE 연결 실패")
+//    })
+//    @Operation(summary = "SSE 연결")
+//    @GetMapping(value="/api/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+//    public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
+//        return notificationService.subscribe(lastEventId, userDetails.getMember().getId());
+//    }
+
     @Tag(name = "SSE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "SSE 연결 성공"),
             @ApiResponse(responseCode = "5000", description = "SSE 연결 실패")
     })
     @Operation(summary = "SSE 연결")
-    @GetMapping(value="/api/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
-        return notificationService.subscribe(lastEventId, userDetails.getMember().getId());
+    @GetMapping(value="/api/subscribe/{nickname}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable String nickname, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
+        return notificationService.subscribe(lastEventId, nickname);
     }
 
     @Tag(name = "SSE")
