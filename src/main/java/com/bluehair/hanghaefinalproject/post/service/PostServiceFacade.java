@@ -26,8 +26,8 @@ public class PostServiceFacade {
                            List<String> musicPartList, List<MultipartFile> musicFileList) {
         Long postId = postService.createPost(postDto, userDetails.getMember().getNickname());
         Long collaboRequestId = collaboRequestService.collaboRequest(postId, collaboRequestDetailsDto, userDetails.getMember());
-        collaboRequestService.approveCollaboRequest(collaboRequestId, userDetails.getMember());
         musicService.saveMusic(musicFileList, postId, musicPartList, collaboRequestId);
+        collaboRequestService.approveCollaboRequest(collaboRequestId, userDetails.getMember());
 
         return postId;
     }
