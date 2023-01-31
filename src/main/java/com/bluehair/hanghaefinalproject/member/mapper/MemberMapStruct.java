@@ -39,5 +39,5 @@ public interface MemberMapStruct {
         return result;
     }
     ResponseSettingDto memberAndMemberDetailToResponseSettingDto(Member member, MemberDetail memberDetail);
-    ResponseMypageDto memberAndMemberDetailToResponseMypageDto(Member member, MemberDetail memberDetail, Boolean isMine);
+    ResponseMypageDto memberAndMemberDetailToResponseMypageDto(Member member, MemberDetail memberDetail, Boolean isMine, Boolean isFollowed);
 }
