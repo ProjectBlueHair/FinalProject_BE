@@ -65,7 +65,7 @@ public class NotificationService {
         Long memberId = member.getId();
         String emitterId = memberId + "_" + System.currentTimeMillis();
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
-
+        log.info("emmiter created");
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> {emitterRepository.deleteById(emitterId);emitter.complete();});
 
@@ -104,8 +104,11 @@ public class NotificationService {
             emitter.send(SseEmitter.event()
                     .id(emitterId)
                     .data(data));
+            emitter.complete();
+            log.info(emitterId+"-emitter has been sent and completed");
         } catch (IOException exception) {
             log.error("Unable to emit");
+            emitter.completeWithError(exception);
             emitterRepository.deleteById(emitterId);
         }
     }

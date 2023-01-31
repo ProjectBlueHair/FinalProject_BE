@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessageController {
 
     private final SimpMessageSendingOperations sendingOperations;
-
     private final MessageService messageService;
     @Tag(name = "message")
     @Operation(summary = "메세지 전송", description = "메세지 전송")
@@ -33,7 +32,6 @@ public class MessageController {
     public void enter(@RequestBody RequestMessageDto requestMessageDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         messageService.saveMessage(requestMessageDto.toMessageDto(), userDetails.getMember().getNickname());
-
         sendingOperations.convertAndSend("/topic/chat/room/"+requestMessageDto.getRoomId(),requestMessageDto.getMessage());
 
 
