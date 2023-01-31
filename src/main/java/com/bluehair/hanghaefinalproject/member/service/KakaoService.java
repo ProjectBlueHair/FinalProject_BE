@@ -120,10 +120,7 @@ public class KakaoService {
 
     private Member registerKakaoMemberIfNeeded(KakaoLoginDto kakaoLoginDto) {
         Member member = memberRepository.findByEmail(kakaoLoginDto.getEmail()).orElse(null);
-        if (member != null && member.getSocial() == null) {
-            member.updateSocial(Social.KAKAO);
-        } else {
-
+        if (member == null) {
             String encodedPassword = passwordEncoder.encode(UUID.randomUUID().toString());
 
             member = Member.builder()
@@ -133,9 +130,14 @@ public class KakaoService {
                     .password(encodedPassword)
                     .build();
             member.updateSocial(Social.KAKAO);
-        }
 
-        memberRepository.save(member);
+            memberRepository.save(member);
+            return member;
+        }
+        if(member.getSocial() == Social.KAKAO) {
+            return member;
+        }
+        member.updateSocial(Social.KAKAO);
         return member;
     }
 
