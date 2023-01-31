@@ -5,10 +5,12 @@ import com.bluehair.hanghaefinalproject.member.dto.requestDto.*;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMemberInfoDto;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMypageDto;
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseSettingDto;
+import com.bluehair.hanghaefinalproject.member.service.KakaoService;
 import com.bluehair.hanghaefinalproject.member.service.MemberService;
 
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,6 +32,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final KakaoService kakaoService;
     @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "사용 가능한 이메일"),
@@ -77,6 +80,13 @@ public class MemberController {
         memberService.login(requestLoginDto.toLoginMemberDto(), response);
         return SuccessResponse.toResponseEntity(LOGIN_MEMBER, null);
     }
+
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<SuccessResponse<Object>> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        kakaoService.kakaoLogin(code, response);
+        return SuccessResponse.toResponseEntity(LOGIN_MEMBER, null);
+    }
+
     @Tag(name = "Member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "회원 정보 반환 성공"),

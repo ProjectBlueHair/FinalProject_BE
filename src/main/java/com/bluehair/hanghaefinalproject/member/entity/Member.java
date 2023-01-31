@@ -35,6 +35,7 @@ public class Member {
     private Long followingCount = 0L;
 
     @Column
+    @Enumerated(value = EnumType.STRING)
     private Social social;
     @Column
     private String refreshToken;
@@ -88,5 +89,9 @@ public class Member {
     }
     public void updateMemberDetail(MemberDetail memberDetail){
         this.memberDetail = memberDetail;
+    }
+
+    public void updateSocial(Social social){
+        this.social = social;
     }
 }

@@ -40,3 +40,4 @@ out/
 application-jwt.properties
 application-s3.properties
 application-MySQL.properties
+application-OAuth.properties
