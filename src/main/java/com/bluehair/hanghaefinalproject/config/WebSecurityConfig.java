@@ -66,6 +66,7 @@ public class WebSecurityConfig {
                 .antMatchers("/chat/**").permitAll()
                 .antMatchers("/topic/**").permitAll()
                 .antMatchers("/app/**").permitAll()
+                .antMatchers("/ws/**").permitAll()
                 .antMatchers().permitAll()
                 .anyRequest().authenticated();
 
