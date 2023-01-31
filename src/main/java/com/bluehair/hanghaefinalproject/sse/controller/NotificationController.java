@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.NOTIFICATION_LIST;
@@ -55,8 +57,8 @@ public class NotificationController {
             HttpServletResponse response){
         response.addHeader("X-Accel-Buffering", "no");
         response.addHeader("Content-Type", "text/event-stream");
-
-        return notificationService.subscribe(lastEventId, nickname);
+        String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        return notificationService.subscribe(lastEventId, encodedNickname);
     }
 
     @Tag(name = "SSE")
