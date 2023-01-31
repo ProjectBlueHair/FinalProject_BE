@@ -104,7 +104,6 @@ public class NotificationService {
             emitter.send(SseEmitter.event()
                     .id(emitterId)
                     .data(data));
-            emitter.complete();
             log.info(emitterId+"-emitter has been sent and completed");
         } catch (IOException exception) {
             log.error("Unable to emit");
