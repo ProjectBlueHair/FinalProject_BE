@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.NOTIFICATION_LIST;
@@ -48,7 +49,13 @@ public class NotificationController {
     })
     @Operation(summary = "SSE 연결")
     @GetMapping(value="/api/subscribe/{nickname}", produces = "text/event-stream")
-    public SseEmitter subscribe(@PathVariable String nickname, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId ){
+    public SseEmitter subscribe(
+            @PathVariable String nickname,
+            @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId,
+            HttpServletResponse response){
+        response.addHeader("X-Accel-Buffering", "no");
+        response.addHeader("Content-Type", "text/event-stream");
+
         return notificationService.subscribe(lastEventId, nickname);
     }
 
