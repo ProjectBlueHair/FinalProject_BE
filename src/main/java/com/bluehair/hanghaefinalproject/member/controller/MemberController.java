@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
 
 @Tag(name = "Member", description = "회원 관련 API")
@@ -167,7 +170,8 @@ public class MemberController {
     @Operation(summary = "마이페이지 유저 정보 불러오기", description = "본인일 경우 isMine = true")
     @GetMapping("/mypage/{nickname}")
     public ResponseEntity<SuccessResponse<ResponseMypageDto>> getMypage(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                                        @PathVariable String nickname){
-        return SuccessResponse.toResponseEntity(MEMBER_GET_SETTING, memberService.getMypage(customUserDetails, nickname));
+                                                                        @PathVariable String nickname) {
+        String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        return SuccessResponse.toResponseEntity(MEMBER_GET_SETTING, memberService.getMypage(customUserDetails, encodedNickname));
     }
 }

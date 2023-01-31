@@ -16,6 +16,9 @@ public class ResponseMypageDto {
     @Schema(description = "본인의 페이지일 경우 true", example = "true")
     private Boolean isMine;
 
+    @Schema(description = "팔로우 한 사람일 경우 true", example = "true")
+    private Boolean isFollowed;
+
     @Schema(description = "프로필 이미지", example = "img from S3")
     private String profileImg;
     @Schema(description = "닉네임", example = "modified nickname")
@@ -51,8 +54,9 @@ public class ResponseMypageDto {
     private String aboutMe;
 
     @Builder
-    public ResponseMypageDto(Member member, MemberDetail memberDetail, Boolean isMine) {
+    public ResponseMypageDto(Member member, MemberDetail memberDetail, Boolean isMine, Boolean isFollowed) {
         this.isMine = isMine;
+        this.isFollowed = isFollowed;
         this.profileImg = member.getProfileImg();
         this.nickname = member.getNickname();
 

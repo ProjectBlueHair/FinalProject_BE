@@ -32,7 +32,7 @@ public class JwtUtil {
     public static final String AUTHORIZATION_REFRESH = "RefreshToken";
     public static final String AUTHORIZATION_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long TOKEN_TIME = 60 * 1000L;
+    private static final long TOKEN_TIME = 10 * 60 * 1000L;
     private final CustomUserDetailsService userDetailsService;
 
     @Value("${jwt.secret.key.access}")

@@ -250,10 +250,16 @@ public class MemberService {
                 .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
 
         Boolean isMine = false;
+        Boolean isFollowed = false;
+
         if (userDetails != null && userDetails.getMember().getNickname().equals(nickname)){
             isMine = true;
         }
+        if (userDetails != null) {
+            FollowCompositeKey followCompositeKey = new FollowCompositeKey(userDetails.getMember().getId(), member.getId());
+            isFollowed = followRepository.existsById(followCompositeKey);
+        }
 
-        return MEMBER_MAPPER.memberAndMemberDetailToResponseMypageDto(member, member.getMemberDetail(), isMine);
+        return MEMBER_MAPPER.memberAndMemberDetailToResponseMypageDto(member, member.getMemberDetail(), isMine, isFollowed);
     }
 }
