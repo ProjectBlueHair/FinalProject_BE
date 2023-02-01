@@ -26,6 +26,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -61,7 +63,7 @@ public class PostController {
     public ResponseEntity<SuccessResponse<Object>> createPost(@RequestPart(value = "jsonData")  RequestCreatePostDto requestCreatePostDto,
                                                               @Parameter(description = "WAV 및 2 Channel 오디오만 지원합니다.")
                                                               @RequestPart(value = "musicFile") List<MultipartFile> musicFileList,
-                                                              @AuthenticationPrincipal CustomUserDetails userDetails){
+                                                              @AuthenticationPrincipal CustomUserDetails userDetails) throws UnsupportedAudioFileException, IOException {
         return SuccessResponse.toResponseEntity(CREATE_POST,
                 postServiceFacade.createPost(
                         userDetails,
