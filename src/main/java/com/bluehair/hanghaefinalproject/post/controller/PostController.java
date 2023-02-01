@@ -128,10 +128,10 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "작성한 게시글 조회 성공")
     })
-    @GetMapping("/my-post")
-    public ResponseEntity<SuccessResponse<Object>> myPost(Pageable pageable, @AuthenticationPrincipal CustomUserDetails userDetails){
-
-        return SuccessResponse.toResponseEntity(MY_POST, postService.myPost(pageable, userDetails.getMember().getNickname()));
+    @GetMapping("/my-post/{nickname}")
+    public ResponseEntity<SuccessResponse<Object>> myPost(Pageable pageable, @PathVariable String nickname){
+        String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        return SuccessResponse.toResponseEntity(MY_POST, postService.myPost(pageable, encodedNickname));
 
     }
 
