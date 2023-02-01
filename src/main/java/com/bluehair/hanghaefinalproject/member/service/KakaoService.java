@@ -136,9 +136,10 @@ public class KakaoService {
                     .build();
             member.updateSocial(Social.KAKAO);
 
-            memberRepository.save(member);
-
             MemberDetail memberDetail = new MemberDetail(member);
+            member.updateMemberDetail(memberDetail);
+
+            memberRepository.save(member);
             memberDetailRepository.save(memberDetail);
             return member;
         }
