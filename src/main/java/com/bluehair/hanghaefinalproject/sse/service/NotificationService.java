@@ -65,9 +65,15 @@ public class NotificationService {
         Long memberId = member.getId();
         String emitterId = memberId + "_" + System.currentTimeMillis();
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
-        log.info("emmiter created");
-        emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
-        emitter.onTimeout(() -> {emitterRepository.deleteById(emitterId);emitter.complete();});
+
+        log.info("emitter created");
+
+        emitter.onCompletion(() -> {
+            synchronized (emitter){
+            emitterRepository.deleteById(emitterId);}});
+        emitter.onTimeout(() -> {
+            emitter.complete();
+            emitterRepository.deleteById(emitterId);});
 
         sendToClient(emitter, emitterId, "EventStream Created. [memberId=" + memberId + "]");
 
@@ -91,7 +97,6 @@ public class NotificationService {
         sseEmitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-
                     sendToClient(emitter, key, notification.getContent());
                 }
         );
