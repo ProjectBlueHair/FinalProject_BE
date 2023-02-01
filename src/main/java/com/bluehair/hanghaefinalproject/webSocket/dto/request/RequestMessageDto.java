@@ -7,6 +7,8 @@ import lombok.Getter;
 public class RequestMessageDto {
 
     private String message;
+
+    private String nickname;
     private String date;
     private String time;
 
