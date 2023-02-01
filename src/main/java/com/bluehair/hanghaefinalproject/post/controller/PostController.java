@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestCreatePostDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestUpdatePostDto;
+import com.bluehair.hanghaefinalproject.post.dto.responseDto.ResponseMainPostDto;
 import com.bluehair.hanghaefinalproject.post.service.PostService;
 import com.bluehair.hanghaefinalproject.post.service.PostServiceFacade;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
@@ -27,14 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MY_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.INFO_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.SEARCH_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MAIN_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.CREATE_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.UPDATE_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MUSIC_POST;
-import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.DELETE_POST;
+import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
 
 
 @Tag(name = "Post", description = "게시글 관련 API")
@@ -160,5 +154,40 @@ public class PostController {
     public ResponseEntity<SuccessResponse<List<ResponseMusicDto>>> deletePost(@PathVariable Long postId,@AuthenticationPrincipal CustomUserDetails userDetails){
         postService.deletePost(postId, userDetails.getMember().getNickname());
         return SuccessResponse.toResponseEntity(DELETE_POST, null);
+    }
+
+    @Tag(name="Post")
+    @Operation(summary = "보관함 추가", description = "보관함 추가")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "보관함 추가 성공")
+    })
+    @PostMapping("archive/{postId}")
+    public ResponseEntity<SuccessResponse<Object>> doArchive(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                             @PathVariable Long postId){
+        postService.doArchive(userDetails, postId);
+        return SuccessResponse.toResponseEntity(ARCHIVE_POST, null);
+    }
+
+    @Tag(name="Post")
+    @Operation(summary = "보관함 삭제", description = "보관함 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "보관함 삭제 성공")
+    })
+    @DeleteMapping("archive/{postId}")
+    public ResponseEntity<SuccessResponse<Object>> cancelArchive(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                 @PathVariable Long postId){
+        postService.cancelArchive(userDetails, postId);
+        return SuccessResponse.toResponseEntity(ARCHIVE_CANCEL, null);
+    }
+
+    @Tag(name="Post")
+    @Operation(summary = "보관함 조회", description = "보관함 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "보관함 삭제 성공")
+    })
+    @GetMapping("archive/{nickname}")
+    public ResponseEntity<SuccessResponse<List<ResponseMainPostDto>>> cancelArchive(Pageable pageable,
+                                                                                    @PathVariable String nickname){
+        return SuccessResponse.toResponseEntity(GET_ARCHIVE, postService.getArchive(pageable, nickname));
     }
 }

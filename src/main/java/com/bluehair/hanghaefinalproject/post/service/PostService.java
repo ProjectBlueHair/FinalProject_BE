@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.collaboRequest.repository.CollaboRequest
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 import com.bluehair.hanghaefinalproject.comment.repository.CommentRepository;
 import com.bluehair.hanghaefinalproject.common.exception.Domain;
+import com.bluehair.hanghaefinalproject.common.exception.InvalidRequestException;
 import com.bluehair.hanghaefinalproject.common.exception.NotAuthorizedMemberException;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.common.service.TagExctractor;
@@ -21,9 +22,13 @@ import com.bluehair.hanghaefinalproject.music.repository.MusicRepository;
 import com.bluehair.hanghaefinalproject.post.dto.responseDto.ResponseInfoPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.responseDto.ResponseMainPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.serviceDto.*;
+import com.bluehair.hanghaefinalproject.post.entity.Archive;
+import com.bluehair.hanghaefinalproject.post.entity.ArchiveCompositeKey;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
+import com.bluehair.hanghaefinalproject.post.repository.ArchiveRepository;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 
+import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.tag.entity.Tag;
 import com.bluehair.hanghaefinalproject.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +62,7 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final ArchiveRepository archiveRepository;
 
     @Transactional
     public Long createPost(PostDto postDto, String nickname) {
@@ -321,5 +327,91 @@ public class PostService {
         postRepository.deleteById(postId);
 
 
+    }
+    @Transactional
+    public void doArchive(CustomUserDetails userDetails, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND, "Post ID : " + postId));
+
+        ArchiveCompositeKey archiveCompositeKey = new ArchiveCompositeKey(userDetails.getMember().getId(), post.getId());
+
+        if(archiveRepository.existsById(archiveCompositeKey)) {
+            throw new InvalidRequestException(POST, SERVICE, ALREADY_ARCHIVED, "PostID : " + post.getId());
+        }
+
+        Archive archive = new Archive(archiveCompositeKey, userDetails.getMember(), post);
+        archiveRepository.save(archive);
+    }
+
+    @Transactional
+    public void cancelArchive(CustomUserDetails userDetails, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(POST, SERVICE,POST_NOT_FOUND, "Post ID : " + postId));
+
+        ArchiveCompositeKey archiveCompositeKey = new ArchiveCompositeKey(userDetails.getMember().getId(), post.getId());
+
+        if(!archiveRepository.existsById(archiveCompositeKey)) {
+            throw new InvalidRequestException(POST, SERVICE, ALREADY_CANCELED, "PostID : " + post.getId());
+        }
+
+        archiveRepository.deleteById(archiveCompositeKey);
+    }
+
+    @Transactional
+    public List<ResponseMainPostDto> getArchive(Pageable pageable, String nickname) {
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(()-> new NotFoundException(POST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
+
+        List<Archive> archiveList = archiveRepository.findAllByMember(pageable, member);
+
+        List<ResponseMainPostDto> responseMainPostDtoList = new ArrayList<>();
+
+        for (Archive archive : archiveList) {
+            Post post = archive.getPost();
+
+            List<CollaboRequest> collaboRequestList = collaboRequestRepository.findAllByPostId(post.getId());
+
+            List<MainProfileDto> mainProfile = new ArrayList<>();
+
+            List<Tag> tagGet = tagRepository.findAllByPostId(post.getId());
+
+            List<String> tagList = new ArrayList<>();
+
+            boolean isLiked = false;
+
+            PostLikeCompositeKey postLikeCompositeKey
+                    = new PostLikeCompositeKey(member.getId(), post.getId());
+            Optional<PostLike> liked = postLikeRepository.findById(postLikeCompositeKey);
+            if (liked.isPresent()){
+                isLiked = true;
+            }
+
+            for(Tag tag : tagGet){
+                tagList.add(tag.getContents());
+            }
+
+            String musicFile = post.getMusicFile();
+
+            for (CollaboRequest collaboRequest : collaboRequestList){
+                List<String> musicPart = new ArrayList<>();
+                List<Music> musicList = musicRepository.findAllByCollaboRequest_Nickname(collaboRequest.getNickname());
+                for (Music music : musicList){
+                    musicPart.add(music.getMusicPart());
+                }
+                // musicPart 중복 제거
+                Set<String> set = new HashSet<>(musicPart);
+                // List로 다시 변환
+                List<String> musicPartList = new ArrayList<>(set);
+
+                Optional<Member> collaboMember = memberRepository.findByNickname(collaboRequest.getNickname());
+                MainProfileDto mainProfileDto = new MainProfileDto(musicPartList, collaboMember.get().getProfileImg(),collaboRequest.getNickname());
+                mainProfile.add(mainProfileDto);
+            }
+            Set<MainProfileDto> distinctSet = mainProfile.stream().collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(MainProfileDto::getNickname))));
+            List<MainProfileDto> mainProfileList = distinctSet.stream().collect(Collectors.toList());
+
+            responseMainPostDtoList.add(POST_MAPPER.PostToMainPostDto(post.getId(), post.getTitle(),post.getPostImg(), post.getLikeCount(), post.getViewCount(),musicFile,tagList,mainProfileList, isLiked));
+        }
+        return responseMainPostDtoList;
     }
 }
