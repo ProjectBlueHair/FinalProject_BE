@@ -65,13 +65,25 @@ public class RoomService {
         Member member2 = memberRepository.findByNickname(memberNickname2).orElseThrow(
                 () -> new NotFoundException(Domain.ROOM, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + memberNickname2)
         );
+        Optional<ChatRoom> findRoom1 = roomRepository.findByMember1_IdAndMember2_Id(member1.getId(), member2.getId());
+        Optional<ChatRoom> findRoom2 = roomRepository.findByMember1_IdAndMember2_Id(member2.getId(), member1.getId());
 
-        ChatRoom chatRoom = ROOM_MAPPER.ChatRoomToRoomDto(member1, member2);
+        if(findRoom1.isPresent()){
+            RoomIdDto roomIdDto = new RoomIdDto(findRoom1.get().getRoomId());
+            return roomIdDto;
+        }
+        if(findRoom2.isPresent()){
+            RoomIdDto roomIdDto = new RoomIdDto(findRoom2.get().getRoomId());
+            return roomIdDto;
+        }
 
-        roomRepository.save(chatRoom);
+        ChatRoom chatRoom = new ChatRoom();
 
+        if(!findRoom1.isPresent() && !findRoom2.isPresent()){
+            chatRoom = ROOM_MAPPER.ChatRoomToRoomDto(member1, member2);
+            roomRepository.save(chatRoom);
+        }
         RoomIdDto roomIdDto = new RoomIdDto(chatRoom.getRoomId());
-
         return roomIdDto;
     }
 
