@@ -260,6 +260,12 @@ public class MemberService {
             isFollowed = followRepository.existsById(followCompositeKey);
         }
 
-        return MEMBER_MAPPER.memberAndMemberDetailToResponseMypageDto(member, member.getMemberDetail(), isMine, isFollowed);
+//        return MEMBER_MAPPER.memberAndMemberDetailToResponseMypageDto(member, member.getMemberDetail(), isMine, isFollowed);
+        return ResponseMypageDto.builder()
+                .member(member)
+                .memberDetail(member.getMemberDetail())
+                .isFollowed(isFollowed)
+                .isMine(isMine)
+                .build();
     }
 }
