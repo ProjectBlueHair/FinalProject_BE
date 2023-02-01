@@ -19,7 +19,7 @@ public class MessageController {
     @MessageMapping("/chat/message/{roomId}") // app/chat/message/{roomId} 로 메세지를 보냄
     @SendTo("/topic/chat/room/{roomId}") // topic/chat/room/{roomId} 를 구독하고 있는 클라이언트에 return 함.
     public SaveMessageDto enter(@DestinationVariable Long roomId, RequestMessageDto requestMessageDto) {
-
+        log.warn("asdffasdfdasd");
         SaveMessageDto saveMessageDto = messageService.saveMessage(roomId,requestMessageDto.toMessageDto(), requestMessageDto.getNickname());
 
         return saveMessageDto;
