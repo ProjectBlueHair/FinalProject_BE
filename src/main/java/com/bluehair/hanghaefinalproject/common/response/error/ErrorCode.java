@@ -30,8 +30,8 @@ public enum ErrorCode {
 
     // Post
     POST_NOT_FOUND(HttpStatus.OK, "존재하지 않는 게시글입니다.", 4041),
-    ALREADY_ARCHIVED(HttpStatus.OK, "이미 보관된 게시글입니다.", 4041),
-    ALREADY_CANCELED(HttpStatus.OK, "이미 보관 취소된 게시글입니다.", 4041),
+    ALREADY_ARCHIVED(HttpStatus.OK, "이미 보관된 게시글입니다.", 4001),
+    ALREADY_CANCELED(HttpStatus.OK, "이미 보관 취소된 게시글입니다.", 4001),
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.OK, "존재하지 않는 댓글입니다.", 4044),
 
