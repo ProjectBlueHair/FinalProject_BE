@@ -25,6 +25,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MY_POST;
@@ -132,10 +134,10 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "2000", description = "작성한 게시글 조회 성공")
     })
-    @GetMapping("/my-post")
-    public ResponseEntity<SuccessResponse<Object>> myPost(Pageable pageable, @AuthenticationPrincipal CustomUserDetails userDetails){
-
-        return SuccessResponse.toResponseEntity(MY_POST, postService.myPost(pageable, userDetails.getMember().getNickname()));
+    @GetMapping("/my-post/{nickname}")
+    public ResponseEntity<SuccessResponse<Object>> myPost(Pageable pageable, @PathVariable String nickname){
+        String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        return SuccessResponse.toResponseEntity(MY_POST, postService.myPost(pageable, encodedNickname));
 
     }
 
@@ -161,4 +163,6 @@ public class PostController {
         postService.deletePost(postId, userDetails.getMember().getNickname());
         return SuccessResponse.toResponseEntity(DELETE_POST, null);
     }
+
+
 }
