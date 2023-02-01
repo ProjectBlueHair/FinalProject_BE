@@ -189,8 +189,9 @@ public class PostController {
     })
     @GetMapping("archive/{nickname}")
     public ResponseEntity<SuccessResponse<List<ResponseMainPostDto>>> cancelArchive(Pageable pageable,
-                                                                                    @PathVariable String nickname){
+                                                                                    @PathVariable String nickname,
+                                                                                    @AuthenticationPrincipal CustomUserDetails userDetails){
         String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
-        return SuccessResponse.toResponseEntity(GET_ARCHIVE, postService.getArchive(pageable, encodedNickname));
+        return SuccessResponse.toResponseEntity(GET_ARCHIVE, postService.getArchive(pageable, encodedNickname, userDetails));
     }
 }

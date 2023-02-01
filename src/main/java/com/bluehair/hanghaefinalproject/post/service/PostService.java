@@ -358,7 +358,7 @@ public class PostService {
     }
 
     @Transactional
-    public List<ResponseMainPostDto> getArchive(Pageable pageable, String nickname) {
+    public List<ResponseMainPostDto> getArchive(Pageable pageable, String nickname,CustomUserDetails userDetails) {
         Member member = memberRepository.findByNickname(nickname)
                 .orElseThrow(()-> new NotFoundException(POST, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
 
@@ -380,7 +380,7 @@ public class PostService {
             boolean isLiked = false;
 
             PostLikeCompositeKey postLikeCompositeKey
-                    = new PostLikeCompositeKey(member.getId(), post.getId());
+                    = new PostLikeCompositeKey(userDetails.getMember().getId(), post.getId());
             Optional<PostLike> liked = postLikeRepository.findById(postLikeCompositeKey);
             if (liked.isPresent()){
                 isLiked = true;
