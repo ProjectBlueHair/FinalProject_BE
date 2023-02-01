@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -23,6 +24,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 @Tag(name = "메세지 전송", description = "메세지 전송 API")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class MessageController {
 
     private final SimpMessageSendingOperations sendingOperations;
