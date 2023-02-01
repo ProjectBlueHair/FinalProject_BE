@@ -26,6 +26,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.*;
@@ -188,6 +190,7 @@ public class PostController {
     @GetMapping("archive/{nickname}")
     public ResponseEntity<SuccessResponse<List<ResponseMainPostDto>>> cancelArchive(Pageable pageable,
                                                                                     @PathVariable String nickname){
-        return SuccessResponse.toResponseEntity(GET_ARCHIVE, postService.getArchive(pageable, nickname));
+        String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        return SuccessResponse.toResponseEntity(GET_ARCHIVE, postService.getArchive(pageable, encodedNickname));
     }
 }
