@@ -57,6 +57,9 @@ public class NotificationController {
             HttpServletResponse response){
         response.addHeader("X-Accel-Buffering", "no");
         response.addHeader("Content-Type", "text/event-stream");
+        response.setHeader("Connection", "keep-alive");
+        response.setHeader("Cache-Control", "no-cache");
+
         String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
         return notificationService.subscribe(lastEventId, encodedNickname);
     }
