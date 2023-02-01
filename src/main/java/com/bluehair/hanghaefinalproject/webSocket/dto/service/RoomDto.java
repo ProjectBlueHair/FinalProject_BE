@@ -1,12 +1,17 @@
 package com.bluehair.hanghaefinalproject.webSocket.dto.service;
 
-import com.bluehair.hanghaefinalproject.member.entity.Member;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class RoomDto {
 
-    private Member member;
-    private Member member2;
+    private Long memberId1;
+    private Long memberId2;
 
+    @Builder
+    public RoomDto(Long memberId1, Long memberId2){
+        this.memberId1 = memberId1;
+        this.memberId2 = memberId2;
+    }
 }

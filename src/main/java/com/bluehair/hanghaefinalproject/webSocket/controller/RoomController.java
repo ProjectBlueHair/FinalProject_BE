@@ -13,6 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import  com.bluehair.hanghaefinalproject.webSocket.service.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.ROOM_LIST;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.ROOM_CREATE;
 import static com.bluehair.hanghaefinalproject.common.response.success.SucessCode.MESSAGE_LIST;
@@ -43,8 +46,9 @@ public class RoomController {
     // 채팅방 생성
     @PostMapping("/room/{nickname}")
     public ResponseEntity<SuccessResponse<Object>> createRoom(@PathVariable String nickname, @AuthenticationPrincipal CustomUserDetails userDetails) {
-
-        return SuccessResponse.toResponseEntity(ROOM_CREATE,chatService.createRoom(nickname, userDetails.getMember().getNickname()));
+        String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        chatService.createRoom(encodedNickname, userDetails.getMember().getNickname());
+        return SuccessResponse.toResponseEntity(ROOM_CREATE,null);
     }
     @Tag(name = "Room")
     @Operation(summary = "메세지 목록 조회", description = "메세지 목록 조회")
