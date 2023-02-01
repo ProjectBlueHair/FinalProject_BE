@@ -6,13 +6,15 @@ import lombok.Getter;
 @Getter
 public class RequestMessageDto {
 
-    private Long roomId;
     private String message;
+    private String date;
+    private String time;
 
     public MessageDto toMessageDto() {
         return MessageDto.builder()
-                .roomId(roomId)
                 .message(message)
+                .date(date)
+                .time(time)
                 .build();
     }
 }

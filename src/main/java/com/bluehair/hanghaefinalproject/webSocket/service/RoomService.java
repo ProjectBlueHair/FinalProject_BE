@@ -4,7 +4,7 @@ import com.bluehair.hanghaefinalproject.common.exception.Domain;
 import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
-import com.bluehair.hanghaefinalproject.webSocket.dto.response.MessageListDto;
+import com.bluehair.hanghaefinalproject.webSocket.dto.response.ResponseMessageDto;
 import com.bluehair.hanghaefinalproject.webSocket.dto.response.RoomIdDto;
 import com.bluehair.hanghaefinalproject.webSocket.dto.response.RoomListDto;
 import com.bluehair.hanghaefinalproject.webSocket.entity.ChatMessage;
@@ -87,12 +87,12 @@ public class RoomService {
         return roomIdDto;
     }
 
-    public List<MessageListDto> entranceRoom(Long roomId) {
+    public List<ResponseMessageDto> entranceRoom(Long roomId) {
 
         List<ChatMessage> message = messageRepository.findByChatRoom_RoomIdOrderByCreatedAtDesc(roomId);
-        List<MessageListDto> messageList = new ArrayList<>();
+        List<ResponseMessageDto> messageList = new ArrayList<>();
         for (ChatMessage m : message){
-            MessageListDto messageListDto = new MessageListDto(m.getMessage(), m.getNickname(), m.getProfileImg());
+            ResponseMessageDto messageListDto = new ResponseMessageDto(m.getMessage(), m.getNickname(), m.getProfileImg(), m.getDate(), m.getTime());
             messageList.add(messageListDto);
         }
 
