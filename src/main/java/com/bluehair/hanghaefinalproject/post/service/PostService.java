@@ -116,12 +116,8 @@ public class PostService {
         return POST_MAPPER.postToResponseInfoPostDto(post, isLiked);
     }
 
-    public List<ResponseMainPostDto>  myPost(Pageable pageable, String nickname) {
+    public List<ResponseMainPostDto>  myPost(Pageable pageable, String nickname, CustomUserDetails userDetails) {
         List<ResponseMainPostDto> responseMainPostDtoList = new ArrayList<>();
-
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
-        );
 
         List<Post> postList = postRepository.findByNickname(pageable,nickname);
 
@@ -137,7 +133,7 @@ public class PostService {
             boolean isLiked = false;
 
             PostLikeCompositeKey postLikeCompositeKey
-                    = new PostLikeCompositeKey(member.getId(), post.getId());
+                    = new PostLikeCompositeKey(userDetails.getMember().getId(), post.getId());
             Optional<PostLike> liked = postLikeRepository.findById(postLikeCompositeKey);
             if (liked.isPresent()){
                 isLiked = true;
