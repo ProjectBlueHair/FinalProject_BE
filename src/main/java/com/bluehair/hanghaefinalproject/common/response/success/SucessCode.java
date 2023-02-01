@@ -30,6 +30,9 @@ public enum SucessCode {
     SEARCH_POST(HttpStatus.OK,"게시글 검색 성공", 2000),
     MY_POST(HttpStatus.OK, "작성한 게시글 조회 성공", 2000),
     DELETE_POST(HttpStatus.OK, "게시글 삭제 성공", 2000),
+    ARCHIVE_POST(HttpStatus.OK, "게시글 보관함 추가 성공", 2000),
+    ARCHIVE_CANCEL(HttpStatus.OK, "게시글 보관함 삭제 성공", 2000),
+    GET_ARCHIVE(HttpStatus.OK, "보관함 조회 성공", 2000),
 
     //Comment
     CREATE_COMMENT(HttpStatus.OK,"댓글 작성 성공",2000),

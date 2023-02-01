@@ -2,7 +2,9 @@ package com.bluehair.hanghaefinalproject.member.service;
 
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.KakaoLoginDto;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
+import com.bluehair.hanghaefinalproject.member.entity.MemberDetail;
 import com.bluehair.hanghaefinalproject.member.entity.Social;
+import com.bluehair.hanghaefinalproject.member.repository.MemberDetailRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +38,7 @@ public class KakaoService {
     private String kakaoRedirectUri;
 
     private final MemberRepository memberRepository;
+    private final MemberDetailRepository memberDetailRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -134,6 +137,9 @@ public class KakaoService {
             member.updateSocial(Social.KAKAO);
 
             memberRepository.save(member);
+
+            MemberDetail memberDetail = new MemberDetail(member);
+            memberDetailRepository.save(memberDetail);
             return member;
         }
         if(member.getSocial() == Social.KAKAO) {
