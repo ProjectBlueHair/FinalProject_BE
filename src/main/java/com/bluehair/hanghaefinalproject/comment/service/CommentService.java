@@ -52,11 +52,12 @@ public class CommentService {
     public void createComment(Long postId,Long parentId, CommentDto commentDto, String nickname) {
 
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE,POST_NOT_FOUND, "Post ID : " + postId)
+                () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE, POST_NOT_FOUND, "Post ID : " + postId)
         );
-        if (parentId != null){
-            commentRepository.findById(parentId).orElseThrow(
-                    () -> new NotFoundException(Domain.COMMENT,Layer.SERVICE,COMMENT_NOT_FOUND, "Parent Comment ID : " + parentId)
+        Comment parentComment = null;
+        if (parentId != null) {
+            parentComment = commentRepository.findById(parentId).orElseThrow(
+                    () -> new NotFoundException(Domain.COMMENT, Layer.SERVICE, COMMENT_NOT_FOUND, "Parent Comment ID : " + parentId)
             );
         }
         Member member = memberRepository.findByNickname(nickname)
@@ -65,15 +66,26 @@ public class CommentService {
         Comment comment = COMMENT_MAPPER.commentDtoToComment(commentDto, member, post, parentId);
         commentRepository.save(comment);
 
-        //post 작성자에게 댓글 알림 - 댓글 조회로 이동
+        //post 작성자에게 댓글 알림
         Member postMember = memberRepository.findByNickname(post.getNickname())
                 .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + nickname));
 
-        if(!postMember.getNickname().equals(member.getNickname())) {
+        if (!postMember.getNickname().equals(member.getNickname())) {
             String content = post.getTitle() + "에 " + nickname + "님이 댓글을 남겼습니다.";
             notify(postMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
         }
+
+        //댓글 작성자에게 댓글 알림
+        if (parentComment != null) {
+            Member commentMember = memberRepository.findByNickname(parentComment.getNickname())
+                    .orElseThrow(() -> new NotFoundException(COMMENT, SERVICE, MEMBER_NOT_FOUND, "Nickname : " + comment.getNickname()));
+            if (!commentMember.getNickname().equals(member.getNickname())) {
+                String content = commentMember.getNickname() + "님의 댓글에 " + nickname + "님이 댓글을 남겼습니다.";
+                notify(commentMember, member, NotificationType.COMMENT, content, RedirectionType.detail, postId, null);
+            }
+        }
     }
+
 
     private void notify(Member postMember, Member sender, NotificationType notificationType,
                         String content, RedirectionType type, Long typeId, Long postId){
