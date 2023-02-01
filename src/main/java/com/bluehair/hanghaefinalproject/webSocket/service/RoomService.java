@@ -42,6 +42,7 @@ public class RoomService {
         List<ChatRoom> chatRoomList1 = roomRepository.findByMember1_Id(member.getId());
 
         for (ChatRoom c : chatRoomList1){
+
             RoomListDto roomListDto = new RoomListDto(c.getRoomId(),c.getMember2().getNickname(), c.getMember2().getProfileImg());
             roomList.add(roomListDto);
         }
@@ -49,16 +50,13 @@ public class RoomService {
         List<ChatRoom> chatRoomList2 = roomRepository.findByMember2_Id(member.getId());
 
         for (ChatRoom c : chatRoomList2){
-            Member chatMember =memberRepository.findById(c.getMember1().getId()).orElseThrow(
-                    () -> new NotFoundException(Domain.ROOM, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + nickname)
-            );
-            RoomListDto roomListDto = new RoomListDto(c.getRoomId(),chatMember.getNickname(), chatMember.getProfileImg());
+            RoomListDto roomListDto = new RoomListDto(c.getRoomId(),c.getMember1().getNickname(), c.getMember1().getProfileImg());
             roomList.add(roomListDto);
         }
         return roomList;
     }
     @Transactional
-    public ChatRoom createRoom(String memberNickname1, String memberNickname2) {
+    public void createRoom(String memberNickname1, String memberNickname2) {
 
         Member member1 = memberRepository.findByNickname(memberNickname1).orElseThrow(
                 () -> new NotFoundException(Domain.ROOM, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + memberNickname2)
@@ -70,7 +68,6 @@ public class RoomService {
         ChatRoom chatRoom = ROOM_MAPPER.ChatRoomToRoomDto(member1, member2);
 
         roomRepository.save(chatRoom);
-        return chatRoom;
     }
 
     public List<MessageListDto> entranceRoom(Long roomId) {
