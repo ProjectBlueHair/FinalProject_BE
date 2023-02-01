@@ -129,9 +129,10 @@ public class PostController {
             @ApiResponse(responseCode = "2000", description = "작성한 게시글 조회 성공")
     })
     @GetMapping("/my-post/{nickname}")
-    public ResponseEntity<SuccessResponse<Object>> myPost(Pageable pageable, @PathVariable String nickname){
+    public ResponseEntity<SuccessResponse<Object>> myPost(Pageable pageable, @PathVariable String nickname,
+                                                          @AuthenticationPrincipal CustomUserDetails userDetails){
         String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
-        return SuccessResponse.toResponseEntity(MY_POST, postService.myPost(pageable, encodedNickname));
+        return SuccessResponse.toResponseEntity(MY_POST, postService.myPost(pageable, encodedNickname, userDetails));
 
     }
 
@@ -189,8 +190,9 @@ public class PostController {
     })
     @GetMapping("archive/{nickname}")
     public ResponseEntity<SuccessResponse<List<ResponseMainPostDto>>> cancelArchive(Pageable pageable,
-                                                                                    @PathVariable String nickname){
+                                                                                    @PathVariable String nickname,
+                                                                                    @AuthenticationPrincipal CustomUserDetails userDetails){
         String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
-        return SuccessResponse.toResponseEntity(GET_ARCHIVE, postService.getArchive(pageable, encodedNickname));
+        return SuccessResponse.toResponseEntity(GET_ARCHIVE, postService.getArchive(pageable, encodedNickname, userDetails));
     }
 }
