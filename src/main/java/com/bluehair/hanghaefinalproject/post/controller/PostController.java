@@ -3,12 +3,15 @@ package com.bluehair.hanghaefinalproject.post.controller;
 import com.bluehair.hanghaefinalproject.common.response.success.SuccessResponse;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.music.dto.ResponseMusicDto;
+import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestCreatePostDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestPostDto;
 import com.bluehair.hanghaefinalproject.post.dto.requestDto.RequestUpdatePostDto;
 import com.bluehair.hanghaefinalproject.post.service.PostService;
+import com.bluehair.hanghaefinalproject.post.service.PostServiceFacade;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,6 +45,7 @@ import static com.bluehair.hanghaefinalproject.common.response.success.SucessCod
 public class PostController {
 
     private final PostService postService;
+    private final PostServiceFacade postServiceFacade;
 
     @Tag(name = "Post")
     @Operation(summary = "게시글 작성", description = "게시글 작성")
@@ -50,6 +55,25 @@ public class PostController {
     @PostMapping
     public ResponseEntity<SuccessResponse<Object>> createPost(@RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal CustomUserDetails userDetails){
         return SuccessResponse.toResponseEntity(CREATE_POST,postService.createPost(requestPostDto.toPostDto(), userDetails.getMember().getNickname()));
+    }
+    @Tag(name = "Post")
+    @Operation(summary = "게시글 작성 with Facade", description = "게시글 작성 with Facade")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "2000", description = "게시글 작성 성공")
+    })
+    @PostMapping("/new")
+    public ResponseEntity<SuccessResponse<Object>> createPost(@RequestPart(value = "jsonData")  RequestCreatePostDto requestCreatePostDto,
+                                                              @Parameter(description = "WAV 및 2 Channel 오디오만 지원합니다.")
+                                                              @RequestPart(value = "musicFile") List<MultipartFile> musicFileList,
+                                                              @AuthenticationPrincipal CustomUserDetails userDetails){
+        return SuccessResponse.toResponseEntity(CREATE_POST,
+                postServiceFacade.createPost(
+                        userDetails,
+                        requestCreatePostDto.toPostDto(),
+                        requestCreatePostDto.toCollaboRequestDetailsDto(),
+                        requestCreatePostDto.toMusicPartList(),
+                        musicFileList
+                        ));
     }
     @Tag(name = "Post")
     @Operation(summary = "게시글 수정", description = "게시글 수정")
