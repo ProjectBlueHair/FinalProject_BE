@@ -47,8 +47,8 @@ public class RoomController {
     @PostMapping("/room/{nickname}")
     public ResponseEntity<SuccessResponse<Object>> createRoom(@PathVariable String nickname, @AuthenticationPrincipal CustomUserDetails userDetails) {
         String encodedNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
-        chatService.createRoom(encodedNickname, userDetails.getMember().getNickname());
-        return SuccessResponse.toResponseEntity(ROOM_CREATE,null);
+
+        return SuccessResponse.toResponseEntity(ROOM_CREATE,chatService.createRoom(encodedNickname, userDetails.getMember().getNickname()));
     }
     @Tag(name = "Room")
     @Operation(summary = "메세지 목록 조회", description = "메세지 목록 조회")

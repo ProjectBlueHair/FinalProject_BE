@@ -5,6 +5,7 @@ import com.bluehair.hanghaefinalproject.common.exception.NotFoundException;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
 import com.bluehair.hanghaefinalproject.webSocket.dto.response.MessageListDto;
+import com.bluehair.hanghaefinalproject.webSocket.dto.response.RoomIdDto;
 import com.bluehair.hanghaefinalproject.webSocket.dto.response.RoomListDto;
 import com.bluehair.hanghaefinalproject.webSocket.entity.ChatMessage;
 import com.bluehair.hanghaefinalproject.webSocket.entity.ChatRoom;
@@ -56,7 +57,7 @@ public class RoomService {
         return roomList;
     }
     @Transactional
-    public void createRoom(String memberNickname1, String memberNickname2) {
+    public RoomIdDto createRoom(String memberNickname1, String memberNickname2) {
 
         Member member1 = memberRepository.findByNickname(memberNickname1).orElseThrow(
                 () -> new NotFoundException(Domain.ROOM, SERVICE,MEMBER_NOT_FOUND, "Nickname : " + memberNickname2)
@@ -68,6 +69,10 @@ public class RoomService {
         ChatRoom chatRoom = ROOM_MAPPER.ChatRoomToRoomDto(member1, member2);
 
         roomRepository.save(chatRoom);
+
+        RoomIdDto roomIdDto = new RoomIdDto(chatRoom.getRoomId());
+
+        return roomIdDto;
     }
 
     public List<MessageListDto> entranceRoom(Long roomId) {
