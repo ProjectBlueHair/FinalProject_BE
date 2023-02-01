@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,12 +25,13 @@ public class PostServiceFacade {
 
     @Transactional
     public Long createPost(CustomUserDetails userDetails, PostDto postDto, CollaboRequestDetailsDto collaboRequestDetailsDto,
-                           List<String> musicPartList, List<MultipartFile> musicFileList) {
+                           List<String> musicPartList, List<MultipartFile> musicFileList) throws UnsupportedAudioFileException, IOException {
         Long postId = postService.createPost(postDto, userDetails.getMember().getNickname());
         Long collaboRequestId = collaboRequestService.collaboRequest(postId, collaboRequestDetailsDto, userDetails.getMember());
         musicService.saveMusic(musicFileList, postId, musicPartList, collaboRequestId);
-        collaboRequestService.approveCollaboRequest(collaboRequestId, userDetails.getMember());
 
+        collaboRequestService.approveCollaboRequest(collaboRequestId, userDetails.getMember());
+        musicService.mixMusic(collaboRequestId);
         return postId;
     }
 }
