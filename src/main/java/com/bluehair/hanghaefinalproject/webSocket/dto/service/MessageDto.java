@@ -6,12 +6,13 @@ import lombok.Getter;
 @Getter
 public class MessageDto {
 
-    private Long roomId;
     private String message;
-
+    private String date;
+    private String time;
     @Builder
-    public MessageDto(Long roomId, String message){
-        this.roomId = roomId;
+    public MessageDto(String message, String date, String time){
         this.message = message;
+        this.date = date;
+        this.time = time;
     }
 }

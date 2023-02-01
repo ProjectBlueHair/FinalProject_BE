@@ -25,17 +25,19 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
 
-    public void saveMessage(MessageDto MessageDto, String nickname) {
+    public SaveMessageDto saveMessage(Long roomId, MessageDto messageDto, String nickname) {
 
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
                 () -> new NotFoundException(Domain.ROOM, SERVICE,MEMBER_NOT_FOUND, "Nickname : "+ nickname)
         );
 
-        SaveMessageDto saveMessageDto = new SaveMessageDto(MessageDto.getRoomId(), MessageDto.getMessage(), member.getNickname(), member.getProfileImg());
+        SaveMessageDto saveMessageDto = new SaveMessageDto(roomId, messageDto.getMessage(), member.getNickname(), member.getProfileImg()
+                                                            ,messageDto.getDate(), messageDto.getTime());
 
         ChatMessage chatMessage = MESSAGE_MAPPER.SaveMessageDtoToMessage(saveMessageDto);
 
         messageRepository.save(chatMessage);
 
+        return saveMessageDto;
     }
 }
