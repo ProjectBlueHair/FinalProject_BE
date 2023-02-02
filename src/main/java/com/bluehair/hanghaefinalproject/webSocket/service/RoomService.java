@@ -40,14 +40,14 @@ public class RoomService {
         List<RoomListDto> roomList = new ArrayList<>();
 
         // 사용자가 member1인 채팅방 조회
-        List<ChatRoom> chatRoomList1 = roomRepository.findByMember1_Id(member.getId());
+        List<ChatRoom> chatRoomList1 = roomRepository.findByMember1_IdOrderByModifiedAtDesc(member.getId());
 
         for (ChatRoom c : chatRoomList1){
             RoomListDto roomListDto = new RoomListDto(c.getRoomId(),c.getMember2().getNickname(), c.getMember2().getProfileImg(), c.getFinalMesaage());
             roomList.add(roomListDto);
         }
 
-        List<ChatRoom> chatRoomList2 = roomRepository.findByMember2_Id(member.getId());
+        List<ChatRoom> chatRoomList2 = roomRepository.findByMember2_IdOrderByModifiedAtDesc(member.getId());
 
         for (ChatRoom c : chatRoomList2){
 
