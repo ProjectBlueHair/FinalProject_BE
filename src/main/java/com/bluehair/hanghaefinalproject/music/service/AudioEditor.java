@@ -40,6 +40,8 @@ public class AudioEditor {
             addFloatArray(mixedAudioSample, audioSample);
         }
 
+        limiter(mixedAudioSample);
+
         return mixedAudioSample;
     }
 
@@ -56,5 +58,33 @@ public class AudioEditor {
         }
         sampleToBeAdded.setLeft(tmpLeft);
         sampleToBeAdded.setRight(tmpRight);
+    }
+
+    private static void limiter(AudioSample audioSample) {
+        float[] left = new float[audioSample.getLeft().length];
+        float[] right = new float[audioSample.getRight().length];
+
+        float maximumLeft = audioSample.getLeft()[0];
+        float maximumRight = audioSample.getRight()[0];
+
+        for (float v : audioSample.getLeft()) {
+            if (Math.abs(v) > maximumLeft) {
+                maximumLeft = Math.abs(v);
+            }
+        }
+
+        for (float v : audioSample.getRight()) {
+            if (Math.abs(v) > maximumRight) {
+                maximumRight = Math.abs(v);
+            }
+        }
+
+        for (int i = 0; i < left.length; i++) {
+            left[i] = audioSample.getLeft()[i]/maximumLeft;
+            right[i] = audioSample.getRight()[i]/maximumRight;
+        }
+
+        audioSample.setLeft(left);
+        audioSample.setRight(right);
     }
 }
