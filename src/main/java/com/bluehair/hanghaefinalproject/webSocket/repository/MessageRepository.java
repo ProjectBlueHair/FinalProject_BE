@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<ChatMessage, Long> {
 
-    List<ChatMessage> findByChatRoom_RoomIdOrderByCreatedAtDesc(Long roomId);
+    List<ChatMessage> findByChatRoom_RoomIdOrderByCreatedAtAsc(Long roomId);
 
     @Transactional
     @Modifying(clearAutomatically = true)
