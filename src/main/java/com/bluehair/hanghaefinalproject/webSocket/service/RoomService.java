@@ -87,9 +87,10 @@ public class RoomService {
         return roomIdDto;
     }
 
+    @Transactional
     public List<ResponseMessageDto> entranceRoom(Long roomId) {
 
-        List<ChatMessage> message = messageRepository.findByChatRoom_RoomIdOrderByCreatedAtDesc(roomId);
+        List<ChatMessage> message = messageRepository.findByChatRoom_RoomIdOrderByCreatedAtAsc(roomId);
         List<ResponseMessageDto> messageList = new ArrayList<>();
         for (ChatMessage m : message){
             ResponseMessageDto messageListDto = new ResponseMessageDto(m.getMessage(), m.getNickname(), m.getProfileImg(), m.getDate(), m.getTime());
