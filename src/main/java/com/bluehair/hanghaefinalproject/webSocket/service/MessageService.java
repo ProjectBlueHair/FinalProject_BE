@@ -13,10 +13,10 @@ import com.bluehair.hanghaefinalproject.webSocket.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.bluehair.hanghaefinalproject.common.exception.Layer.SERVICE;
 import static com.bluehair.hanghaefinalproject.common.response.error.ErrorCode.MEMBER_NOT_FOUND;
-import static com.bluehair.hanghaefinalproject.webSocket.mapper.MessageMapStruct.MESSAGE_MAPPER;
 
 @Service
 @Slf4j
@@ -28,6 +28,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final RoomRepository roomRepository;
 
+    @Transactional
     public SaveMessageDto saveMessage(Long roomId, MessageDto messageDto, String nickname) {
 
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
@@ -48,6 +49,8 @@ public class MessageService {
                 .chatRoom(chatRoom)
                 .date(saveMessageDto.getDate())
                 .build();
+
+        chatRoom.update(chatMessage.getMessage());
 
         messageRepository.save(chatMessage);
 
