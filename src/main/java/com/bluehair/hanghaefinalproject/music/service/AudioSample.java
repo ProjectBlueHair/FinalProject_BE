@@ -111,7 +111,7 @@ public class AudioSample {
         try {
             AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
         } catch (IOException e) {
-            System.out.println("Unable to write to output file ");
+            log.warn("Unable to write to output file ");
         }
         stream.close();
         return file;
