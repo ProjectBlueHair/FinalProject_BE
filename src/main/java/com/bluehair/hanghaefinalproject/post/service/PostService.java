@@ -132,8 +132,13 @@ public class PostService {
 
             boolean isLiked = false;
 
+            Long memberId = null;
+            if(userDetails != null){
+                memberId = userDetails.getMember().getId();
+            }
+
             PostLikeCompositeKey postLikeCompositeKey
-                    = new PostLikeCompositeKey(userDetails.getMember().getId(), post.getId());
+                    = new PostLikeCompositeKey(memberId, post.getId());
             Optional<PostLike> liked = postLikeRepository.findById(postLikeCompositeKey);
             if (liked.isPresent()){
                 isLiked = true;
