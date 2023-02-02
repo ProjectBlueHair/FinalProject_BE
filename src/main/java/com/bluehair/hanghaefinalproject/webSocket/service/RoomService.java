@@ -87,6 +87,7 @@ public class RoomService {
         return roomIdDto;
     }
 
+    @Transactional
     public List<ResponseMessageDto> entranceRoom(Long roomId) {
 
         List<ChatMessage> message = messageRepository.findByChatRoom_RoomIdOrderByCreatedAtDesc(roomId);
