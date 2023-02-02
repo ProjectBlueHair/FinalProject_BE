@@ -63,7 +63,11 @@ public enum SucessCode {
     NOTIFICATION_COUNT(HttpStatus.OK, "읽지않은 알림 갯수 조회 성공", 2000 ),
 
     POST_LIKE(HttpStatus.OK, "게시글 좋아요 성공", 2000),
-    POST_UNLIKE(HttpStatus.OK, "게시글 좋아요 취소 성공", 2000);
+    POST_UNLIKE(HttpStatus.OK, "게시글 좋아요 취소 성공", 2000),
+
+    // Bug Report
+    POST_BUG_REPORT(HttpStatus.OK, "버그 리포트 작성 성공", 2000),
+    GET_BUG_REPORT(HttpStatus.OK, "버그 리포트 조회 성공", 2000);
 
     private final HttpStatus httpStatus;
     private final String message;
