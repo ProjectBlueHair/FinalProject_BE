@@ -14,11 +14,15 @@ public class RoomListDto {
     private String nickname;
     @Schema(description = "프로필 이미지", example = "프로필 이미지")
     private String profileImg;
+    @Schema(description = "마지막 메세지", example = "마지막 메세지")
+    private String finalMessage;
+
 
     @Builder
-    public RoomListDto(Long roomId,String nickname, String profileImg){
+    public RoomListDto(Long roomId,String nickname, String profileImg, String finalMessage){
         this.roomId = roomId;
         this.nickname = nickname;
         this.profileImg = profileImg;
+        this.finalMessage = finalMessage;
     }
 }
