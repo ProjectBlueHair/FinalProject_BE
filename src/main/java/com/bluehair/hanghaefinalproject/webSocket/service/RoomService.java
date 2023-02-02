@@ -43,15 +43,15 @@ public class RoomService {
         List<ChatRoom> chatRoomList1 = roomRepository.findByMember1_Id(member.getId());
 
         for (ChatRoom c : chatRoomList1){
-
-            RoomListDto roomListDto = new RoomListDto(c.getRoomId(),c.getMember2().getNickname(), c.getMember2().getProfileImg());
+            RoomListDto roomListDto = new RoomListDto(c.getRoomId(),c.getMember2().getNickname(), c.getMember2().getProfileImg(), c.getFinalMesaage());
             roomList.add(roomListDto);
         }
 
         List<ChatRoom> chatRoomList2 = roomRepository.findByMember2_Id(member.getId());
 
         for (ChatRoom c : chatRoomList2){
-            RoomListDto roomListDto = new RoomListDto(c.getRoomId(),c.getMember1().getNickname(), c.getMember1().getProfileImg());
+
+            RoomListDto roomListDto = new RoomListDto(c.getRoomId(),c.getMember1().getNickname(), c.getMember1().getProfileImg(), c.getFinalMesaage());
             roomList.add(roomListDto);
         }
         return roomList;
