@@ -64,14 +64,10 @@ public class PostController {
                                                               @Parameter(description = "WAV 및 2 Channel 오디오만 지원합니다.")
                                                               @RequestPart(value = "musicFile") List<MultipartFile> musicFileList,
                                                               @AuthenticationPrincipal CustomUserDetails userDetails) throws UnsupportedAudioFileException, IOException {
-        return SuccessResponse.toResponseEntity(CREATE_POST,
-                postServiceFacade.createPost(
-                        userDetails,
-                        requestCreatePostDto.toPostDto(),
-                        requestCreatePostDto.toCollaboRequestDetailsDto(),
-                        requestCreatePostDto.toMusicPartList(),
-                        musicFileList
-                        ));
+        Long collaboRequestId = postServiceFacade.createPost(userDetails, requestCreatePostDto.toPostDto(),
+                requestCreatePostDto.toCollaboRequestDetailsDto(), requestCreatePostDto.toMusicPartList(), musicFileList);
+        postServiceFacade.approveCollaboRequest(collaboRequestId, userDetails);
+        return SuccessResponse.toResponseEntity(CREATE_POST, null);
     }
     @Tag(name = "Post")
     @Operation(summary = "게시글 수정", description = "게시글 수정")

@@ -25,13 +25,17 @@ public class PostServiceFacade {
 
     @Transactional
     public Long createPost(CustomUserDetails userDetails, PostDto postDto, CollaboRequestDetailsDto collaboRequestDetailsDto,
-                           List<String> musicPartList, List<MultipartFile> musicFileList) throws UnsupportedAudioFileException, IOException {
+                           List<String> musicPartList, List<MultipartFile> musicFileList) {
         Long postId = postService.createPost(postDto, userDetails.getMember().getNickname());
         Long collaboRequestId = collaboRequestService.collaboRequest(postId, collaboRequestDetailsDto, userDetails.getMember());
         musicService.saveMusic(musicFileList, postId, musicPartList, collaboRequestId);
 
+        return collaboRequestId;
+    }
+
+    @Transactional
+    public void approveCollaboRequest(Long collaboRequestId, CustomUserDetails userDetails) throws UnsupportedAudioFileException, IOException {
         collaboRequestService.approveCollaboRequest(collaboRequestId, userDetails.getMember());
         musicService.mixMusic(collaboRequestId);
-        return postId;
     }
 }
