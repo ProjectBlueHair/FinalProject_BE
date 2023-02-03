@@ -197,7 +197,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateSetting(CustomUserDetails userDetails, SettingMemberDto settingMemberDto, SettingMemberDetailDto settingMemberDetailDto) {
+    public String updateSetting(CustomUserDetails userDetails, SettingMemberDto settingMemberDto, SettingMemberDetailDto settingMemberDetailDto) {
         memberRepository.findByNickname(settingMemberDto.getNickname())
                 .ifPresent(m-> {
                     throw new DuplicationException(MEMBER, SERVICE, DUPLICATED_NICKNAME, settingMemberDto.getNickname());
@@ -237,6 +237,8 @@ public class MemberService {
 
         member.updateSetting(settingMemberDto);
         memberRepository.save(member);
+
+        return member.getNickname();
     }
 
     @Transactional

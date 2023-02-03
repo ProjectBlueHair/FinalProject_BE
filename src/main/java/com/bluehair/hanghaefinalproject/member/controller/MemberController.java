@@ -148,9 +148,9 @@ public class MemberController {
     @PutMapping("/setting")
     public ResponseEntity<SuccessResponse<Object>> updateSetting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                                  @RequestBody RequestSettingDto requestSettingDto){
-        memberService.updateSetting(customUserDetails, requestSettingDto.requestSettingDtoToSettingMemberDto(),
+        String nickname = memberService.updateSetting(customUserDetails, requestSettingDto.requestSettingDtoToSettingMemberDto(),
                 requestSettingDto.requestSettingDtoToSettingMemberDetailDto());
-        return SuccessResponse.toResponseEntity(MEMBER_UPDATE_SETTING, null);
+        return SuccessResponse.toResponseEntity(MEMBER_UPDATE_SETTING, nickname);
     }
 
     @Tag(name = "Member")
