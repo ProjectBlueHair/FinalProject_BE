@@ -44,9 +44,8 @@
 ![아키텍쳐](https://user-images.githubusercontent.com/117705848/216890320-9c6807b3-5e94-4ed6-974a-fd3b1ab2627e.png)
 
 ## ⚙ERD
-* 추가 예정
 
-
+![oncounter_erd](https://user-images.githubusercontent.com/117705848/216895267-e178ba24-67da-4f99-82c5-5906a5ef55c9.png)
    
    
 ## 📌API 명세서
