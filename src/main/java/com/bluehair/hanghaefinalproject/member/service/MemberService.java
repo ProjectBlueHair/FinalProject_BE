@@ -108,7 +108,7 @@ public class MemberService {
         response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
 
         // RefreshToken : MySQL
-        member.updateToken(refreshToken);
+//        member.updateToken(refreshToken);
 
         // RefreshToken : Redis Test
         redisRepository.save(new RefreshToken(member.getEmail(), refreshToken));
@@ -138,9 +138,9 @@ public class MemberService {
                 .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Email : " + claims.getSubject()));
 
         // RefreshToken : SQL Repo
-        if(!member.getRefreshToken().substring(7).equals(refreshToken)){
-            throw new CustomJwtException(INVALID_REFRESHTOKEN);
-        }
+//        if(!member.getRefreshToken().substring(7).equals(refreshToken)){
+//            throw new CustomJwtException(INVALID_REFRESHTOKEN);
+//        }
 
         // RefreshToken : Redis Test
         RefreshToken redisRefreshToken = redisRepository.findById(member.getEmail())

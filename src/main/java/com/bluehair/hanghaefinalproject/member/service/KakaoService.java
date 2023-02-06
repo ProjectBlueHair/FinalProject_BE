@@ -3,9 +3,11 @@ package com.bluehair.hanghaefinalproject.member.service;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.KakaoLoginDto;
 import com.bluehair.hanghaefinalproject.member.entity.Member;
 import com.bluehair.hanghaefinalproject.member.entity.MemberDetail;
+import com.bluehair.hanghaefinalproject.member.entity.RefreshToken;
 import com.bluehair.hanghaefinalproject.member.entity.Social;
 import com.bluehair.hanghaefinalproject.member.repository.MemberDetailRepository;
 import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
+import com.bluehair.hanghaefinalproject.member.repository.RefreshTokenRedisRepository;
 import com.bluehair.hanghaefinalproject.security.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,6 +41,7 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
     private final MemberDetailRepository memberDetailRepository;
+    private final RefreshTokenRedisRepository redisRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -61,7 +64,9 @@ public class KakaoService {
         response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail(), member.getRole()));
         String refreshToken = jwtUtil.createRefreshToken();
         response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
-        member.updateToken(refreshToken);
+//        member.updateToken(refreshToken);
+
+        redisRepository.save(new RefreshToken(member.getEmail(), refreshToken));
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
