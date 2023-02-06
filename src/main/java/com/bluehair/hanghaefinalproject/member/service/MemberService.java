@@ -9,10 +9,7 @@ import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseMypageDto
 import com.bluehair.hanghaefinalproject.member.dto.responseDto.ResponseSettingDto;
 import com.bluehair.hanghaefinalproject.member.dto.serviceDto.*;
 import com.bluehair.hanghaefinalproject.member.entity.*;
-import com.bluehair.hanghaefinalproject.member.repository.FollowRepository;
-import com.bluehair.hanghaefinalproject.member.repository.JobRepository;
-import com.bluehair.hanghaefinalproject.member.repository.MemberDetailRepository;
-import com.bluehair.hanghaefinalproject.member.repository.MemberRepository;
+import com.bluehair.hanghaefinalproject.member.repository.*;
 import com.bluehair.hanghaefinalproject.post.repository.PostRepository;
 import com.bluehair.hanghaefinalproject.security.CustomUserDetails;
 import com.bluehair.hanghaefinalproject.security.exception.CustomJwtException;
@@ -52,6 +49,7 @@ public class MemberService {
     private final CommentRepository commentRepository;
     private final NotificationRepository notificationRepository;
     private final PostRepository postRepository;
+    private final RefreshTokenRedisRepository redisRepository;
     @Transactional
     public void signUp(SignUpDto signUpDto) {
         memberRepository.findByEmail(signUpDto.getEmail())
@@ -108,7 +106,12 @@ public class MemberService {
         response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail(), member.getRole()));
         String refreshToken = jwtUtil.createRefreshToken();
         response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
+
+        // RefreshToken : MySQL
         member.updateToken(refreshToken);
+
+        // RefreshToken : Redis Test
+        redisRepository.save(new RefreshToken(member.getEmail(), refreshToken));
     }
 
     @Transactional
@@ -134,7 +137,15 @@ public class MemberService {
         Member member = memberRepository.findByEmail(claims.getSubject())
                 .orElseThrow(()->new NotFoundException(MEMBER, SERVICE, MEMBER_NOT_FOUND, "Email : " + claims.getSubject()));
 
+        // RefreshToken : SQL Repo
         if(!member.getRefreshToken().substring(7).equals(refreshToken)){
+            throw new CustomJwtException(INVALID_REFRESHTOKEN);
+        }
+
+        // RefreshToken : Redis Test
+        RefreshToken redisRefreshToken = redisRepository.findById(member.getEmail())
+                .orElseThrow(()-> new NotFoundException(MEMBER, SERVICE, REFRESHTOKEN_NOT_EXIST, "from RedisServer"));
+        if(!redisRefreshToken.getToken().substring(7).equals(refreshToken)) {
             throw new CustomJwtException(INVALID_REFRESHTOKEN);
         }
 
