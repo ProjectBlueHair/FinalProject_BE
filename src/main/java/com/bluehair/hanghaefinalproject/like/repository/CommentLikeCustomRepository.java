@@ -2,18 +2,16 @@ package com.bluehair.hanghaefinalproject.like.repository;
 
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 import com.bluehair.hanghaefinalproject.like.entity.CommentLike;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
-@Component
-public interface CommentLikeRepository extends CommentLikeCustomRepository {
+public interface CommentLikeCustomRepository {
+
     CommentLike save(CommentLike commentLike);
     void delete(CommentLike commentLike);
     void deleteByCommentId(Long commentId);
