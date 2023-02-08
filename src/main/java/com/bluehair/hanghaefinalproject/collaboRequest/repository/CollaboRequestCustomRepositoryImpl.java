@@ -18,7 +18,7 @@ public class CollaboRequestCustomRepositoryImpl implements CollaboRequestCustomR
     @Override
     public List<CollaboRequest> findAllByPostId(Long id) {
         return jpaQueryFactory.selectFrom(collaboRequest)
-                .where(collaboRequest.id.eq(id))
+                .where(collaboRequest.post.id.eq(id))
                 .fetch();
     }
 
