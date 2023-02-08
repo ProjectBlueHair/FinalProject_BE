@@ -1,16 +1,10 @@
 package com.bluehair.hanghaefinalproject.comment.repository;
 
-import com.bluehair.hanghaefinalproject.comment.entity.Comment;
-
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Optional;
 
 import static com.bluehair.hanghaefinalproject.comment.entity.QComment.comment;
 
@@ -18,8 +12,7 @@ import static com.bluehair.hanghaefinalproject.comment.entity.QComment.comment;
 @RequiredArgsConstructor
 public class CommentCustomRepositoryImpl implements CommentCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
-    private final EntityManager em;
-
+    @Transactional
     @Override
     public void deleteAllByPost(Post post) {
         jpaQueryFactory
