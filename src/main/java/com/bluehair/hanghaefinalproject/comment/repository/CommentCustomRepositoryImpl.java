@@ -21,54 +21,6 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository{
     private final EntityManager em;
 
     @Override
-    public Comment save(Comment comment) {
-        em.persist(comment);
-        return comment;
-    }
-
-    @Override
-    public Optional<Comment> findById(Long postId) {
-        Comment comment1 = jpaQueryFactory.select(comment)
-                .from(comment)
-                .where(comment.post.id.eq(postId))
-                .fetchOne();
-        return Optional.ofNullable(comment1);
-    }
-
-    @Override
-    public void deleteById(Long commentId) {
-        jpaQueryFactory
-                .delete(comment)
-                .where(comment.id.eq(commentId))
-                .execute();
-
-    }
-
-    @Override
-    public List<Comment> findByParentsId(Long parentsId) {
-        return jpaQueryFactory
-                .select(comment)
-                .where(comment.parentsId.eq(parentsId))
-                .fetch();
-    }
-
-    @Override
-    public List<Comment> findByPostId(Long postId) {
-        return jpaQueryFactory
-                .select(comment)
-                .where(comment.post.id.eq(postId))
-                .fetch();
-    }
-
-    @Override
-    public List<Comment> findByPostIdAndParentsId(Long postId, Long parentsId) {
-        return jpaQueryFactory
-                .select(comment)
-                .where(comment.post.id.eq(postId).and(comment.parentsId.eq(parentsId)))
-                .fetch();
-    }
-
-    @Override
     public void deleteAllByPost(Post post) {
         jpaQueryFactory
                 .delete(comment)
