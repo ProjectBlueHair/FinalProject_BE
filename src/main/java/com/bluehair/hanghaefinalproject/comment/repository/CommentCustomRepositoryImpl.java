@@ -6,6 +6,7 @@ import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -74,7 +75,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository{
                 .where(comment.post.eq(post))
                 .execute();
     }
-
+    @Transactional
     @Override
     public void updateNickname(String before, String after) {
         jpaQueryFactory
