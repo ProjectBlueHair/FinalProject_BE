@@ -12,6 +12,7 @@ import static com.bluehair.hanghaefinalproject.comment.entity.QComment.comment;
 @RequiredArgsConstructor
 public class CommentCustomRepositoryImpl implements CommentCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
+
     @Transactional
     @Override
     public void deleteAllByPost(Post post) {
@@ -20,6 +21,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository{
                 .where(comment.post.eq(post))
                 .execute();
     }
+    
     @Transactional
     @Override
     public void updateNickname(String before, String after) {
