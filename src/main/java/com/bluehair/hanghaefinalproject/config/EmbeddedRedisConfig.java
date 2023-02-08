@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 
-@Profile("h2")
+@Profile({"MySQLTEST", "h2"})
 @Configuration
 public class EmbeddedRedisConfig {
     private RedisServer redisServer;
