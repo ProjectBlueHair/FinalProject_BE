@@ -2,10 +2,8 @@ package com.bluehair.hanghaefinalproject.comment.repository;
 
 import com.bluehair.hanghaefinalproject.comment.entity.Comment;
 
-import com.bluehair.hanghaefinalproject.comment.entity.QComment;
 import com.bluehair.hanghaefinalproject.post.entity.Post;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
