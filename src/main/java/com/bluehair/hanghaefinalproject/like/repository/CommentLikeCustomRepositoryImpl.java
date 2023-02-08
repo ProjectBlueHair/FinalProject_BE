@@ -45,7 +45,8 @@ public class CommentLikeCustomRepositoryImpl implements CommentLikeCustomReposit
     public Optional<CommentLike> findByCommentIdAndMemberId(Long commentId, Long id) {
         CommentLike commentLike1 = jpaQueryFactory.select(commentLike)
                 .from(commentLike)
-                .where(commentLike.comment.id.eq(commentId).and(commentLike.member.id.eq(id))).fetchOne();
+                .where(commentLike.comment.id.eq(commentId).and(commentLike.member.id.eq(id)))
+                .fetchOne();
         return Optional.ofNullable(commentLike1);
     }
 
