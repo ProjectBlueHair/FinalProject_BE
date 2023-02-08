@@ -240,7 +240,7 @@ public class MemberService {
         List<Job> jobList = null;
         if (settingMemberDetailDto.getJobList() != null){
              jobList = MEMBER_MAPPER.SettingMemberDetailDtoToJob(settingMemberDetailDto.getJobList(), userDetails.getMember().getMemberDetail());
-            jobRepository.saveJobList(jobList);
+            jobRepository.saveAll(jobList);
         }
 
         memberDetail.updateSettings(settingMemberDetailDto, jobList);
