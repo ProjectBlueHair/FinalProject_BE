@@ -71,7 +71,9 @@ public class MusicService {
         ObjectMetadata objMeta = new ObjectMetadata();
         objMeta.setContentLength(multipartFile.getInputStream().available());
         amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
-        return amazonS3.getUrl(bucket, s3FileName).toString();
+
+        return amazonS3.getUrl(bucket, s3FileName).toString()
+                .replace("https://jeeklee-soundsample-bucket.s3.ap-northeast-2.amazonaws.com/", "https://d2bux1qnayee1u.cloudfront.net/");
     }
 
     private void cutAudioSamples(List<AudioSample> audioSampleList, Post post) throws IOException {
@@ -159,7 +161,7 @@ public class MusicService {
     }
 
     private void deleteS3(String musicFile) {
-        String source = URLDecoder.decode(musicFile.replace("https://jeeklee-soundsample-bucket.s3.ap-northeast-2.amazonaws.com/", ""), StandardCharsets.UTF_8);
+        String source = URLDecoder.decode(musicFile.replace("https://d2bux1qnayee1u.cloudfront.net/", ""), StandardCharsets.UTF_8);
         amazonS3.deleteObject(bucket, source);
     }
 
