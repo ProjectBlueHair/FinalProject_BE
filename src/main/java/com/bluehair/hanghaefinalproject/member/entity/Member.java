@@ -37,8 +37,6 @@ public class Member {
     @Column
     @Enumerated(value = EnumType.STRING)
     private Social social;
-    @Column
-    private String refreshToken;
 
     @Column
     private Boolean commentNotify = true;
@@ -61,9 +59,6 @@ public class Member {
         this.profileImg = profileImg;
     }
 
-    public void updateToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
     public void updateSetting(SettingMemberDto settingMemberDto) {
         if (settingMemberDto.getNickname()!=null){
             this.nickname = settingMemberDto.getNickname();
