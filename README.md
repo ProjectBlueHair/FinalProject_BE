@@ -1,7 +1,7 @@
 # oncounter_BE
 <img src="https://user-images.githubusercontent.com/117705848/216882220-2e3e844e-c30a-40ce-9474-817a41338240.jpg" width=500px height=500px ></img>
-* 발표 영상 (준비중)
-* 시연 영상 (준비중)
+* [발표 영상](https://youtu.be/n04H7tXS7E8)
+* [Catalogue](https://www.notion.so/Oncounter-Catalogue-056194f42de64dd298623dad40cc5f15)
 
 
 ## 🎙프로젝트 소개
